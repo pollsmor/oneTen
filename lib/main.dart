@@ -38,17 +38,29 @@ class FavoritesPage extends StatelessWidget {
         padding: EdgeInsets.all(12.0),
         crossAxisSpacing: 12.0,
         children: [
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16.0),
-              color: Colors.blue,
-            ),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16.0),
-              color: Colors.blue,
-            ),
+          Stack(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("assets/images/fusion_box_art.jpg"),
+                  ),
+                  borderRadius: BorderRadius.circular(16.0),
+                  color: Colors.blue,
+                ),
+              ),
+              Positioned(
+                bottom: 16,
+                left: 48,
+                child: Text(
+                  "Metroid Fusion",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
