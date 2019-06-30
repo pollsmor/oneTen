@@ -33,8 +33,24 @@ class FavoritesPage extends StatelessWidget {
         ),
       ),
       backgroundColor: Colors.white,
-      body: Center(
-        child: Text("oneTen"),
+      body: GridView.extent(
+        maxCrossAxisExtent: width / 2,
+        padding: EdgeInsets.all(12.0),
+        crossAxisSpacing: 12.0,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16.0),
+              color: Colors.blue,
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16.0),
+              color: Colors.blue,
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: [
