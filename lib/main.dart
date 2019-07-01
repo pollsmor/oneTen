@@ -35,14 +35,14 @@ class FavoritesPage extends StatelessWidget {
       backgroundColor: Colors.white,
       body: GridView.count(
         crossAxisCount: 2,
-        padding: EdgeInsets.all(16.0),
-        crossAxisSpacing: 16.0,
+        padding: EdgeInsets.fromLTRB(0, 32, 0, 32),
+        crossAxisSpacing: 0,
         children: [
           Column(
             children: [
               SizedBox(
-                width: 125.0,
-                height: 125.0,
+                width: 140.0,
+                height: 140.0,
                 child: Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
@@ -50,7 +50,6 @@ class FavoritesPage extends StatelessWidget {
                       fit: BoxFit.fill,
                     ),
                     borderRadius: BorderRadius.circular(16.0),
-                    color: Colors.blue,
                   ),
                 ),
               ),
@@ -58,6 +57,32 @@ class FavoritesPage extends StatelessWidget {
                 margin: EdgeInsets.all(8.0),
                 child: Text(
                   "Metroid Fusion",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Column(
+            children: [
+              SizedBox(
+                width: 140.0,
+                height: 140.0,
+                child: Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage("assets/images/zm_box_art.jpeg"),
+                      fit: BoxFit.fill,
+                    ),
+                    borderRadius: BorderRadius.circular(16.0),
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.all(8.0),
+                child: Text(
+                  "Metroid: Zero Mission",
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                   ),
