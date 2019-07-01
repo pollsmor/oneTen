@@ -33,29 +33,32 @@ class FavoritesPage extends StatelessWidget {
         ),
       ),
       backgroundColor: Colors.white,
-      body: GridView.extent(
-        maxCrossAxisExtent: width / 2,
-        padding: EdgeInsets.all(12.0),
-        crossAxisSpacing: 12.0,
+      body: GridView.count(
+        crossAxisCount: 2,
+        padding: EdgeInsets.all(16.0),
+        crossAxisSpacing: 16.0,
         children: [
-          Stack(
+          Column(
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage("assets/images/fusion_box_art.jpg"),
+              SizedBox(
+                width: 125.0,
+                height: 125.0,
+                child: Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage("assets/images/fusion_box_art.jpg"),
+                      fit: BoxFit.fill,
+                    ),
+                    borderRadius: BorderRadius.circular(16.0),
+                    color: Colors.blue,
                   ),
-                  borderRadius: BorderRadius.circular(16.0),
-                  color: Colors.blue,
                 ),
               ),
-              Positioned(
-                bottom: 16,
-                left: 48,
+              Container(
+                margin: EdgeInsets.all(8.0),
                 child: Text(
                   "Metroid Fusion",
                   style: TextStyle(
-                    color: Colors.white,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
