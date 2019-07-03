@@ -1,26 +1,19 @@
 import "package:flutter/material.dart";
-import "BottomNavBar.dart";
 
-class FavoritesPage extends StatelessWidget {
+class FavoritesPage extends StatefulWidget {
+  State createState() => FavoritesPageState();
+}
+
+class FavoritesPageState extends State<FavoritesPage> {
+  int _selectedIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0.0,
-        leading: Icon(
-          Icons.search,
-        ),
-        title: Text(
-          "Search for a game",
-          style: TextStyle(
-            fontSize: 16.0,
-            color: Colors.white70,
-          ),
-        ),
-      ),
+      appBar: searchBar(),
       backgroundColor: Colors.white,
       body: GridView.count(
         crossAxisCount: 2,
@@ -81,7 +74,50 @@ class FavoritesPage extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavBar(),
+      bottomNavigationBar: bottomNavBar(),
     );
+  }
+
+  Widget searchBar() {
+    return AppBar(
+      elevation: 0.0,
+      leading: Icon(
+        Icons.search,
+      ),
+      title: Text(
+        "Search for a game",
+        style: TextStyle(
+          fontSize: 16.0,
+          color: Colors.white70,
+        ),
+      ),
+    );
+  }
+
+  Widget bottomNavBar() {
+    return BottomNavigationBar(
+      items: [
+        BottomNavigationBarItem(
+          title: Text("Favorites"),
+          icon: Icon(Icons.favorite_border),
+        ),
+        BottomNavigationBarItem(
+          title: Text("Games"),
+          icon: Icon(Icons.videogame_asset),
+        ),
+        BottomNavigationBarItem(
+          title: Text("Settings"),
+          icon: Icon(Icons.settings),
+        ),
+      ],
+      onTap: _onItemTapped,
+      currentIndex: _selectedIndex,
+    );
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 }
