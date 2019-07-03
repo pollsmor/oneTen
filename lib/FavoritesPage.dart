@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "BottomNavBar.dart";
 
 class FavoritesPage extends StatelessWidget {
   @override
@@ -80,22 +81,7 @@ class FavoritesPage extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(
-            title: Text("Favorites"),
-            icon: Icon(Icons.favorite_border),
-          ),
-          BottomNavigationBarItem(
-            title: Text("Games"),
-            icon: Icon(Icons.videogame_asset),
-          ),
-          BottomNavigationBarItem(
-            title: Text("Settings"),
-            icon: Icon(Icons.settings),
-          ),
-        ],
-      ),
+      bottomNavigationBar: BottomNavBar(),
     );
   }
 }
