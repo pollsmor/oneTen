@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 
-class FavoritesPage extends StatelessWidget {
+class GamesPage extends StatelessWidget {
   @override
   Widget build (BuildContext context) {
     return GridView.count(
@@ -52,7 +52,7 @@ class FavoritesPage extends StatelessWidget {
             Container(
               margin: EdgeInsets.all(8.0),
               child: Text(
-                "Metroid: Zero Mission",
+                "Metroid: Zero Mission ROFLMAO",
                 style: TextStyle(
                   fontWeight: FontWeight.w900,
                 ),
