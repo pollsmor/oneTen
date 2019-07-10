@@ -17,25 +17,12 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: searchBar(),
+      appBar: AppBar(
+        elevation: 0.0,
+        title: Text("Favorites"),
+      ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: bottomNavBar(),
-    );
-  }
-
-  Widget searchBar() {
-    return AppBar(
-      elevation: 0.0,
-      leading: Icon(
-        Icons.search,
-      ),
-      title: Text(
-        "Search for a game",
-        style: TextStyle(
-          fontSize: 16.0,
-          color: Colors.white70,
-        ),
-      ),
     );
   }
 
