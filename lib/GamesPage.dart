@@ -11,9 +11,12 @@ class GamesPage extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
-              itemCount: snapshot.data.data.runs.length,
+              itemCount: snapshot.data.runs.length,
               itemBuilder: (BuildContext context, int index) {
-                return Text(snapshot.data.data.runs[index].comment ?? index.toString());
+                return ListTile(
+                  title: Text(snapshot.data.runs[index].comment),
+                  //subtitle: Text(snapshot.data.runs[index].date),
+                );
               }
             );
           } else if (snapshot.hasError) {

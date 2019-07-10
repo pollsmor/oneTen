@@ -14,39 +14,29 @@ Future<Leaderboard> getLeaderboard() async {
 
 class Run {
   String comment;
+  String date;
 
   Run({this.comment});
 
   factory Run.fromJson(Map<String, dynamic> json) {
     return Run(
       comment: json["comment"],
-    );
-  }
-}
-
-class Data {
-  List<Run> runs;
-
-  Data({this.runs});
-
-  factory Data.fromJson(Map<String, dynamic> json) {
-    var list = json["runs"] as List;
-    List<Run> runsList = list.map((i) => Run.fromJson(i)).toList();
-
-    return Data(
-      runs: runsList,
+      //date: json["date"],
     );
   }
 }
 
 class Leaderboard {
-  Data data;
+  List<Run> runs;
 
-  Leaderboard({this.data});
+  Leaderboard({this.runs});
 
   factory Leaderboard.fromJson(Map<String, dynamic> json) {
+    var list = json["data"]["runs"] as List;
+    List<Run> runsList = list.map((i) => Run.fromJson(i)).toList();
+
     return Leaderboard(
-      data: Data.fromJson(json["data"]),
+      runs: runsList,
     );
   }
 }
