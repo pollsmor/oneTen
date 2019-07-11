@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "FavoritesPage.dart";
-import "GamesPage.dart";
+import "LatestRunsPage.dart";
 import "Settings.dart";
 
 class HomePage extends StatefulWidget {
@@ -12,12 +12,12 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   List<Widget> _pages = [
     FavoritesPage(),
-    GamesPage(),
+    LatestRunsPage(),
     SettingsPage(),
   ];
   List<AppBar> _pagesAppBar = [
     favoritesPageAppBar(),
-    gamesPageAppBar(),
+    latestRunsPageAppBar(),
     settingsPageAppBar(),
   ];
 
@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  static AppBar gamesPageAppBar() {
+  static AppBar latestRunsPageAppBar() {
     return AppBar(
       elevation: 0.0,
       title: Text("Games"),
