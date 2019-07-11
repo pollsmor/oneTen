@@ -13,15 +13,17 @@ Future<Leaderboard> getLeaderboard() async {
 }
 
 class Run {
+  int place;
   String comment;
   String date;
 
-  Run({this.comment});
+  Run({this.place, this.comment, this.date});
 
   factory Run.fromJson(Map<String, dynamic> json) {
     return Run(
-      comment: json["comment"],
-      //date: json["date"],
+      place: json["place"],
+      comment: json["run"]["comment"],
+      date: json["run"]["date"],
     );
   }
 }

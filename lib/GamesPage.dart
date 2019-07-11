@@ -14,8 +14,9 @@ class GamesPage extends StatelessWidget {
               itemCount: snapshot.data.runs.length,
               itemBuilder: (BuildContext context, int index) {
                 return ListTile(
-                  title: Text(snapshot.data.runs[index].comment),
-                  //subtitle: Text(snapshot.data.runs[index].date),
+                  leading: Text(snapshot.data.runs[index].place.toString() ?? index.toString()),
+                  title: Text(snapshot.data.runs[index].date),
+                  subtitle: Text(snapshot.data.runs[index].comment ?? ""),
                 );
               }
             );
