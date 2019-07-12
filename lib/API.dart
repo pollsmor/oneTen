@@ -22,10 +22,24 @@ Future<List<LatestRun>> getLatestRuns() async {
     var list = json.decode(response.body)["data"] as List;
     latestRuns = list.map((i) => LatestRun.fromJson(i)).toList();
 
+    for (int i = 0; i < list.length; ++i) {
+      latestRuns[i] = LatestRun.fromJson(list[i]);
+      latestRuns[i].game = await getGame(latestRuns[i].gameID);
+    }
+
     return latestRuns;
   }
 
   throw Exception("Failed to load the latest runs.");
+}
+
+Future<Game> getGame(String gameID) async {
+  final response = await http.get("https://www.speedrun.com/api/v1/games/$gameID");
+
+  if (response.statusCode == 200)
+    return Game.fromJson(json.decode(response.body));
+
+  throw Exception("Failed to load game.");
 }
 
 class Run {
@@ -47,13 +61,16 @@ class Run {
 class LatestRun {
   String comment;
   String date;
+  String gameID;
+  Game game;
 
-  LatestRun({this.comment, this.date});
+  LatestRun({this.comment, this.date, this.gameID});
 
   factory LatestRun.fromJson(Map<String, dynamic> json) {
     return LatestRun(
       comment: json["comment"],
       date: json["date"],
+      gameID: json["game"],
     );
   }
 }
@@ -79,7 +96,7 @@ class Game {
       releaseDate: json["data"]["release-date"],
       gameID: json["data"]["id"],
       coverURL: "https://www.speedrun.com/themes/" +
-          json["data"]["id"] +
+          json["data"]["abbreviation"] +
           "/cover-256.png",
     );
   }
