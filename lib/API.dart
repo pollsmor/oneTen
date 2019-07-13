@@ -58,9 +58,9 @@ class LatestRun {
     } catch (RangeError) {}
 
     return LatestRun(
-      date: json["date"],
       game: Game.fromJson(json["game"]["data"]),
       category: Category.fromJson(json["category"]["data"]),
+      date: json["date"],
       hours: hr,
       minutes: min,
       seconds: sec,
