@@ -1,7 +1,7 @@
 import "dart:convert";
 import "package:http/http.dart" as http;
 
-String baseurl = "https://www.speedrun.com/api/v1";
+final String baseurl = "https://www.speedrun.com/api/v1";
 
 Future<List<LatestRun>> getLatestRuns() async {
   final response = await http.get(baseurl +
@@ -24,18 +24,18 @@ Future<List<LatestRun>> getLatestRuns() async {
 }
 
 class LatestRun {
-  String date;
   Game game;
   Category category;
+  String date;
   String hours;
   String minutes;
   String seconds;
   String millis;
 
   LatestRun(
-      {this.date,
-      this.game,
+      {this.game,
       this.category,
+      this.date,
       this.hours,
       this.minutes,
       this.seconds,
@@ -85,13 +85,11 @@ class Game {
 
   factory Game.fromJson(Map<String, dynamic> json) {
     return Game(
-      name: json["data"]["names"]["international"],
-      abbreviation: json["data"]["abbreviation"],
-      releaseDate: json["data"]["release-date"],
-      gameID: json["data"]["id"],
-      coverURL: "https://www.speedrun.com/themes/" +
-          json["data"]["abbreviation"] +
-          "/cover-256.png",
+      name: json["names"]["international"],
+      abbreviation: json["abbreviation"],
+      releaseDate: json["release-date"],
+      gameID: json["id"],
+      coverURL: json["assets"]["cover-large"],
     );
   }
 }
@@ -119,7 +117,7 @@ class LeaderboardRun {
 
   factory LeaderboardRun.fromJson(Map<String, dynamic> json) {
     return LeaderboardRun(
-      place: json["place"], //null if not on a leaderboard
+      place: json["place"],
       comment: json["run"]["comment"],
       date: json["run"]["date"],
     );
