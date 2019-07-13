@@ -89,7 +89,7 @@ class Game {
       abbreviation: json["abbreviation"],
       releaseDate: json["release-date"],
       gameID: json["id"],
-      coverURL: json["assets"]["cover-large"],
+      coverURL: json["assets"]["cover-large"]["uri"],
     );
   }
 }
