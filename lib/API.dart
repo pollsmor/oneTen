@@ -26,6 +26,7 @@ Future<List<LatestRun>> getLatestRuns() async {
 class LatestRun {
   Game game;
   Category category;
+  Player player;
   String date;
   String hours;
   String minutes;
@@ -35,6 +36,7 @@ class LatestRun {
   LatestRun(
       {this.game,
       this.category,
+      this.player,
       this.date,
       this.hours,
       this.minutes,
@@ -60,6 +62,7 @@ class LatestRun {
     return LatestRun(
       game: Game.fromJson(json["game"]["data"]),
       category: Category.fromJson(json["category"]["data"]),
+      player: Player.fromJson(json["players"]["data"][0]),
       date: json["date"],
       hours: hr,
       minutes: min,
@@ -104,6 +107,22 @@ class Category {
     return Category(
       name: json["name"],
       rules: json["rules"],
+    );
+  }
+}
+
+class Player {
+  String name;
+  String color;
+  String country; //for the flag
+
+  Player({this.name, this.color, this.country});
+
+  factory Player.fromJson(Map<String, dynamic> json) {
+    return Player(
+      name: json["names"]["international"],
+      color: json["name-style"]["color-from"]["light"],
+      country: json["location"]["country"]["names"]["international"],
     );
   }
 }

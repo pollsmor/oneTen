@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage> {
   static AppBar latestRunsPageAppBar() {
     return AppBar(
       elevation: 0.0,
-      title: Text("Games"),
+      title: Text("Latest Runs"),
     );
   }
 
@@ -59,7 +59,7 @@ class _HomePageState extends State<HomePage> {
           icon: Icon(Icons.favorite_border),
         ),
         BottomNavigationBarItem(
-          title: Text("Games"),
+          title: Text("Latest Runs"),
           icon: Icon(Icons.videogame_asset),
         ),
         BottomNavigationBarItem(
