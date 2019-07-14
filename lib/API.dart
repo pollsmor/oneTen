@@ -119,10 +119,15 @@ class Player {
   Player({this.name, this.color, this.country});
 
   factory Player.fromJson(Map<String, dynamic> json) {
+    String country = "";
+    if (json["location"] != null) {
+      country = json["location"]["country"]["names"]["international"];
+    }
+
     return Player(
       name: json["names"]["international"],
       color: json["name-style"]["color-from"]["light"],
-      country: json["location"]["country"]["names"]["international"],
+      country: country,
     );
   }
 }

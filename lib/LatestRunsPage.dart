@@ -14,9 +14,12 @@ class LatestRunsPage extends StatelessWidget {
               itemCount: snapshot.data.length,
               itemBuilder: (BuildContext context, int index) {
                 return ListTile(
-                  leading: Image.network(snapshot.data[index].game.coverURL),
-                  subtitle: Text(snapshot.data[index].player.name ?? ""),
-                  title: Text(snapshot.data[index].date),
+                  leading: AspectRatio(
+                    aspectRatio: 2 / 3,
+                    child: Image.network(snapshot.data[index].game.coverURL),
+                  ),
+                  title: Text(snapshot.data[index].game.name),
+                  subtitle: Text(snapshot.data[index].category.name ?? ""),
                 );
               }
             );
