@@ -1,27 +1,4 @@
-import "dart:convert";
-import "package:http/http.dart" as http;
-
 final String baseurl = "https://www.speedrun.com/api/v1";
-
-Future<List<LatestRun>> getLatestRuns() async {
-  final response = await http.get(baseurl +
-      "/runs?status=verified&orderby=verify-date&direction=desc&embed=game,category,players");
-
-  List<LatestRun> latestRuns;
-
-  if (response.statusCode == 200) {
-    var list = json.decode(response.body)["data"] as List;
-    latestRuns = List<LatestRun>(list.length);
-
-    for (int i = 0; i < list.length; ++i) {
-      latestRuns[i] = LatestRun.fromJson(list[i]);
-    }
-
-    return latestRuns;
-  }
-
-  throw Exception("Failed to load the latest runs.");
-}
 
 class LatestRun {
   Game game;

@@ -5,8 +5,6 @@ import "API.dart";
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  static final Future<List<LatestRun>> latestRuns = getLatestRuns();
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
