@@ -109,14 +109,14 @@ class _RunInfo extends StatelessWidget {
                 Text(
                   "Real time ― $realtime",
                   style: TextStyle(
-                    fontSize: 12.0,
+                    fontSize: 14.0,
                     fontWeight: FontWeight.w300,
                   ),
                 ),
                 Text(
                   "In-game time ― $igt",
                   style: TextStyle(
-                    fontSize: 12.0,
+                    fontSize: 14.0,
                     fontWeight: FontWeight.w300,
                   ),
                 ),
@@ -129,7 +129,12 @@ class _RunInfo extends StatelessWidget {
   }
 }
 
-class LatestRunsPage extends StatelessWidget {
+class LatestRunsPage extends StatefulWidget {
+  @override
+  _LatestRunsPageState createState() => _LatestRunsPageState();
+}
+
+class _LatestRunsPageState extends State<LatestRunsPage> {
   Future<List<LatestRun>> latestRuns = getLatestRuns();
 
   @override
@@ -139,30 +144,34 @@ class LatestRunsPage extends StatelessWidget {
         future: latestRuns,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return ListView.builder(
-              itemCount: snapshot.data.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Column(
-                  children: [
-                    SizedBox(
-                      height: 200.0,
-                      child: Container(
-                        margin: EdgeInsets.fromLTRB(6.0, 6.0, 6.0, 0.0),
-                        color: Colors.white,
-                        child: _RunInfo(
-                          snapshot.data[index].game.name,
-                          snapshot.data[index].game.coverURL,
-                          snapshot.data[index].category.name,
-                          snapshot.data[index].player.name,
-                          snapshot.data[index].date,
-                          snapshot.data[index].realtime,
-                          snapshot.data[index].igt,
+            return RefreshIndicator(
+              child: ListView.builder(
+                physics: AlwaysScrollableScrollPhysics(),
+                itemCount: snapshot.data.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Column(
+                    children: [
+                      SizedBox(
+                        height: 250.0,
+                        child: Container(
+                          margin: EdgeInsets.fromLTRB(6.0, 6.0, 6.0, 0.0),
+                          color: Colors.white,
+                          child: _RunInfo(
+                            snapshot.data[index].game.name,
+                            snapshot.data[index].game.coverURL,
+                            snapshot.data[index].category.name,
+                            snapshot.data[index].player.name,
+                            snapshot.data[index].date,
+                            snapshot.data[index].realtime,
+                            snapshot.data[index].igt,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                );
-              },
+                    ],
+                  );
+                },
+              ),
+              onRefresh: _handleRefresh,
             );
           } else if (snapshot.hasError) {
             return Text("${snapshot.error}");
@@ -172,5 +181,15 @@ class LatestRunsPage extends StatelessWidget {
         },
       ),
     );
+  }
+
+  Future<Null> _handleRefresh() async {
+    await Future.delayed(new Duration(seconds: 3));
+
+    setState(() {
+      latestRuns = getLatestRuns();
+    });
+
+    return null;
   }
 }
