@@ -130,6 +130,11 @@ class Player {
       country = json["location"]["country"]["names"]["international"];
     }
 
+    String player = "";
+    if (json["names"] != null) {
+      player = json["names"]["international"];
+    }
+
     String color;
     bool gradient = (json["name-style"] == "gradient");
     String colorFromLight;
@@ -143,12 +148,12 @@ class Player {
       String colorToLight = json["name-style"]["color-to"]["light"];
       String colorToDark = json["name-style"]["color-to"]["dark"];
     } else {
-      String color = json["name-style"]["color"];
+      //String color = json["name-style"]["color"];
     }
 
     return Player(
-      name: json["names"]["international"],
-      color: json["name-style"]["color"],
+      name: player,
+      color: color,
       gradient: gradient,
       colorFromLight: colorFromLight,
       colorFromDark: colorFromDark,

@@ -25,13 +25,13 @@ List<LatestRun> parseLatestRuns(String responseBody) {
 }
 
 class _RunInfo extends StatelessWidget {
-  String gameName;
-  String coverURL;
-  String category;
-  String runner;
-  String date;
-  String realtime;
-  String igt;
+  final String gameName;
+  final String coverURL;
+  final String category;
+  final String runner;
+  final String date;
+  final String realtime;
+  final String igt;
 
   _RunInfo(this.gameName, this.coverURL, this.category, this.runner, this.date,
       this.realtime, this.igt);
@@ -136,6 +136,7 @@ class LatestRunsPage extends StatefulWidget {
 
 class _LatestRunsPageState extends State<LatestRunsPage> {
   Future<List<LatestRun>> latestRuns = getLatestRuns();
+  Widget _page;
 
   @override
   Widget build(BuildContext context) {
@@ -184,7 +185,7 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
   }
 
   Future<Null> _handleRefresh() async {
-    await Future.delayed(new Duration(seconds: 3));
+    await Future.delayed(new Duration(seconds: 2));
 
     setState(() {
       latestRuns = getLatestRuns();

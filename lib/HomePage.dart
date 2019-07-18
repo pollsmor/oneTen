@@ -27,7 +27,10 @@ class _HomePageState extends State<HomePage> {
           elevation: 0.0,
         ),
       ),
-      body: _pages[_selectedIndex],
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: _pages,
+      ),
       bottomNavigationBar: bottomNavBar(),
       backgroundColor: Color.fromRGBO(237, 240, 242, 1),
     );
