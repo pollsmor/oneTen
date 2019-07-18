@@ -15,39 +15,13 @@ class _HomePageState extends State<HomePage> {
     LatestRunsPage(),
     SettingsPage(),
   ];
-  List<AppBar> _pagesAppBar = [
-    favoritesPageAppBar(),
-    latestRunsPageAppBar(),
-    settingsPageAppBar(),
-  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _pagesAppBar[_selectedIndex],
       body: _pages[_selectedIndex],
       bottomNavigationBar: bottomNavBar(),
-    );
-  }
-
-  static AppBar favoritesPageAppBar() {
-    return AppBar(
-      elevation: 0.0,
-      title: Text("Favorites"),
-    );
-  }
-
-  static AppBar latestRunsPageAppBar() {
-    return AppBar(
-      elevation: 0.0,
-      title: Text("Latest Runs"),
-    );
-  }
-
-  static AppBar settingsPageAppBar() {
-    return AppBar(
-      elevation: 0.0,
-      title: Text("Settings"),
+      backgroundColor: Color.fromRGBO(237, 240, 242, 1),
     );
   }
 
