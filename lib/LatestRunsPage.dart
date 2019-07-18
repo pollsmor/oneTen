@@ -26,16 +26,64 @@ List<LatestRun> parseLatestRuns(String responseBody) {
 
 class _RunInfo extends StatelessWidget {
   String gameName;
+  String coverURL;
   String category;
   String runner;
   String date;
   String time;
 
-  _RunInfo(this.gameName, this.category, this.runner, this.date, this.time);
+  _RunInfo(this.gameName, this.coverURL, this.category, this.runner, this.date, this.time);
 
   @override
   Widget build(BuildContext context) {
-    return Text("lol");
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          flex: 2,
+          child: Container(
+            padding: EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 5,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(runner + " -- " + date),
+                      Padding(padding: EdgeInsets.only(bottom: 4.0)),
+                      Text(gameName),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: Container(
+                      padding: EdgeInsets.all(2.0),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Color.fromRGBO(237, 240, 242, 1),
+                          width: 4.0,
+                        ),
+                      ),
+                      child: CachedNetworkImage(
+                        imageUrl: coverURL,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Expanded(
+          flex: 1,
+          child: Text(category + " in " + time),
+        ),
+      ],
+    );
   }
 }
 
@@ -57,8 +105,16 @@ class LatestRunsPage extends StatelessWidget {
                     SizedBox(
                       height: 200.0,
                       child: Container(
-                        margin: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
+                        margin: EdgeInsets.fromLTRB(6.0, 6.0, 6.0, 0.0),
                         color: Colors.white,
+                        child: _RunInfo(
+                          snapshot.data[index].game.name,
+                          snapshot.data[index].game.coverURL,
+                          snapshot.data[index].category.name,
+                          snapshot.data[index].player.name,
+                          snapshot.data[index].date,
+                          "1h10min58s",
+                        ),
                       ),
                     ),
                   ],
