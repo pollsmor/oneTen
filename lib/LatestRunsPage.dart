@@ -30,9 +30,11 @@ class _RunInfo extends StatelessWidget {
   String category;
   String runner;
   String date;
-  String time;
+  String realtime;
+  String igt;
 
-  _RunInfo(this.gameName, this.coverURL, this.category, this.runner, this.date, this.time);
+  _RunInfo(this.gameName, this.coverURL, this.category, this.runner, this.date,
+      this.realtime, this.igt);
 
   @override
   Widget build(BuildContext context) {
@@ -40,9 +42,9 @@ class _RunInfo extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          flex: 2,
+          flex: 5,
           child: Container(
-            padding: EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(16.0),
             child: Row(
               children: [
                 Expanded(
@@ -50,16 +52,34 @@ class _RunInfo extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(runner + " -- " + date),
+                      Text(
+                        runner + " ― " + date,
+                        style: TextStyle(
+                          fontSize: 16.0,
+                        ),
+                      ),
                       Padding(padding: EdgeInsets.only(bottom: 4.0)),
-                      Text(gameName),
+                      Text(
+                        gameName,
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Padding(padding: EdgeInsets.only(bottom: 4.0)),
+                      Text(
+                        category,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
                     ],
                   ),
                 ),
                 Expanded(
                   flex: 2,
                   child: AspectRatio(
-                    aspectRatio: 1,
+                    aspectRatio: 2 / 3,
                     child: Container(
                       padding: EdgeInsets.all(2.0),
                       decoration: BoxDecoration(
@@ -79,8 +99,30 @@ class _RunInfo extends StatelessWidget {
           ),
         ),
         Expanded(
-          flex: 1,
-          child: Text(category + " in " + time),
+          flex: 3,
+          child: Container(
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Real time ― $realtime",
+                  style: TextStyle(
+                    fontSize: 12.0,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+                Text(
+                  "In-game time ― $igt",
+                  style: TextStyle(
+                    fontSize: 12.0,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ],
     );
@@ -113,7 +155,8 @@ class LatestRunsPage extends StatelessWidget {
                           snapshot.data[index].category.name,
                           snapshot.data[index].player.name,
                           snapshot.data[index].date,
-                          "1h10min58s",
+                          snapshot.data[index].realtime,
+                          snapshot.data[index].igt,
                         ),
                       ),
                     ),

@@ -43,6 +43,15 @@ flutter:
   assets:
     - assets/images/
 
+  fonts:
+    - family: OpenSans
+      fonts:
+        - asset: assets/fonts/Open_Sans/OpenSans-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Open_Sans/OpenSans-Light.ttf
+          weight: 100
+        - asset: assets/fonts/Open_Sans/OpenSans-Regular.ttf
+
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

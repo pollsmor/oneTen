@@ -5,48 +5,63 @@ class LatestRun {
   Category category;
   Player player;
   String date;
-  String hours;
-  String minutes;
-  String seconds;
-  String millis;
+  String realtime;
+  String igt;
 
   LatestRun(
       {this.game,
       this.category,
       this.player,
       this.date,
-      this.hours,
-      this.minutes,
-      this.seconds,
-      this.millis});
+      this.realtime,
+      this.igt});
 
   factory LatestRun.fromJson(Map<String, dynamic> json) {
     //Convert time string
-    String realtime = json["times"]["realtime"];
-    String igt = json["times"]["ingame"];
-    String hr, min, sec, ms;
-
-    try {
-      hr =
-          realtime.substring(realtime.indexOf("PT") + 2, realtime.indexOf("H"));
-      min =
-          realtime.substring(realtime.indexOf("H") + 1, realtime.indexOf("M"));
-      sec =
-          realtime.substring(realtime.indexOf("M") + 1, realtime.indexOf("S"));
-      ms = (int.parse(sec.substring(sec.indexOf("."))) * 100).toString();
-    } catch (RangeError) {}
+    double realtimeSecs = json["times"]["realtime_t"].toDouble();
+    double igtSecs = json["times"]["ingame_t"].toDouble();
 
     return LatestRun(
       game: Game.fromJson(json["game"]["data"]),
       category: Category.fromJson(json["category"]["data"]),
       player: Player.fromJson(json["players"]["data"][0]),
       date: json["date"],
-      hours: hr,
-      minutes: min,
-      seconds: sec,
-      millis: ms,
+      realtime: calcTime(realtimeSecs),
+      igt: calcTime(igtSecs),
     );
   }
+}
+
+String calcTime(double seconds) {
+  int hours, mins, secs;
+  int ms = 0;
+
+  hours = seconds ~/ 3600;
+  mins = (seconds % 3600) ~/ 60;
+  secs = ((seconds % 3600) % 60).toInt();
+
+  if (secs != 0) ms = ((((seconds % 3600) % 60) % secs) * 1000).toInt();
+
+  String output = "";
+
+  if (hours == 0) {
+    if (mins == 0) {
+      if (ms == 0)
+        output = "$secs secs";
+      else
+        output = "$secs secs $ms ms";
+    } else {
+      if (ms == 0) {
+        output = "$mins mins $secs secs";
+      } else {
+        output = "$mins mins $secs secs $ms ms";
+      }
+    }
+  } else {
+    output = "$hours hrs $mins mins $secs secs";
+  }
+
+  return output;
 }
 
 class Game {
@@ -127,15 +142,13 @@ class Player {
       String colorFromDark = json["name-style"]["color-from"]["dark"];
       String colorToLight = json["name-style"]["color-to"]["light"];
       String colorToDark = json["name-style"]["color-to"]["dark"];
-    }
-
-    else {
+    } else {
       String color = json["name-style"]["color"];
     }
 
     return Player(
       name: json["names"]["international"],
-      color: json["name-style"]["color-from"]["light"],
+      color: json["name-style"]["color"],
       gradient: gradient,
       colorFromLight: colorFromLight,
       colorFromDark: colorFromDark,

@@ -19,6 +19,14 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(0.0),
+        child: AppBar(
+          brightness: Brightness.light,
+          backgroundColor: Color.fromRGBO(210, 219, 224, 1),
+          elevation: 0.0,
+        ),
+      ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: bottomNavBar(),
       backgroundColor: Color.fromRGBO(237, 240, 242, 1),
