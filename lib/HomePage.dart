@@ -21,9 +21,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    screenWidth = MediaQuery.of(context).size.width;
-    screenHeight = MediaQuery.of(context).size.height;
-
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(0.0),
