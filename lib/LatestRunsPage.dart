@@ -6,6 +6,7 @@ import "package:http/http.dart" as http;
 import "package:cached_network_image/cached_network_image.dart";
 
 import "API.dart";
+import "HomePage.dart";
 
 Future<List<LatestRun>> getLatestRuns() async {
   final response = await http.get(baseurl +
@@ -176,6 +177,10 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
 
   @override
   Widget build(BuildContext context) {
+    double boxHeight = 275.0;
+    if (screenWidth < 300.0)
+      boxHeight = 350.0;
+
     return Center(
       child: FutureBuilder<List<LatestRun>>(
         future: latestRuns,
@@ -189,7 +194,7 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
                   return Column(
                     children: [
                       SizedBox(
-                        height: 275.0,
+                        height: boxHeight,
                         child: Container(
                           color: Colors.white,
                           margin: EdgeInsets.fromLTRB(6.0, 6.0, 6.0, 0.0),

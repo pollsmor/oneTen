@@ -3,6 +3,9 @@ import "FavoritesPage.dart";
 import "LatestRunsPage.dart";
 import "Settings.dart";
 
+double screenWidth;
+double screenHeight;
+
 class HomePage extends StatefulWidget {
   @override
   State createState() => _HomePageState();
@@ -18,6 +21,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    screenWidth = MediaQuery.of(context).size.width;
+    screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(0.0),
