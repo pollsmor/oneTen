@@ -44,7 +44,7 @@ class _RunInfo extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          flex: 7,
+          flex: 1,
           child: Container(
             padding: EdgeInsets.all(16.0),
             child: Row(
@@ -57,14 +57,15 @@ class _RunInfo extends StatelessWidget {
                       Text(
                         date,
                         style: TextStyle(
-                          fontSize: 16.0,
+                          fontSize: 12.0,
                         ),
                       ),
                       Padding(padding: EdgeInsets.only(bottom: 4.0)),
                       Text(
                         gameName,
+                        maxLines: 2,
                         style: TextStyle(
-                          fontSize: 20.0,
+                          fontSize: 16.0,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -72,6 +73,7 @@ class _RunInfo extends StatelessWidget {
                       Text(
                         category,
                         style: TextStyle(
+                          fontSize: 14.0,
                           fontWeight: FontWeight.w300,
                         ),
                       ),
@@ -101,7 +103,7 @@ class _RunInfo extends StatelessWidget {
           ),
         ),
         Expanded(
-          flex: 5,
+          flex: 1,
           child: Container(
             padding: EdgeInsets.all(16.0),
             child: Column(
@@ -128,7 +130,7 @@ class _RunInfo extends StatelessWidget {
                       runner,
                       style: TextStyle(
                         color: color,
-                        fontSize: 18.0,
+                        fontSize: 14.0,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -190,7 +192,7 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
                   return Column(
                     children: [
                       SizedBox(
-                        height: MediaQuery.of(context).size.width > 300 ? 280 : 350,
+                        height: MediaQuery.of(context).size.width > 350 ? 250 : 350,
                         child: Container(
                           color: Colors.white,
                           margin: EdgeInsets.fromLTRB(6.0, 6.0, 6.0, 0.0),
