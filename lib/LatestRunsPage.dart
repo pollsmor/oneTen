@@ -29,12 +29,13 @@ class _RunInfo extends StatelessWidget {
   final String coverURL;
   final String category;
   final String runner;
+  final Color color;
   final String country;
   final String date;
   final String realtime;
   final String igt;
 
-  _RunInfo(this.gameName, this.coverURL, this.category, this.runner,
+  _RunInfo(this.gameName, this.coverURL, this.category, this.runner, this.color,
       this.country, this.date, this.realtime, this.igt);
 
   @override
@@ -125,6 +126,11 @@ class _RunInfo extends StatelessWidget {
                     Padding(padding: EdgeInsets.all(4.0)),
                     Text(
                       runner,
+                      style: TextStyle(
+                        color: color,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
@@ -149,6 +155,14 @@ class _RunInfo extends StatelessWidget {
       ],
     );
   }
+}
+
+class HexToColor extends Color {
+  static _hexToColor(String code) {
+    return int.parse(code.substring(1), radix: 16) + 0xFF000000;
+  }
+
+  HexToColor(final String code) : super(_hexToColor(code));
 }
 
 class LatestRunsPage extends StatefulWidget {
@@ -177,13 +191,14 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
                       SizedBox(
                         height: 275.0,
                         child: Container(
-                          margin: EdgeInsets.fromLTRB(6.0, 6.0, 6.0, 0.0),
                           color: Colors.white,
+                          margin: EdgeInsets.fromLTRB(6.0, 6.0, 6.0, 0.0),
                           child: _RunInfo(
                             snapshot.data[index].game.name,
                             snapshot.data[index].game.coverURL,
                             snapshot.data[index].category.name,
                             snapshot.data[index].player.name,
+                            HexToColor(snapshot.data[index].player.color),
                             snapshot.data[index].player.country,
                             snapshot.data[index].date,
                             snapshot.data[index].realtime,

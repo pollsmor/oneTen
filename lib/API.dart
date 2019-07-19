@@ -106,59 +106,31 @@ class Category {
 class Player {
   String name;
   String color;
-  bool gradient;
-  String colorFromLight;
-  String colorFromDark;
-  String colorToLight;
-  String colorToDark;
+  String country;
 
-  String country; //for the flag
-
-  Player(
-      {this.name,
-      this.color,
-      this.gradient,
-      this.colorFromLight,
-      this.colorFromDark,
-      this.colorToLight,
-      this.colorToDark,
-      this.country});
+  Player({this.name, this.color, this.country});
 
   factory Player.fromJson(Map<String, dynamic> json) {
-    String country = "";
-    if (json["location"] != null) {
-      country = json["location"]["country"]["names"]["international"];
-    }
-
     String player = "";
     if (json["names"] != null) {
       player = json["names"]["international"];
     }
 
-    String color;
-    bool gradient = (json["name-style"] == "gradient");
-    String colorFromLight;
-    String colorFromDark;
-    String colorToLight;
-    String colorToDark;
-
-    if (gradient) {
-      String colorFromLight = json["name-style"]["color-from"]["light"];
-      String colorFromDark = json["name-style"]["color-from"]["dark"];
-      String colorToLight = json["name-style"]["color-to"]["light"];
-      String colorToDark = json["name-style"]["color-to"]["dark"];
+    String color = "";
+    if (json["name-style"]["style"] == "gradient") {
+      color = json["name-style"]["color-from"]["light"];
     } else {
-      //String color = json["name-style"]["color"];
+      color = json["name-style"]["color"]["light"];
+    }
+
+    String country = "";
+    if (json["location"] != null) {
+      country = json["location"]["country"]["names"]["international"];
     }
 
     return Player(
       name: player,
       color: color,
-      gradient: gradient,
-      colorFromLight: colorFromLight,
-      colorFromDark: colorFromDark,
-      colorToLight: colorToLight,
-      colorToDark: colorToDark,
       country: country,
     );
   }
