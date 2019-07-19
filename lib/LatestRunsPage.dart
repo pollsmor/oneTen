@@ -29,12 +29,13 @@ class _RunInfo extends StatelessWidget {
   final String coverURL;
   final String category;
   final String runner;
+  final String country;
   final String date;
   final String realtime;
   final String igt;
 
-  _RunInfo(this.gameName, this.coverURL, this.category, this.runner, this.date,
-      this.realtime, this.igt);
+  _RunInfo(this.gameName, this.coverURL, this.category, this.runner,
+      this.country, this.date, this.realtime, this.igt);
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +43,7 @@ class _RunInfo extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          flex: 5,
+          flex: 7,
           child: Container(
             padding: EdgeInsets.all(16.0),
             child: Row(
@@ -53,7 +54,7 @@ class _RunInfo extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        runner + " ― " + date,
+                        date,
                         style: TextStyle(
                           fontSize: 16.0,
                         ),
@@ -99,13 +100,34 @@ class _RunInfo extends StatelessWidget {
           ),
         ),
         Expanded(
-          flex: 3,
+          flex: 5,
           child: Container(
             padding: EdgeInsets.all(16.0),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Row(
+                  children: [
+                    Container(
+                      child: Text("United States"),
+                      padding: EdgeInsets.all(4.0),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          width: 4.0,
+                          color: Color.fromRGBO(237, 240, 242, 1),
+                        ),
+                        borderRadius: BorderRadius.circular(
+                          8.0,
+                        ),
+                      ),
+                    ),
+                    Padding(padding: EdgeInsets.all(4.0)),
+                    Text(
+                      runner,
+                    ),
+                  ],
+                ),
                 Text(
                   "Real time ― $realtime",
                   style: TextStyle(
@@ -153,7 +175,7 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
                   return Column(
                     children: [
                       SizedBox(
-                        height: 250.0,
+                        height: 275.0,
                         child: Container(
                           margin: EdgeInsets.fromLTRB(6.0, 6.0, 6.0, 0.0),
                           color: Colors.white,
@@ -162,6 +184,7 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
                             snapshot.data[index].game.coverURL,
                             snapshot.data[index].category.name,
                             snapshot.data[index].player.name,
+                            snapshot.data[index].player.country,
                             snapshot.data[index].date,
                             snapshot.data[index].realtime,
                             snapshot.data[index].igt,
