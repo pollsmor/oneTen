@@ -168,31 +168,10 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
                 itemCount: snapshot.data.length,
                 itemBuilder: (BuildContext context, int index) {
                   return InkWell(
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: MediaQuery.of(context).size.width > 350
-                              ? 250
-                              : 350,
-                          child: Container(
-                            color: Colors.white,
-                            margin: EdgeInsets.fromLTRB(6.0, 6.0, 6.0, 0.0),
-                            child: _RunInfo(
-                              snapshot.data[index].game.name,
-                              snapshot.data[index].game.coverURL,
-                              snapshot.data[index].category.name,
-                              snapshot.data[index].player.name,
-                              HexToColor(snapshot.data[index].player.color),
-                              snapshot.data[index].player.country,
-                              snapshot.data[index].date,
-                              snapshot.data[index].realtime,
-                              snapshot.data[index].igt,
-                            ),
-                          ),
-                        ),
-                      ],
+                    child: ListTile(
+
                     ),
-                    onTap: _showRun()
+                    //onTap: _showRun()
                   );
                 },
               ),
