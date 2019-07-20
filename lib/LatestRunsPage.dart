@@ -1,28 +1,6 @@
-import "dart:convert";
-
 import "package:flutter/material.dart";
-import 'package:flutter/foundation.dart';
-import "package:http/http.dart" as http;
 import "package:cached_network_image/cached_network_image.dart";
-
 import "API.dart";
-
-Future<List<LatestRun>> getLatestRuns() async {
-  final response = await http.get(baseurl +
-      "/runs?status=verified&orderby=verify-date&direction=desc&embed=game,category,players");
-
-  if (response.statusCode == 200) {
-    return compute(parseLatestRuns, response.body);
-  }
-
-  throw Exception("Failed to load the latest runs.");
-}
-
-List<LatestRun> parseLatestRuns(String responseBody) {
-  var parsed = json.decode(responseBody)["data"] as List;
-
-  return parsed.map((i) => LatestRun.fromJson(i)).toList();
-}
 
 class _RunInfo extends StatelessWidget {
   final String gameName;
@@ -189,27 +167,32 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
                 physics: AlwaysScrollableScrollPhysics(),
                 itemCount: snapshot.data.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return Column(
-                    children: [
-                      SizedBox(
-                        height: MediaQuery.of(context).size.width > 350 ? 250 : 350,
-                        child: Container(
-                          color: Colors.white,
-                          margin: EdgeInsets.fromLTRB(6.0, 6.0, 6.0, 0.0),
-                          child: _RunInfo(
-                            snapshot.data[index].game.name,
-                            snapshot.data[index].game.coverURL,
-                            snapshot.data[index].category.name,
-                            snapshot.data[index].player.name,
-                            HexToColor(snapshot.data[index].player.color),
-                            snapshot.data[index].player.country,
-                            snapshot.data[index].date,
-                            snapshot.data[index].realtime,
-                            snapshot.data[index].igt,
+                  return InkWell(
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: MediaQuery.of(context).size.width > 350
+                              ? 250
+                              : 350,
+                          child: Container(
+                            color: Colors.white,
+                            margin: EdgeInsets.fromLTRB(6.0, 6.0, 6.0, 0.0),
+                            child: _RunInfo(
+                              snapshot.data[index].game.name,
+                              snapshot.data[index].game.coverURL,
+                              snapshot.data[index].category.name,
+                              snapshot.data[index].player.name,
+                              HexToColor(snapshot.data[index].player.color),
+                              snapshot.data[index].player.country,
+                              snapshot.data[index].date,
+                              snapshot.data[index].realtime,
+                              snapshot.data[index].igt,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
+                    onTap: _showRun()
                   );
                 },
               ),

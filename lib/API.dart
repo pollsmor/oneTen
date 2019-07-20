@@ -1,3 +1,6 @@
+import "dart:convert";
+import "package:http/http.dart" as http;
+
 final String baseurl = "https://www.speedrun.com/api/v1";
 
 class LatestRun {
@@ -30,6 +33,19 @@ class LatestRun {
       igt: calcTime(igtSecs),
     );
   }
+}
+
+Future<List<LatestRun>> getLatestRuns() async {
+  final response = await http.get(baseurl +
+      "/runs?status=verified&orderby=verify-date&direction=desc&embed=game,category,players,platform,region");
+
+  if (response.statusCode == 200) {
+    var list = json.decode(response.body)["data"] as List;
+
+    return list.map((i) => LatestRun.fromJson(i)).toList();
+  }
+
+  throw Exception("Failed to load the latest runs.");
 }
 
 String calcTime(double seconds) {
@@ -68,22 +84,24 @@ class Game {
   String name;
   String abbreviation;
   String releaseDate;
-  String gameID;
   String coverURL;
+  String level;
+  bool verification;
+  bool requireVideo;
+  bool isRTA;
+  bool emuAllowed;
+  List<Player> moderators;
+  String trophy1st;
+  String trophy2nd;
+  String trophy3rd;
 
-  Game(
-      {this.name,
-      this.abbreviation,
-      this.releaseDate,
-      this.gameID,
-      this.coverURL});
+  Game({this.name, this.abbreviation, this.releaseDate, this.coverURL});
 
   factory Game.fromJson(Map<String, dynamic> json) {
     return Game(
       name: json["names"]["international"],
       abbreviation: json["abbreviation"],
       releaseDate: json["release-date"],
-      gameID: json["id"],
       coverURL: json["assets"]["cover-large"]["uri"],
     );
   }
@@ -137,17 +155,42 @@ class Player {
 }
 
 class LeaderboardRun {
+  Game game;
+  Category category;
+  List<Player> players;
   int place;
   String comment;
   String date;
+  String realtime;
+  String igt;
+  List<String> videoLinks;
+  String verifyDate;
+  String region;
+  String platform;
+  String yearPlatform;
 
-  LeaderboardRun({this.place, this.comment, this.date});
+  LeaderboardRun(
+      {this.game,
+      this.category,
+      this.player,
+      this.place,
+      this.comment,
+      this.date,
+      this.realtime,
+      this.igt});
 
   factory LeaderboardRun.fromJson(Map<String, dynamic> json) {
+    //Convert time string
+    double realtimeSecs = json["times"]["realtime_t"].toDouble();
+    double igtSecs = json["times"]["ingame_t"].toDouble();
+
     return LeaderboardRun(
-      place: json["place"],
-      comment: json["run"]["comment"],
-      date: json["run"]["date"],
+      game: Game.fromJson(json["game"]["data"]),
+      category: Category.fromJson(json["category"]["data"]),
+      player: Player.fromJson(json["players"]["data"][0]),
+      date: json["date"],
+      realtime: calcTime(realtimeSecs),
+      igt: calcTime(igtSecs),
     );
   }
 }
