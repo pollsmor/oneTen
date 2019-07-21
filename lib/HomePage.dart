@@ -1,10 +1,6 @@
 import "package:flutter/material.dart";
 import "FavoritesPage.dart";
 import "LatestRunsPage.dart";
-import "Settings.dart";
-
-double screenWidth;
-double screenHeight;
 
 class HomePage extends StatefulWidget {
   @override
@@ -16,19 +12,15 @@ class _HomePageState extends State<HomePage> {
   List<Widget> _pages = [
     FavoritesPage(),
     LatestRunsPage(),
-    SettingsPage(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(0.0),
-        child: AppBar(
-          brightness: Brightness.light,
-          backgroundColor: Color.fromRGBO(210, 219, 224, 1),
-          elevation: 0.0,
-        ),
+      appBar: AppBar(
+        brightness: Brightness.light,
+        backgroundColor: Colors.blue,
+        elevation: 0.0,
       ),
       body: IndexedStack(
         index: _selectedIndex,
@@ -49,10 +41,6 @@ class _HomePageState extends State<HomePage> {
         BottomNavigationBarItem(
           title: Text("Latest Runs"),
           icon: Icon(Icons.videogame_asset),
-        ),
-        BottomNavigationBarItem(
-          title: Text("Settings"),
-          icon: Icon(Icons.settings),
         ),
       ],
       onTap: _onItemTapped,

@@ -151,7 +151,7 @@ class Player {
 
   factory Player.fromJson(Map<String, dynamic> json) {
     return Player(
-      name: json["names"]["international"],
+      name: json["names"] != null ? json["names"]["international"] : "",
       color: json["name-style"]["style"] == "gradient"
           ? json["name-style"]["color-from"]["light"]
           : json["name-style"]["color"]["light"],
