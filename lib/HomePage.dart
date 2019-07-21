@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
         children: _pages,
       ),
       bottomNavigationBar: bottomNavBar(),
-      backgroundColor: Color.fromRGBO(237, 240, 242, 1),
+      backgroundColor: Colors.white,
     );
   }
 

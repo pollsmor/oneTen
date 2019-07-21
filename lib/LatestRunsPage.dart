@@ -15,24 +15,26 @@ class _RunInfo extends StatelessWidget {
   final String gameName;
   final String category;
   final String player;
+  final String playerColor;
   final String country;
   final String date;
   final String rta;
   final String igt;
   final String coverURL;
 
-  _RunInfo(this.gameName, this.category, this.player, this.country, this.date,
-      this.rta, this.igt, this.coverURL);
+  _RunInfo(this.gameName, this.category, this.player, this.playerColor,
+      this.country, this.date, this.rta, this.igt, this.coverURL);
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Expanded(
-          flex: 1,
+          flex: 2,
           child: Container(
+            padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
             child: SizedBox(
-              height: 100.0,
+              height: 150.0,
               child: AspectRatio(
                 aspectRatio: 1.0,
                 child: CachedNetworkImage(
@@ -44,24 +46,47 @@ class _RunInfo extends StatelessWidget {
           ),
         ),
         Expanded(
-          flex: 5,
+          flex: 7,
           child: Container(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   gameName,
+                  maxLines: 2,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Padding(padding: EdgeInsets.all(4.0)),
+                Text(
+                  category,
+                  maxLines: 1,
+                ),
+                Padding(padding: EdgeInsets.all(4.0)),
+                Text(
+                  "RTA — $rta",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+                Padding(padding: EdgeInsets.all(4.0)),
+                Text(
+                  igt != "0 secs" ? "IGT — $igt" : "No IGT",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w300,
+                  ),
                 ),
               ],
             ),
           ),
         ),
         Expanded(
-          flex: 2,
+          flex: 4,
           child: Container(
             padding: EdgeInsets.only(right: 8.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   "$date",
@@ -69,10 +94,32 @@ class _RunInfo extends StatelessWidget {
                     fontSize: 12.0,
                   ),
                 ),
+                Padding(padding: EdgeInsets.all(4.0)),
+                Container(
+                  child: Text(
+                    country,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 14.0,
+                    ),
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 2.0,
+                      color: Color.fromRGBO(210, 219, 224, 1),
+                    ),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  padding: EdgeInsets.all(4.0),
+                ),
+                Padding(padding: EdgeInsets.all(4.0)),
                 Text(
                   "$player",
+                  maxLines: 2,
                   style: TextStyle(
-                    fontSize: 12.0,
+                    color: Color(HexToColor._hexToColor(playerColor)),
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ],
@@ -104,15 +151,26 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
                 physics: AlwaysScrollableScrollPhysics(),
                 itemCount: snapshot.data.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return _RunInfo(
-                    snapshot.data[index].game.name,
-                    snapshot.data[index].category.name,
-                    snapshot.data[index].player.name,
-                    snapshot.data[index].player.country,
-                    snapshot.data[index].date,
-                    snapshot.data[index].realtime,
-                    snapshot.data[index].igt,
-                    snapshot.data[index].game.assets.coverURL,
+                  return Container(
+                    margin: EdgeInsets.all(4.0),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        width: 2.0,
+                        color: Color.fromRGBO(210, 219, 224, 1),
+                      ),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: _RunInfo(
+                      snapshot.data[index].game.name,
+                      snapshot.data[index].category.name,
+                      snapshot.data[index].player.name,
+                      snapshot.data[index].player.color,
+                      snapshot.data[index].player.country,
+                      snapshot.data[index].date,
+                      snapshot.data[index].realtime,
+                      snapshot.data[index].igt,
+                      snapshot.data[index].game.assets.coverURL,
+                    ),
                   );
                 },
               ),
