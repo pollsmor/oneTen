@@ -54,6 +54,7 @@ class _RunInfo extends StatelessWidget {
                 Text(
                   gameName,
                   maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
@@ -62,10 +63,13 @@ class _RunInfo extends StatelessWidget {
                 Text(
                   category,
                   maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 Padding(padding: EdgeInsets.all(4.0)),
                 Text(
-                  "RTA — $rta",
+                  rta != "0 secs" ? "RTA — $rta" : "No RTA",
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontWeight: FontWeight.w300,
                   ),
@@ -73,6 +77,8 @@ class _RunInfo extends StatelessWidget {
                 Padding(padding: EdgeInsets.all(4.0)),
                 Text(
                   igt != "0 secs" ? "IGT — $igt" : "No IGT",
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontWeight: FontWeight.w300,
                   ),
@@ -90,32 +96,37 @@ class _RunInfo extends StatelessWidget {
               children: [
                 Text(
                   "$date",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 12.0,
                   ),
                 ),
                 Padding(padding: EdgeInsets.all(4.0)),
-                Container(
-                  child: Text(
-                    country,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 14.0,
-                    ),
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      width: 2.0,
-                      color: Color.fromRGBO(210, 219, 224, 1),
-                    ),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  padding: EdgeInsets.all(4.0),
-                ),
+                country != ""
+                    ? Container(
+                        child: Text(
+                          country,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 14.0,
+                          ),
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 2.0,
+                            color: Color.fromRGBO(210, 219, 224, 1),
+                          ),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        padding: EdgeInsets.all(4.0),
+                      )
+                    : Text(""),
                 Padding(padding: EdgeInsets.all(4.0)),
                 Text(
                   "$player",
                   maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: Color(HexToColor._hexToColor(playerColor)),
                     fontSize: 14.0,

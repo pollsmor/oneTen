@@ -38,10 +38,15 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
-  assets:
-    - assets/images/
-
   fonts:
+    - family: Rubik
+      fonts:
+        - asset: assets/fonts/Rubik/Rubik-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Rubik/Rubik-Light.ttf
+          weight: 100
+        - asset: assets/fonts/Rubik/Rubik-Regular.ttf
+
     - family: OpenSans
       fonts:
         - asset: assets/fonts/Open_Sans/OpenSans-Bold.ttf

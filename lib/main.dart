@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
       title: 'oneTen',
       home: HomePage(),
       theme: ThemeData(
-        fontFamily: "OpenSans",
+        fontFamily: "Rubik",
       ),
       debugShowCheckedModeBanner: false,
     );
