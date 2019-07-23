@@ -1,7 +1,7 @@
-import "dart:convert";
-import "package:http/http.dart" as http;
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
-final String baseurl = "https://www.speedrun.com/api/v1";
+final String baseurl = 'https://www.speedrun.com/api/v1';
 
 String calcTime(double seconds) {
   int hours, mins, secs;
@@ -13,37 +13,37 @@ String calcTime(double seconds) {
 
   if (secs != 0) ms = ((((seconds % 3600) % 60) % secs) * 1000).toInt();
 
-  String output = "";
+  String output = '';
 
   if (hours == 0) {
     if (mins == 0) {
       if (ms == 0)
-        output = "$secs secs";
+        output = '$secs secs';
       else
-        output = "$secs secs $ms ms";
+        output = '$secs secs $ms ms';
     } else {
       if (ms == 0)
-        output = "$mins mins $secs secs";
+        output = '$mins mins $secs secs';
       else
-        output = "$mins mins $secs secs $ms ms";
+        output = '$mins mins $secs secs $ms ms';
     }
   } else
-    output = "$hours hrs $mins mins $secs secs";
+    output = '$hours hrs $mins mins $secs secs';
 
   return output;
 }
 
 Future<List<LatestRun>> getLatestRuns() async {
   final response = await http.get(baseurl +
-      "/runs?status=verified&orderby=verify-date&direction=desc&embed=game,category,players,platform,region");
+      '/runs?status=verified&orderby=verify-date&direction=desc&embed=game,category,players,platform,region');
 
   if (response.statusCode == 200) {
-    var list = json.decode(response.body)["data"] as List;
+    var list = json.decode(response.body)['data'] as List;
 
     return list.map((i) => LatestRun.fromJson(i)).toList();
   }
 
-  throw Exception("Failed to load the latest runs.");
+  throw Exception('Failed to load the latest runs.');
 }
 
 class Ruleset {
@@ -60,10 +60,10 @@ class Ruleset {
 
   factory Ruleset.fromJson(Map<String, dynamic> json) {
     return Ruleset(
-      verification: json["require-verification"],
-      requireVideo: json["require-video"],
-      defaultRTA: json["default-time"] == "realtime",
-      emusAllowed: json["emulators-allowed"],
+      verification: json['require-verification'],
+      requireVideo: json['require-video'],
+      defaultRTA: json['default-time'] == 'realtime',
+      emusAllowed: json['emulators-allowed'],
     );
   }
 }
@@ -78,10 +78,10 @@ class Assets {
 
   factory Assets.fromJson(Map<String, dynamic> json) {
     return Assets(
-      coverURL: json["cover-large"]["uri"],
-      trophy1st: json["trophy-1st"]["uri"],
-      trophy2nd: json["trophy-2nd"]["uri"],
-      trophy3rd: json["trophy-3rd"]["uri"],
+      coverURL: json['cover-large']['uri'],
+      trophy1st: json['trophy-1st']['uri'],
+      trophy2nd: json['trophy-2nd']['uri'],
+      trophy3rd: json['trophy-3rd']['uri'],
     );
   }
 }
@@ -104,11 +104,11 @@ class Game {
 
   factory Game.fromJson(Map<String, dynamic> json) {
     return Game(
-      name: json["names"]["international"],
-      abbreviation: json["abbreviation"],
-      releaseDate: json["release-date"],
-      ruleset: Ruleset.fromJson(json["ruleset"]),
-      assets: Assets.fromJson(json["assets"]),
+      name: json['names']['international'],
+      abbreviation: json['abbreviation'],
+      releaseDate: json['release-date'],
+      ruleset: Ruleset.fromJson(json['ruleset']),
+      assets: Assets.fromJson(json['assets']),
     );
   }
 }
@@ -121,8 +121,8 @@ class Category {
 
   factory Category.fromJson(Map<String, dynamic> json) {
     return Category(
-      name: json["name"],
-      rules: json["rules"],
+      name: json['name'],
+      rules: json['rules'],
     );
   }
 }
@@ -151,19 +151,19 @@ class Player {
 
   factory Player.fromJson(Map<String, dynamic> json) {
     return Player(
-      name: json["names"] != null ? json["names"]["international"] : "",
-      color: json["name-style"]["style"] == "gradient"
-          ? json["name-style"]["color-from"]["light"]
-          : json["name-style"]["color"]["light"],
-      country: json["location"] != null
-          ? json["location"]["country"]["names"]["international"]
-          : "",
-      twitch: json["twitch"] != null ? json["twitch"]["uri"] : "",
-      hitbox: json["hitbox"] != null ? json["hitbox"]["uri"] : "",
-      youtube: json["youtube"] != null ? json["youtube"]["uri"] : "",
-      twitter: json["twitter"] != null ? json["twitter"]["uri"] : "",
-      srl: json["speedrunslive"] != null ? json["speedrunslive"]["uri"] : "",
-      pbs: json["links"][3]["uri"],
+      name: json['names'] != null ? json['names']['international'] : '',
+      color: json['name-style']['style'] == 'gradient'
+          ? json['name-style']['color-from']['light']
+          : json['name-style']['color']['light'],
+      country: json['location'] != null
+          ? json['location']['country']['names']['international']
+          : '',
+      twitch: json['twitch'] != null ? json['twitch']['uri'] : '',
+      hitbox: json['hitbox'] != null ? json['hitbox']['uri'] : '',
+      youtube: json['youtube'] != null ? json['youtube']['uri'] : '',
+      twitter: json['twitter'] != null ? json['twitter']['uri'] : '',
+      srl: json['speedrunslive'] != null ? json['speedrunslive']['uri'] : '',
+      pbs: json['links'][3]['uri'],
     );
   }
 }
@@ -186,14 +186,14 @@ class LatestRun {
 
   factory LatestRun.fromJson(Map<String, dynamic> json) {
     //Get the times in seconds
-    double realtimeSecs = json["times"]["realtime_t"].toDouble();
-    double igtSecs = json["times"]["ingame_t"].toDouble();
+    double realtimeSecs = json['times']['realtime_t'].toDouble();
+    double igtSecs = json['times']['ingame_t'].toDouble();
 
     return LatestRun(
-      game: Game.fromJson(json["game"]["data"]),
-      category: Category.fromJson(json["category"]["data"]),
-      player: Player.fromJson(json["players"]["data"][0]),
-      date: json["date"],
+      game: Game.fromJson(json['game']['data']),
+      category: Category.fromJson(json['category']['data']),
+      player: Player.fromJson(json['players']['data'][0]),
+      date: json['date'],
       realtime: calcTime(realtimeSecs),
       igt: calcTime(igtSecs),
     );
@@ -232,30 +232,30 @@ class LeaderboardRun {
 
   factory LeaderboardRun.fromJson(Map<String, dynamic> json) {
     //Convert time string
-    double realtimeSecs = json["times"]["realtime_t"].toDouble();
-    double igtSecs = json["times"]["ingame_t"].toDouble();
+    double realtimeSecs = json['times']['realtime_t'].toDouble();
+    double igtSecs = json['times']['ingame_t'].toDouble();
 
-    var videoLinks = json["videos"]["links"] as List;
+    var videoLinks = json['videos']['links'] as List;
     List<String> videoLinksList;
     for (int i = 0; i < videoLinks.length; ++i) {
-      videoLinksList[i] = videoLinks[i]["uri"];
+      videoLinksList[i] = videoLinks[i]['uri'];
     }
 
     return LeaderboardRun(
       //placing:
-      game: Game.fromJson(json["game"]["data"]),
-      level: json["level"],
-      category: Category.fromJson(json["category"]["data"]),
+      game: Game.fromJson(json['game']['data']),
+      level: json['level'],
+      category: Category.fromJson(json['category']['data']),
       videoLinks: videoLinksList,
-      comment: json["comment"],
-      player: Player.fromJson(json["players"]["data"][0]),
-      date: json["date"],
+      comment: json['comment'],
+      player: Player.fromJson(json['players']['data'][0]),
+      date: json['date'],
       realtime: calcTime(realtimeSecs),
       igt: calcTime(igtSecs),
       region:
-          json["region"]["data"] != null ? json["region"]["data"]["name"] : "",
-      platform: json["platform"]["data"]["name"],
-      yearPlatform: json["platform"]["data"]["released"],
+          json['region']['data'] != null ? json['region']['data']['name'] : '',
+      platform: json['platform']['data']['name'],
+      yearPlatform: json['platform']['data']['released'],
     );
   }
 }
@@ -266,7 +266,7 @@ class Leaderboard {
   Leaderboard({this.runs});
 
   factory Leaderboard.fromJson(Map<String, dynamic> json) {
-    var list = json["data"]["runs"] as List;
+    var list = json['data']['runs'] as List;
     List<LeaderboardRun> runsList =
         list.map((i) => LeaderboardRun.fromJson(i)).toList();
 

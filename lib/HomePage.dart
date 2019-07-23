@@ -1,6 +1,6 @@
-import "package:flutter/material.dart";
-import "FavoritesPage.dart";
-import "LatestRunsPage.dart";
+import 'package:flutter/material.dart';
+import 'FavoritesPage.dart';
+import 'LatestRunsPage.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -38,11 +38,11 @@ class _HomePageState extends State<HomePage> {
     return BottomNavigationBar(
       items: [
         BottomNavigationBarItem(
-          title: Text("Favorites"),
+          title: Text('Favorites'),
           icon: Icon(Icons.favorite_border),
         ),
         BottomNavigationBarItem(
-          title: Text("Latest Runs"),
+          title: Text('Latest Runs'),
           icon: Icon(Icons.videogame_asset),
         ),
       ],

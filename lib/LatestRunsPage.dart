@@ -1,7 +1,8 @@
-import "package:flutter/material.dart";
-import "package:cached_network_image/cached_network_image.dart";
+import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
-import "API.dart";
+import 'API.dart';
+import 'GameInfoPage.dart';
 
 class HexToColor extends Color {
   static _hexToColor(String code) {
@@ -31,18 +32,26 @@ class _RunInfo extends StatelessWidget {
       children: [
         Expanded(
           flex: 2,
-          child: Container(
-            padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
-            child: SizedBox(
-              height: 150.0,
-              child: AspectRatio(
-                aspectRatio: 1.0,
-                child: CachedNetworkImage(
-                  imageUrl: coverURL,
-                  errorWidget: (context, url, error) => Icon(Icons.error),
+          child: GestureDetector(
+            child: Container(
+              padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
+              child: SizedBox(
+                height: 150.0,
+                child: AspectRatio(
+                  aspectRatio: 1.0,
+                  child: CachedNetworkImage(
+                    imageUrl: coverURL,
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  ),
                 ),
               ),
             ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => GameInfoPage()),
+              );
+            },
           ),
         ),
         Expanded(
@@ -62,12 +71,12 @@ class _RunInfo extends StatelessWidget {
                 Padding(padding: EdgeInsets.all(4.0)),
                 Text(
                   category,
-                  maxLines: 1,
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
                 Padding(padding: EdgeInsets.all(4.0)),
                 Text(
-                  rta != "0 secs" ? "RTA — $rta" : "No RTA",
+                  rta != '0 secs' ? 'RTA — $rta' : 'No RTA',
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -76,7 +85,7 @@ class _RunInfo extends StatelessWidget {
                 ),
                 Padding(padding: EdgeInsets.all(4.0)),
                 Text(
-                  igt != "0 secs" ? "IGT — $igt" : "No IGT",
+                  igt != '0 secs' ? 'IGT — $igt' : 'No IGT',
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -95,7 +104,7 @@ class _RunInfo extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  "$date",
+                  '$date',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -103,28 +112,8 @@ class _RunInfo extends StatelessWidget {
                   ),
                 ),
                 Padding(padding: EdgeInsets.all(4.0)),
-                country != ""
-                    ? Container(
-                        child: Text(
-                          country,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 14.0,
-                          ),
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            width: 2.0,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        padding: EdgeInsets.all(4.0),
-                      )
-                    : Text(""),
-                Padding(padding: EdgeInsets.all(4.0)),
                 Text(
-                  "$player",
+                  '$player',
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -162,25 +151,21 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
                 physics: AlwaysScrollableScrollPhysics(),
                 itemCount: snapshot.data.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    margin: EdgeInsets.all(4.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        width: 2.0,
-                        color: Theme.of(context).primaryColor,
+                  return Card(
+                    elevation: 2.0,
+                    margin: EdgeInsets.fromLTRB(8.0, 4.0, 8.0, 4.0),
+                    child: Container(
+                      child: _RunInfo(
+                        snapshot.data[index].game.name,
+                        snapshot.data[index].category.name,
+                        snapshot.data[index].player.name,
+                        snapshot.data[index].player.color,
+                        snapshot.data[index].player.country,
+                        snapshot.data[index].date,
+                        snapshot.data[index].realtime,
+                        snapshot.data[index].igt,
+                        snapshot.data[index].game.assets.coverURL,
                       ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: _RunInfo(
-                      snapshot.data[index].game.name,
-                      snapshot.data[index].category.name,
-                      snapshot.data[index].player.name,
-                      snapshot.data[index].player.color,
-                      snapshot.data[index].player.country,
-                      snapshot.data[index].date,
-                      snapshot.data[index].realtime,
-                      snapshot.data[index].igt,
-                      snapshot.data[index].game.assets.coverURL,
                     ),
                   );
                 },
@@ -188,7 +173,7 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
               onRefresh: _handleRefresh,
             );
           } else if (snapshot.hasError) {
-            return Text("${snapshot.error}");
+            return Text('${snapshot.error}');
           }
 
           return CircularProgressIndicator();
