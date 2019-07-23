@@ -11,6 +11,10 @@ class MyApp extends StatelessWidget {
       title: 'oneTen',
       home: HomePage(),
       theme: ThemeData(
+        primaryColor: Color(0xFF2962ff),
+        primaryColorLight: Color(0xFF768fff),
+        primaryColorDark: Color(0xFF0039cb),
+
         fontFamily: "Rubik",
       ),
       debugShowCheckedModeBanner: false,

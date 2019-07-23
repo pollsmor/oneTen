@@ -20,8 +20,8 @@ class _HomePageState extends State<HomePage> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(0.0),
         child: AppBar(
-          brightness: Brightness.light,
-          backgroundColor: Color.fromRGBO(210, 219, 224, 1),
+          brightness: Brightness.dark,
+          backgroundColor: Theme.of(context).primaryColor,
           elevation: 0.0,
         ),
       ),

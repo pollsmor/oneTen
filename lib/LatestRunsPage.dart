@@ -115,7 +115,7 @@ class _RunInfo extends StatelessWidget {
                         decoration: BoxDecoration(
                           border: Border.all(
                             width: 2.0,
-                            color: Color.fromRGBO(210, 219, 224, 1),
+                            color: Theme.of(context).primaryColor,
                           ),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
@@ -167,7 +167,7 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
                     decoration: BoxDecoration(
                       border: Border.all(
                         width: 2.0,
-                        color: Color.fromRGBO(210, 219, 224, 1),
+                        color: Theme.of(context).primaryColor,
                       ),
                       borderRadius: BorderRadius.circular(8.0),
                     ),
