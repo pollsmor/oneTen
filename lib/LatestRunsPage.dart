@@ -13,6 +13,7 @@ class HexToColor extends Color {
 }
 
 class _RunInfo extends StatelessWidget {
+  final Game game;
   final String gameName;
   final String category;
   final String player;
@@ -23,7 +24,7 @@ class _RunInfo extends StatelessWidget {
   final String igt;
   final String coverURL;
 
-  _RunInfo(this.gameName, this.category, this.player, this.playerColor,
+  _RunInfo(this.game, this.gameName, this.category, this.player, this.playerColor,
       this.country, this.date, this.rta, this.igt, this.coverURL);
 
   @override
@@ -47,9 +48,10 @@ class _RunInfo extends StatelessWidget {
               ),
             ),
             onTap: () {
+              print(game.leaderboardURL);
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => GameInfoPage()),
+                MaterialPageRoute(builder: (context) => GameInfoPage(game.leaderboardURL)),
               );
             },
           ),
@@ -156,6 +158,7 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
                     margin: EdgeInsets.fromLTRB(8.0, 4.0, 8.0, 4.0),
                     child: Container(
                       child: _RunInfo(
+                        snapshot.data[index].game,
                         snapshot.data[index].game.name,
                         snapshot.data[index].category.name,
                         snapshot.data[index].player.name,

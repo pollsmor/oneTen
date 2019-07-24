@@ -34,8 +34,8 @@ String calcTime(double seconds) {
 }
 
 Future<List<LatestRun>> getLatestRuns() async {
-  final response = await http.get(baseurl +
-      '/runs?status=verified&orderby=verify-date&direction=desc&embed=game,category,players,platform,region');
+  final response = await http.get(
+      '$baseurl/runs?status=verified&orderby=verify-date&direction=desc&embed=game,category,players,platform,region');
 
   if (response.statusCode == 200) {
     var list = json.decode(response.body)['data'] as List;
@@ -44,6 +44,17 @@ Future<List<LatestRun>> getLatestRuns() async {
   }
 
   throw Exception('Failed to load the latest runs.');
+}
+
+Future<Leaderboard> getLeaderboard(String leaderboardURL) async {
+  final response = await http
+      .get('$leaderboardURL?embed=game,category,players,regions,platforms');
+
+  if (response.statusCode == 200) {
+    return Leaderboard.fromJson(json.decode(response.body)['data']);
+  }
+
+  throw Exception('Failed to load leaderboard.');
 }
 
 class Ruleset {
@@ -87,28 +98,34 @@ class Assets {
 }
 
 class Game {
+  final String id;
   final String name;
   final String abbreviation;
   final String releaseDate;
   final Ruleset ruleset;
   final List<Player> moderators;
   final Assets assets;
+  final String leaderboardURL;
 
   Game(
-      {this.name,
+      {this.id,
+      this.name,
       this.abbreviation,
       this.releaseDate,
       this.ruleset,
       this.moderators,
-      this.assets});
+      this.assets,
+      this.leaderboardURL});
 
   factory Game.fromJson(Map<String, dynamic> json) {
     return Game(
+      id: json['id'],
       name: json['names']['international'],
       abbreviation: json['abbreviation'],
       releaseDate: json['release-date'],
       ruleset: Ruleset.fromJson(json['ruleset']),
       assets: Assets.fromJson(json['assets']),
+      leaderboardURL: json['links'][json['links'].length - 1]['uri'],
     );
   }
 }
@@ -202,76 +219,92 @@ class LatestRun {
 
 class LeaderboardRun {
   final int placing;
-  final Game game;
-  final String level;
-  final Category category;
   final List<String> videoLinks;
   final String comment;
-  final Player player;
   final String date;
   final String realtime;
   final String igt;
-  final String region;
-  final String platform;
-  final String yearPlatform;
 
-  LeaderboardRun(
-      {this.placing,
-      this.game,
-      this.level,
-      this.category,
-      this.videoLinks,
-      this.comment,
-      this.player,
-      this.date,
-      this.realtime,
-      this.igt,
-      this.region,
-      this.platform,
-      this.yearPlatform});
+  LeaderboardRun({
+    this.placing,
+    this.videoLinks,
+    this.comment,
+    this.date,
+    this.realtime,
+    this.igt,
+  });
 
   factory LeaderboardRun.fromJson(Map<String, dynamic> json) {
     //Convert time string
-    double realtimeSecs = json['times']['realtime_t'].toDouble();
-    double igtSecs = json['times']['ingame_t'].toDouble();
+    double realtimeSecs = json['run']['times']['realtime_t'].toDouble();
+    double igtSecs = json['run']['times']['ingame_t'].toDouble();
 
-    var videoLinks = json['videos']['links'] as List;
-    List<String> videoLinksList;
-    for (int i = 0; i < videoLinks.length; ++i) {
-      videoLinksList[i] = videoLinks[i]['uri'];
+    var list = json['run']['videos']['links'] as List;
+    List<String> videoLinksList = List<String>(list.length);
+    for (int i = 0; i < list.length; ++i) {
+      videoLinksList[i] = list[i]['uri'];
     }
 
     return LeaderboardRun(
-      //placing:
-      game: Game.fromJson(json['game']['data']),
-      level: json['level'],
-      category: Category.fromJson(json['category']['data']),
+      placing: json['place'],
       videoLinks: videoLinksList,
-      comment: json['comment'],
-      player: Player.fromJson(json['players']['data'][0]),
-      date: json['date'],
+      comment: json['run']['comment'],
+      date: json['run']['date'],
       realtime: calcTime(realtimeSecs),
       igt: calcTime(igtSecs),
-      region:
-          json['region']['data'] != null ? json['region']['data']['name'] : '',
-      platform: json['platform']['data']['name'],
-      yearPlatform: json['platform']['data']['released'],
     );
   }
 }
 
 class Leaderboard {
-  List<LeaderboardRun> runs;
+  final List<LeaderboardRun> runs;
+  final List<Player> players; //same index as for runs
+  final Game game;
+  final Category category;
+  final String level;
+  final List<String> regions;
+  final List<String> platforms;
+  final List<String> yearPlatforms;
 
-  Leaderboard({this.runs});
+  Leaderboard(
+      {this.runs,
+      this.players,
+      this.game,
+      this.category,
+      this.level,
+      this.regions,
+      this.platforms,
+      this.yearPlatforms});
 
   factory Leaderboard.fromJson(Map<String, dynamic> json) {
-    var list = json['data']['runs'] as List;
+    var list = json['runs'] as List;
     List<LeaderboardRun> runsList =
         list.map((i) => LeaderboardRun.fromJson(i)).toList();
 
+    var list2 = json['players']['data'] as List;
+    List<Player> playersList = list2.map((i) => Player.fromJson(i)).toList();
+
+    var list3 = json['regions']['data'] as List;
+    List<String> regionsList = List<String>(list3.length);
+    for (int i = 0; i < list3.length; ++i) regionsList[i] = list3[i]['name'];
+
+    var list4 = json['platforms']['data'] as List;
+    List<String> platformsList = List<String>(list4.length);
+    List<String> yearPlatformsList = List<String>(list4.length);
+    for (int i = 0; i < list4.length; ++i) {
+      platformsList[i] = list4[i]['name'];
+      yearPlatformsList[i] = list4[i]['released'].toString();
+    }
+
     return Leaderboard(
       runs: runsList,
+      players: playersList,
+      game: Game.fromJson(json['game']['data']),
+      category: Category.fromJson(json['category']['data']),
+      level: json['level'],
+      regions: regionsList,
+      platforms: platformsList,
+      yearPlatforms: yearPlatformsList,
     );
   }
 }
