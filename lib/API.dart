@@ -46,12 +46,21 @@ Future<List<LatestRun>> getLatestRuns() async {
   throw Exception('Failed to load the latest runs.');
 }
 
-Future<Leaderboard> getLeaderboard(String leaderboardURL) async {
+Future<Leaderboard> getLeaderboard(String leaderboardURL, bool isLevel) async {
   final response = await http
       .get('$leaderboardURL?embed=game,category,players,regions,platforms');
 
   if (response.statusCode == 200) {
-    return Leaderboard.fromJson(json.decode(response.body)['data']);
+    if (!isLevel)
+      return Leaderboard.fromJson(json.decode(response.body)['data']);
+    else {
+      final response2 = await http.get(leaderboardURL);
+      final response3 = await http.get(json.decode(response2.body)['data'][0]
+                  ['links']
+              [json.decode(response2.body)['data'][0]['links'].length - 1]['uri'] +
+          '?embed=game,category,players,regions,platforms');
+      return Leaderboard.fromJson(json.decode(response3.body)['data']);
+    }
   }
 
   throw Exception('Failed to load leaderboard.');
@@ -106,6 +115,7 @@ class Game {
   final List<Player> moderators;
   final Assets assets;
   final String leaderboardURL;
+  final bool isLevel;
 
   Game(
       {this.id,
@@ -115,9 +125,22 @@ class Game {
       this.ruleset,
       this.moderators,
       this.assets,
-      this.leaderboardURL});
+      this.leaderboardURL,
+      this.isLevel});
 
   factory Game.fromJson(Map<String, dynamic> json) {
+    String leaderboardURL;
+    bool isLevel;
+    for (int i = 0; i < json['links'].length; ++i) {
+      if (json['links'][i]['rel'] == 'leaderboard') {
+        leaderboardURL = json['links'][i]['uri'];
+        isLevel = false;
+      } else if (json['links'][i]['rel'] == 'levels') {
+        leaderboardURL = json['links'][i]['uri'];
+        isLevel = true;
+      }
+    }
+
     return Game(
       id: json['id'],
       name: json['names']['international'],
@@ -125,7 +148,8 @@ class Game {
       releaseDate: json['release-date'],
       ruleset: Ruleset.fromJson(json['ruleset']),
       assets: Assets.fromJson(json['assets']),
-      leaderboardURL: json['links'][json['links'].length - 1]['uri'],
+      leaderboardURL: leaderboardURL,
+      isLevel: isLevel,
     );
   }
 }
@@ -167,11 +191,18 @@ class Player {
       this.pbs});
 
   factory Player.fromJson(Map<String, dynamic> json) {
-    return Player(
-      name: json['names'] != null ? json['names']['international'] : '',
-      color: json['name-style']['style'] == 'gradient'
+    String name = '';
+    String color = '';
+    if (json['names'] != null) {
+      name = json['names']['international'];
+      color = json['name-style']['style'] == 'gradient'
           ? json['name-style']['color-from']['light']
-          : json['name-style']['color']['light'],
+          : json['name-style']['color']['light'];
+    }
+
+    return Player(
+      name: name,
+      color: color,
       country: json['location'] != null
           ? json['location']['country']['names']['international']
           : '',
@@ -180,7 +211,7 @@ class Player {
       youtube: json['youtube'] != null ? json['youtube']['uri'] : '',
       twitter: json['twitter'] != null ? json['twitter']['uri'] : '',
       srl: json['speedrunslive'] != null ? json['speedrunslive']['uri'] : '',
-      pbs: json['links'][3]['uri'],
+      pbs: json['links'][json['links'].length - 1]['uri'],
     );
   }
 }
@@ -239,10 +270,15 @@ class LeaderboardRun {
     double realtimeSecs = json['run']['times']['realtime_t'].toDouble();
     double igtSecs = json['run']['times']['ingame_t'].toDouble();
 
-    var list = json['run']['videos']['links'] as List;
-    List<String> videoLinksList = List<String>(list.length);
-    for (int i = 0; i < list.length; ++i) {
-      videoLinksList[i] = list[i]['uri'];
+    var list = json['run']['videos'] != null
+        ? json['run']['videos']['links'] as List
+        : null;
+    List<String> videoLinksList;
+    if (list != null) {
+      videoLinksList = List<String>(list.length);
+      for (int i = 0; i < list.length; ++i) {
+        videoLinksList[i] = list[i]['uri'];
+      }
     }
 
     return LeaderboardRun(

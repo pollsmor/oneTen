@@ -48,10 +48,9 @@ class _RunInfo extends StatelessWidget {
               ),
             ),
             onTap: () {
-              print(game.leaderboardURL);
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => GameInfoPage(game.leaderboardURL)),
+                MaterialPageRoute(builder: (context) => GameInfoPage(game.leaderboardURL, game.isLevel)),
               );
             },
           ),
@@ -145,7 +144,7 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
   Widget build(BuildContext context) {
     return Center(
       child: FutureBuilder<List<LatestRun>>(
-        future: latestRuns,
+        future: getLatestRuns(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return RefreshIndicator(
@@ -154,7 +153,6 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
                 itemCount: snapshot.data.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Card(
-                    elevation: 2.0,
                     margin: EdgeInsets.fromLTRB(8.0, 4.0, 8.0, 4.0),
                     child: Container(
                       child: _RunInfo(

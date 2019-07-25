@@ -4,10 +4,11 @@ import 'API.dart';
 
 class GameInfoPage extends StatelessWidget {
   final String leaderboardURL;
+  final bool isLevel;
   final Future<Leaderboard> leaderboard;
 
-  GameInfoPage(this.leaderboardURL) :
-    leaderboard = getLeaderboard(leaderboardURL);
+  GameInfoPage(this.leaderboardURL, this.isLevel)
+      : leaderboard = getLeaderboard(leaderboardURL, isLevel);
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +20,16 @@ class GameInfoPage extends StatelessWidget {
             Navigator.pop(context);
           },
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.favorite_border),
+            onPressed: () {},
+          )
+        ],
       ),
       body: Center(
         child: FutureBuilder<Leaderboard>(
-          future: getLeaderboard(leaderboardURL),//leaderboard,
+          future: getLeaderboard(leaderboardURL, isLevel),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return Text('lmao');
