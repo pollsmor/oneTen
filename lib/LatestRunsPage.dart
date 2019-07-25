@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'API.dart';
-import 'GameInfoPage.dart';
+import 'LeaderboardPage.dart';
 
 class HexToColor extends Color {
   static _hexToColor(String code) {
@@ -10,6 +10,66 @@ class HexToColor extends Color {
   }
 
   HexToColor(final String code) : super(_hexToColor(code));
+}
+
+class LatestRunsPage extends StatefulWidget {
+  @override
+  _LatestRunsPageState createState() => _LatestRunsPageState();
+}
+
+class _LatestRunsPageState extends State<LatestRunsPage> {
+  Future<List<LatestRun>> latestRuns = getLatestRuns();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: FutureBuilder<List<LatestRun>>(
+        future: latestRuns,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return RefreshIndicator(
+              child: ListView.builder(
+                physics: AlwaysScrollableScrollPhysics(),
+                itemCount: snapshot.data.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                    margin: EdgeInsets.fromLTRB(0.0, 0.5, 0.0, 0.5),
+                    child: _RunInfo(
+                      snapshot.data[index].game,
+                      snapshot.data[index].game.name,
+                      snapshot.data[index].category.name,
+                      snapshot.data[index].player.name,
+                      snapshot.data[index].player.color,
+                      snapshot.data[index].player.country,
+                      snapshot.data[index].date,
+                      snapshot.data[index].realtime,
+                      snapshot.data[index].igt,
+                      snapshot.data[index].game.assets.coverURL,
+                    ),
+                  );
+                },
+              ),
+              onRefresh: _handleRefresh,
+            );
+          } else if (snapshot.hasError) {
+            return Text('${snapshot.error}');
+          }
+
+          return CircularProgressIndicator();
+        },
+      ),
+    );
+  }
+
+  Future<Null> _handleRefresh() async {
+    await Future.delayed(new Duration(seconds: 2));
+
+    setState(() {
+      latestRuns = getLatestRuns();
+    });
+
+    return null;
+  }
 }
 
 class _RunInfo extends StatelessWidget {
@@ -24,8 +84,17 @@ class _RunInfo extends StatelessWidget {
   final String igt;
   final String coverURL;
 
-  _RunInfo(this.game, this.gameName, this.category, this.player, this.playerColor,
-      this.country, this.date, this.rta, this.igt, this.coverURL);
+  _RunInfo(
+      this.game,
+      this.gameName,
+      this.category,
+      this.player,
+      this.playerColor,
+      this.country,
+      this.date,
+      this.rta,
+      this.igt,
+      this.coverURL);
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +119,9 @@ class _RunInfo extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => GameInfoPage(game.leaderboardURL, game.isLevel)),
+                MaterialPageRoute(
+                    builder: (context) =>
+                        LeaderboardPage(game.leaderboardURL, game.isLevel)),
               );
             },
           ),
@@ -129,67 +200,5 @@ class _RunInfo extends StatelessWidget {
         ),
       ],
     );
-  }
-}
-
-class LatestRunsPage extends StatefulWidget {
-  @override
-  _LatestRunsPageState createState() => _LatestRunsPageState();
-}
-
-class _LatestRunsPageState extends State<LatestRunsPage> {
-  Future<List<LatestRun>> latestRuns = getLatestRuns();
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: FutureBuilder<List<LatestRun>>(
-        future: getLatestRuns(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return RefreshIndicator(
-              child: ListView.builder(
-                physics: AlwaysScrollableScrollPhysics(),
-                itemCount: snapshot.data.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Card(
-                    margin: EdgeInsets.fromLTRB(8.0, 4.0, 8.0, 4.0),
-                    child: Container(
-                      child: _RunInfo(
-                        snapshot.data[index].game,
-                        snapshot.data[index].game.name,
-                        snapshot.data[index].category.name,
-                        snapshot.data[index].player.name,
-                        snapshot.data[index].player.color,
-                        snapshot.data[index].player.country,
-                        snapshot.data[index].date,
-                        snapshot.data[index].realtime,
-                        snapshot.data[index].igt,
-                        snapshot.data[index].game.assets.coverURL,
-                      ),
-                    ),
-                  );
-                },
-              ),
-              onRefresh: _handleRefresh,
-            );
-          } else if (snapshot.hasError) {
-            return Text('${snapshot.error}');
-          }
-
-          return CircularProgressIndicator();
-        },
-      ),
-    );
-  }
-
-  Future<Null> _handleRefresh() async {
-    await Future.delayed(new Duration(seconds: 2));
-
-    setState(() {
-      latestRuns = getLatestRuns();
-    });
-
-    return null;
   }
 }

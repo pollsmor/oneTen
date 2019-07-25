@@ -21,7 +21,6 @@ class _HomePageState extends State<HomePage> {
         preferredSize: Size.fromHeight(0.0),
         child: AppBar(
           brightness: Brightness.dark,
-          backgroundColor: Theme.of(context).primaryColor,
           elevation: 0.0,
         ),
       ),
@@ -30,7 +29,6 @@ class _HomePageState extends State<HomePage> {
         children: _pages,
       ),
       bottomNavigationBar: bottomNavBar(),
-      backgroundColor: Colors.white,
     );
   }
 
