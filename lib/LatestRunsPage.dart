@@ -121,7 +121,7 @@ class _RunInfo extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        LeaderboardPage(game.leaderboardURL, game.isLevel)),
+                        LeaderboardPage(game.name, game.leaderboardURL, game.isLevel)),
               );
             },
           ),
