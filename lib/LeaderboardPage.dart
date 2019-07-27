@@ -24,6 +24,9 @@ class LeaderboardPage extends StatelessWidget {
         ),
         title: Text(
           gameName,
+          style: TextStyle(
+            fontSize: 16.0,
+          ),
           overflow: TextOverflow.ellipsis,
         ),
         actions: [
@@ -40,9 +43,10 @@ class LeaderboardPage extends StatelessWidget {
             if (snapshot.hasData) {
               return Column(
                 children: [
-                  SizedBox(
-                    height: 300.0,
-                    child: Container(
+                  Container(
+                    padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+                    child: SizedBox(
+                      height: 200.0,
                       child: _GameInfo(
                         snapshot.data.game.name,
                         snapshot.data.game.releaseDate,
@@ -55,16 +59,16 @@ class LeaderboardPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  /*
-                  ListView.builder(
-                    itemCount: snapshot.data.runs.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Container(
-                        margin: EdgeInsets.fromLTRB(0.0, 0.5, 0.0, 0.5),
-                      );
-                    },
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: snapshot.data.runs.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Container(
+                          margin: EdgeInsets.fromLTRB(0.0, 0.5, 0.0, 0.5),
+                        );
+                      },
+                    ),
                   ),
-                  */
                 ],
               );
             } else if (snapshot.hasError) {
@@ -92,7 +96,84 @@ class _GameInfo extends StatelessWidget {
   _GameInfo(this.name, this.releaseDate, this.ruleset, this.moderators,
       this.assets, this.regions, this.platforms, this.yearPlatforms);
 
-  Widget build(BuildContext context) {
-    return Text('lol');
+  Widget build(BuildContext context) {return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          height: 100.0,
+          child: Row(
+            children: [
+              Container(
+                margin: EdgeInsets.fromLTRB(0.0, 0.0, 8.0, 0.0),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 4.0,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+                child: CachedNetworkImage(
+                  imageUrl: assets.coverURL,
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      name,
+                      style: TextStyle(
+                        fontSize: 16.0,
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Padding(padding: EdgeInsets.all(4.0)),
+                    Text(
+                      releaseDate,
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w300,
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          child: Container(
+            margin: EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 0.0),
+            child: Column(
+              children: [
+                Text(
+                  'Release Date: $releaseDate',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  'Regions: ' + ('$regions' != '[]' ? '$regions'.substring(1, '$regions'.length - 1) : 'N/A'),
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

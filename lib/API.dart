@@ -56,8 +56,9 @@ Future<Leaderboard> getLeaderboard(String leaderboardURL, bool isLevel) async {
     else {
       final response2 = await http.get(leaderboardURL);
       final response3 = await http.get(json.decode(response2.body)['data'][0]
-                  ['links']
-              [json.decode(response2.body)['data'][0]['links'].length - 1]['uri'] +
+                      ['links']
+                  [json.decode(response2.body)['data'][0]['links'].length - 1]
+              ['uri'] +
           '?embed=game,category,players,regions,platforms');
       return Leaderboard.fromJson(json.decode(response3.body)['data']);
     }
@@ -90,15 +91,22 @@ class Ruleset {
 
 class Assets {
   final String coverURL;
+  final String background;
   final String trophy1st;
   final String trophy2nd;
   final String trophy3rd;
 
-  Assets({this.coverURL, this.trophy1st, this.trophy2nd, this.trophy3rd});
+  Assets(
+      {this.coverURL,
+      this.background,
+      this.trophy1st,
+      this.trophy2nd,
+      this.trophy3rd});
 
   factory Assets.fromJson(Map<String, dynamic> json) {
     return Assets(
       coverURL: json['cover-large']['uri'],
+      background: json['background'] != null ? json['background']['uri'] : null,
       trophy1st: json['trophy-1st']['uri'],
       trophy2nd: json['trophy-2nd']['uri'],
       trophy3rd: json['trophy-3rd']['uri'],

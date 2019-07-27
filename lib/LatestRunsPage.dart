@@ -106,7 +106,7 @@ class _RunInfo extends StatelessWidget {
             child: Container(
               padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
               child: SizedBox(
-                height: 150.0,
+                height: 125.0,
                 child: AspectRatio(
                   aspectRatio: 1.0,
                   child: CachedNetworkImage(
