@@ -149,7 +149,6 @@ class Game {
       }
     }
 
-    print(json['links'][2]['rel']);
     if (json['links'][2]['rel'] == 'levels') {
       leaderboardURL = json['links'][2]['uri'];
       isLevel = true;

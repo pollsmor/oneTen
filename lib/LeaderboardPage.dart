@@ -14,8 +14,6 @@ class LeaderboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(leaderboardURL);
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -40,7 +38,7 @@ class LeaderboardPage extends StatelessWidget {
       ),
       body: Center(
         child: FutureBuilder<Leaderboard>(
-          future: leaderboard,
+          future: getLeaderboard(leaderboardURL, isLevel),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return Column(
@@ -57,7 +55,6 @@ class LeaderboardPage extends StatelessWidget {
                         snapshot.data.game.assets,
                         snapshot.data.regions,
                         snapshot.data.platforms,
-                        snapshot.data.yearPlatforms,
                       ),
                     ),
                   ),
@@ -93,10 +90,9 @@ class _GameInfo extends StatelessWidget {
   final Assets assets;
   final List<String> regions;
   final List<String> platforms;
-  final List<String> yearPlatforms;
 
   _GameInfo(this.name, this.releaseDate, this.ruleset, this.moderators,
-      this.assets, this.regions, this.platforms, this.yearPlatforms);
+      this.assets, this.regions, this.platforms);
 
   Widget build(BuildContext context) {return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,6 +148,7 @@ class _GameInfo extends StatelessWidget {
           child: Container(
             margin: EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 0.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'Release Date: $releaseDate',
@@ -162,13 +159,24 @@ class _GameInfo extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
+                Padding(padding: EdgeInsets.all(4.0)),
                 Text(
                   'Regions: ' + ('$regions' != '[]' ? '$regions'.substring(1, '$regions'.length - 1) : 'N/A'),
                   style: TextStyle(
                     fontSize: 16.0,
                     fontWeight: FontWeight.w400,
                   ),
-                  maxLines: 1,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Padding(padding: EdgeInsets.all(4.0)),
+                Text(
+                  'Platforms: $platforms',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
               ],
