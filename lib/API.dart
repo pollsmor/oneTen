@@ -46,6 +46,7 @@ Future<List<LatestRun>> getLatestRuns() async {
   throw Exception('Failed to load the latest runs.');
 }
 
+//Does not work with the Silent Hill games
 Future<Leaderboard> getLeaderboard(String leaderboardURL, bool isLevel) async {
   final response = await http
       .get('$leaderboardURL?embed=game,category,players,regions,platforms');

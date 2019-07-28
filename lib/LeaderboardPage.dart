@@ -38,24 +38,27 @@ class LeaderboardPage extends StatelessWidget {
       ),
       body: Center(
         child: FutureBuilder<Leaderboard>(
-          future: getLeaderboard(leaderboardURL, isLevel),
+          future: leaderboard,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return Column(
                 children: [
                   Container(
-                    padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
-                    child: SizedBox(
-                      height: 200.0,
-                      child: _GameInfo(
-                        snapshot.data.game.name,
-                        snapshot.data.game.releaseDate,
-                        snapshot.data.game.ruleset,
-                        snapshot.data.game.moderators,
-                        snapshot.data.game.assets,
-                        snapshot.data.regions,
-                        snapshot.data.platforms,
-                      ),
+                    padding: EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      border: Border(
+                          bottom: BorderSide(
+                        width: 1.0,
+                      )),
+                    ),
+                    child: _GameInfo(
+                      snapshot.data.game.name,
+                      snapshot.data.game.releaseDate,
+                      snapshot.data.game.ruleset,
+                      snapshot.data.game.moderators,
+                      snapshot.data.game.assets,
+                      snapshot.data.regions,
+                      snapshot.data.platforms,
                     ),
                   ),
                   Expanded(
@@ -94,29 +97,30 @@ class _GameInfo extends StatelessWidget {
   _GameInfo(this.name, this.releaseDate, this.ruleset, this.moderators,
       this.assets, this.regions, this.platforms);
 
-  Widget build(BuildContext context) {return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  Widget build(BuildContext context) {
+    return Column(
       children: [
-        SizedBox(
-          height: 100.0,
+        Container(
           child: Row(
             children: [
               Container(
-                margin: EdgeInsets.fromLTRB(0.0, 0.0, 8.0, 0.0),
+                padding: EdgeInsets.all(4.0),
                 decoration: BoxDecoration(
                   border: Border.all(
-                    width: 4.0,
+                    width: 3.0,
                     color: Theme.of(context).primaryColor,
                   ),
                 ),
-                child: CachedNetworkImage(
-                  imageUrl: assets.coverURL,
-                  errorWidget: (context, url, error) => Icon(Icons.error),
+                child: SizedBox(
+                  height: 100.0,
+                  child: CachedNetworkImage(
+                    imageUrl: assets.coverURL,
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  ),
                 ),
               ),
               Expanded(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       name,
@@ -124,7 +128,7 @@ class _GameInfo extends StatelessWidget {
                         fontSize: 16.0,
                       ),
                       textAlign: TextAlign.center,
-                      maxLines: 2,
+                      maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                     ),
                     Padding(padding: EdgeInsets.all(4.0)),
@@ -144,43 +148,35 @@ class _GameInfo extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(
-          child: Container(
-            margin: EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 0.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Release Date: $releaseDate',
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w400,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+        Container(
+          margin: EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 0.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Regions: ' +
+                    ('$regions' != '[]'
+                        ? '$regions'.substring(1, '$regions'.length - 1)
+                        : 'N/A'),
+                style: TextStyle(
+                  fontSize: 13.0,
+                  fontWeight: FontWeight.w400,
                 ),
-                Padding(padding: EdgeInsets.all(4.0)),
-                Text(
-                  'Regions: ' + ('$regions' != '[]' ? '$regions'.substring(1, '$regions'.length - 1) : 'N/A'),
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w400,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
+              Padding(padding: EdgeInsets.all(4.0)),
+              Text(
+                'Platforms: ' +
+                    ('$platforms'.substring(1, '$platforms'.length - 1)),
+                style: TextStyle(
+                  fontSize: 13.0,
+                  fontWeight: FontWeight.w400,
                 ),
-                Padding(padding: EdgeInsets.all(4.0)),
-                Text(
-                  'Platforms: $platforms',
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w400,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
           ),
         ),
       ],
