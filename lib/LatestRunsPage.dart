@@ -18,11 +18,13 @@ class LatestRunsPage extends StatefulWidget {
 }
 
 class _LatestRunsPageState extends State<LatestRunsPage> {
+  Future<List<LatestRun>> runs = fetchLatestRuns();
+
   @override
   Widget build(BuildContext context) {
     return Center(
       child: FutureBuilder<List<LatestRun>>(
-        future: fetchLatestRuns(),
+        future: runs,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return RefreshIndicator(
@@ -63,7 +65,7 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
     await Future.delayed(new Duration(seconds: 2));
 
     setState(() {
-      //latestRuns = fetchLatestRuns();
+      runs = fetchLatestRuns();
     });
 
     return null;

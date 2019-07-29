@@ -11,6 +11,8 @@ class LeaderboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(leaderboardURL);
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
