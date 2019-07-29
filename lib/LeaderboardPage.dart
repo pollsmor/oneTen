@@ -4,13 +4,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'API.dart';
 
 class LeaderboardPage extends StatelessWidget {
-  final String gameName;
+  final String abbreviation;
   final String leaderboardURL;
-  final bool isLevel;
-  final Future<Leaderboard> leaderboard;
 
-  LeaderboardPage(this.gameName, this.leaderboardURL, this.isLevel)
-      : leaderboard = getLeaderboard(leaderboardURL, isLevel);
+  final Future<Leaderboard> leaderboard;
+  final Future<Game> game;
+
+  LeaderboardPage(this.abbreviation, this.leaderboardURL)
+      : leaderboard = getLeaderboard(leaderboardURL),
+        game = getGame(abbreviation);
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +25,7 @@ class LeaderboardPage extends StatelessWidget {
           },
         ),
         title: Text(
-          gameName,
-          style: TextStyle(
-            fontSize: 16.0,
-          ),
+          abbreviation,
           overflow: TextOverflow.ellipsis,
         ),
         actions: [
@@ -38,27 +37,40 @@ class LeaderboardPage extends StatelessWidget {
       ),
       body: Center(
         child: FutureBuilder<Leaderboard>(
-          future: leaderboard,
+          future: getLeaderboard(leaderboardURL),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return Column(
                 children: [
                   Container(
                     padding: EdgeInsets.all(8.0),
+                    /*
                     decoration: BoxDecoration(
                       border: Border(
                           bottom: BorderSide(
                         width: 1.0,
                       )),
                     ),
-                    child: _GameInfo(
-                      snapshot.data.game.name,
-                      snapshot.data.game.releaseDate,
-                      snapshot.data.game.ruleset,
-                      snapshot.data.game.moderators,
-                      snapshot.data.game.assets,
-                      snapshot.data.regions,
-                      snapshot.data.platforms,
+                    */
+                    child: FutureBuilder<Game>(
+                      future: getGame(snapshot.data.game.abbreviation),
+                      builder: (context, snapshot2) {
+                        if (snapshot2.hasData) {
+                          return _GameInfo(
+                            snapshot2.data.name,
+                            snapshot2.data.releaseDate,
+                            snapshot2.data.ruleset,
+                            snapshot2.data.moderators,
+                            snapshot2.data.assets,
+                            snapshot2.data.regions,
+                            snapshot2.data.platforms,
+                          );
+                        } else if (snapshot.hasError) {
+                          return Text('${snapshot.error}');
+                        }
+
+                        return CircularProgressIndicator();
+                      },
                     ),
                   ),
                   Expanded(
@@ -169,6 +181,15 @@ class _GameInfo extends StatelessWidget {
               Text(
                 'Platforms: ' +
                     ('$platforms'.substring(1, '$platforms'.length - 1)),
+                style: TextStyle(
+                  fontSize: 13.0,
+                  fontWeight: FontWeight.w400,
+                ),
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
+              Text(
+                'Mods: ' + ('$platforms'.substring(1, '$platforms'.length - 1)),
                 style: TextStyle(
                   fontSize: 13.0,
                   fontWeight: FontWeight.w400,

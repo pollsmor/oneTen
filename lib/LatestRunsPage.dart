@@ -18,13 +18,11 @@ class LatestRunsPage extends StatefulWidget {
 }
 
 class _LatestRunsPageState extends State<LatestRunsPage> {
-  Future<List<LatestRun>> latestRuns = getLatestRuns();
-
   @override
   Widget build(BuildContext context) {
     return Center(
       child: FutureBuilder<List<LatestRun>>(
-        future: latestRuns,
+        future: fetchLatestRuns(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return RefreshIndicator(
@@ -65,7 +63,7 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
     await Future.delayed(new Duration(seconds: 2));
 
     setState(() {
-      latestRuns = getLatestRuns();
+      //latestRuns = fetchLatestRuns();
     });
 
     return null;
@@ -121,7 +119,7 @@ class _RunInfo extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        LeaderboardPage(game.name, game.leaderboardURL, game.isLevel)),
+                        LeaderboardPage(game.abbreviation, game.leaderboardURL)),
               );
             },
           ),
