@@ -7,12 +7,7 @@ class LeaderboardPage extends StatelessWidget {
   final String abbreviation;
   final String leaderboardURL;
 
-  final Future<Leaderboard> leaderboard;
-  final Future<Game> game;
-
-  LeaderboardPage(this.abbreviation, this.leaderboardURL)
-      : leaderboard = getLeaderboard(leaderboardURL),
-        game = getGame(abbreviation);
+  LeaderboardPage(this.abbreviation, this.leaderboardURL);
 
   @override
   Widget build(BuildContext context) {
@@ -35,63 +30,46 @@ class LeaderboardPage extends StatelessWidget {
           )
         ],
       ),
-      body: Center(
-        child: FutureBuilder<Leaderboard>(
-          future: getLeaderboard(leaderboardURL),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return Column(
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(8.0),
-                    /*
-                    decoration: BoxDecoration(
-                      border: Border(
-                          bottom: BorderSide(
-                        width: 1.0,
-                      )),
-                    ),
-                    */
-                    child: FutureBuilder<Game>(
-                      future: getGame(snapshot.data.game.abbreviation),
-                      builder: (context, snapshot2) {
-                        if (snapshot2.hasData) {
-                          return _GameInfo(
-                            snapshot2.data.name,
-                            snapshot2.data.releaseDate,
-                            snapshot2.data.ruleset,
-                            snapshot2.data.moderators,
-                            snapshot2.data.assets,
-                            snapshot2.data.regions,
-                            snapshot2.data.platforms,
-                          );
-                        } else if (snapshot.hasError) {
-                          return Text('${snapshot.error}');
-                        }
+      body: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.all(8.0),
+            child: FutureBuilder<Game>(
+              future: getGame(abbreviation),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return _GameInfo(
+                    snapshot.data.name,
+                    snapshot.data.releaseDate,
+                    snapshot.data.ruleset,
+                    snapshot.data.moderators,
+                    snapshot.data.assets,
+                    snapshot.data.regions,
+                    snapshot.data.platforms,
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('${snapshot.error}');
+                }
 
-                        return CircularProgressIndicator();
-                      },
-                    ),
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: snapshot.data.runs.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Container(
-                          margin: EdgeInsets.fromLTRB(0.0, 0.5, 0.0, 0.5),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              );
-            } else if (snapshot.hasError) {
-              return Text('${snapshot.error}');
-            }
+                return Text('');
+              },
+            ),
+          ),
+          Expanded(
+            child: FutureBuilder<Leaderboard>(
+              future: getLeaderboard(leaderboardURL),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Text('lol');
+                } else if (snapshot.hasError) {
+                  return Text('${snapshot.error}');
+                }
 
-            return CircularProgressIndicator();
-          },
-        ),
+                return Text('');
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
