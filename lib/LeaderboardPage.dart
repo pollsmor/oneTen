@@ -87,20 +87,27 @@ class LeaderboardPage extends StatelessWidget {
               future: getLeaderboard(leaderboardURL),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return ListView.builder(
-                    itemCount: snapshot.data.runs.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Container(
-                        child: _LBRunInfo(
-                          ordinal(snapshot.data.runs[index].placing),
-                          snapshot.data.players[index],
-                          snapshot.data.runs[index].realtime,
-                          snapshot.data.runs[index].igt,
-                          snapshot.data.runs[index].date,
-                          snapshot.data.runs[index].videoLinks,
+                  return Column(
+                    children: [
+                      Text('lol'),
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: snapshot.data.runs.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Container(
+                              child: _LBRunInfo(
+                                ordinal(snapshot.data.runs[index].placing),
+                                snapshot.data.players[index],
+                                snapshot.data.runs[index].realtime,
+                                snapshot.data.runs[index].igt,
+                                snapshot.data.runs[index].date,
+                                snapshot.data.runs[index].videoLinks,
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
+                      )
+                    ],
                   );
                 } else if (snapshot.hasError) {
                   return Text('${snapshot.error}');
@@ -266,7 +273,7 @@ class _LBRunInfo extends StatelessWidget {
           ),
         ),
         Expanded(
-          flex: 3,
+          flex: 2,
           child: Container(
             child: Text(realtime),
             padding: EdgeInsets.all(8.0),
@@ -274,7 +281,7 @@ class _LBRunInfo extends StatelessWidget {
         ),
         igt != '0s'
             ? Expanded(
-                flex: 3,
+                flex: 2,
                 child: Container(
                   child: Text(igt),
                   padding: EdgeInsets.all(8.0),
@@ -282,7 +289,7 @@ class _LBRunInfo extends StatelessWidget {
               )
             : Text(''),
         Expanded(
-          flex: 3,
+          flex: 2,
           child: Container(
             child: Text(date),
             padding: EdgeInsets.all(8.0),
