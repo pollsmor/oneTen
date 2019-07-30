@@ -173,6 +173,7 @@ class Game {
     List<String> regionsList;
     List<String> platformsList;
     List<Player> moderatorsList;
+    List<Category> categoriesList;
 
     if (json['regions'] is Map<String, dynamic>) {
       regionsList = List<String>(json['regions']['data'].length);
@@ -188,11 +189,17 @@ class Game {
     }
 
     if (json['moderators']['data'] != null) {
-      print(json['moderators']);
       moderatorsList = List<Player>(json['moderators']['data'].length);
       var list3 = json['moderators']['data'] as List;
       for (int i = 0; i < list3.length; ++i)
         moderatorsList[i] = Player.fromJson(list3[i]);
+    }
+
+    if (json['categories'] != null) {
+      categoriesList = List<Category>(json['categories']['data'].length);
+      var list4 = json['categories']['data'] as List;
+      for (int i = 0; i < list4.length; ++i)
+        categoriesList[i] = Category.fromJson(list4[i]);
     }
 
     return Game(
@@ -205,7 +212,7 @@ class Game {
       moderators: moderatorsList,
       ruleset: Ruleset.fromJson(json['ruleset']),
       assets: Assets.fromJson(json['assets']),
-      //categories: categoriesList,
+      categories: categoriesList,
       leaderboardURL: leaderboardURL,
     );
   }
