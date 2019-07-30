@@ -73,6 +73,7 @@ class LeaderboardPage extends StatelessWidget {
               },
             ),
           ),
+          Padding(padding: EdgeInsets.all(8.0)),
           Expanded(
             child: FutureBuilder<Leaderboard>(
               future: getLeaderboard(leaderboardURL),
@@ -238,17 +239,38 @@ class _LBRunInfo extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: Text(placing),
+          flex: 1,
+          child: Container(
+            child: Text(placing),
+            padding: EdgeInsets.all(8.0),
+          ),
         ),
         Expanded(
-          child: Text(player.name),
+          flex: 2,
+          child: Container(
+            child: Text(player.name),
+            padding: EdgeInsets.all(8.0),
+          ),
         ),
         Expanded(
-          child: Text(realtime),
+          flex: 2,
+          child: Container(
+            child: Text(realtime),
+            padding: EdgeInsets.all(8.0),
+          ),
         ),
-        igt != '0 secs' ? Expanded(child: Text(igt)) : Text(''),
-        Expanded(
+        igt != '0s'
+            ? Expanded(
+                flex: 2,
+                child: Container(
+                  child: Text(igt),
+                  padding: EdgeInsets.all(8.0),
+                ),
+              )
+            : Text(''),
+        Container(
           child: Text(date),
+          padding: EdgeInsets.all(8.0),
         ),
       ],
     );

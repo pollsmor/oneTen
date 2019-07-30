@@ -19,17 +19,17 @@ String calcTime(double seconds) {
   if (hours == 0) {
     if (mins == 0) {
       if (ms == 0)
-        output = '$secs secs';
+        output = '$secs' + 's';
       else
-        output = '$secs secs $ms ms';
+        output = '$secs' + 's' + '$ms' + 'ms';
     } else {
       if (ms == 0)
-        output = '$mins mins $secs secs';
+        output = '$mins' + 'm' + '$secs' + 's';
       else
-        output = '$mins mins $secs secs $ms ms';
+        output = '$mins' + 'm ' + '$secs' + 's ' + '$ms' + 'ms';
     }
   } else
-    output = '$hours hrs $mins mins $secs secs';
+    output = '$hours' + 'h ' + '$mins' + 'm ' + '$secs' + 's ';
 
   return output;
 }
