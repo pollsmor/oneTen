@@ -4,15 +4,19 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'API.dart';
 
 String ordinal(int num) {
- if (num % 100 == 11) return num.toString() + 'th';
- else if (num % 100 == 12) return num.toString() + 'th';
- else if (num % 100 == 13) return num.toString() + 'th';
+  if (num % 100 == 11)
+    return num.toString() + 'th';
+  else if (num % 100 == 12)
+    return num.toString() + 'th';
+  else if (num % 100 == 13)
+    return num.toString() + 'th';
+  else if (num % 10 == 1)
+    return num.toString() + 'st';
+  else if (num % 10 == 2)
+    return num.toString() + 'nd';
+  else if (num % 10 == 3) return num.toString() + 'rd';
 
- else if (num % 10 == 1) return num.toString() + 'st';
- else if (num % 10 == 2) return num.toString() + 'nd';
- else if (num % 10 == 3) return num.toString() + 'rd';
-
- return num.toString() + 'th';
+  return num.toString() + 'th';
 }
 
 class LeaderboardPage extends StatelessWidget {
@@ -86,7 +90,7 @@ class LeaderboardPage extends StatelessWidget {
                           snapshot.data.runs[index].date,
                           snapshot.data.runs[index].videoLinks,
                         ),
-                          );
+                      );
                     },
                   );
                 } else if (snapshot.hasError) {
@@ -234,8 +238,17 @@ class _LBRunInfo extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          flex: 1,
           child: Text(placing),
+        ),
+        Expanded(
+          child: Text(player.name),
+        ),
+        Expanded(
+          child: Text(realtime),
+        ),
+        igt != '0 secs' ? Expanded(child: Text(igt)) : Text(''),
+        Expanded(
+          child: Text(date),
         ),
       ],
     );
