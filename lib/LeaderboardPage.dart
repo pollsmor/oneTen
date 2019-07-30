@@ -19,6 +19,14 @@ String ordinal(int num) {
   return num.toString() + 'th';
 }
 
+class HexToColor extends Color {
+  static _hexToColor(String code) {
+    return int.parse(code.substring(1), radix: 16) + 0xFF000000;
+  }
+
+  HexToColor(final String code) : super(_hexToColor(code));
+}
+
 class LeaderboardPage extends StatelessWidget {
   final String abbreviation;
   final String leaderboardURL;
@@ -246,14 +254,19 @@ class _LBRunInfo extends StatelessWidget {
           ),
         ),
         Expanded(
-          flex: 2,
+          flex: 3,
           child: Container(
-            child: Text(player.name),
+            child: Text(
+              player.name,
+              style: TextStyle(
+                color: Color(HexToColor._hexToColor(player.color)),
+              ),
+            ),
             padding: EdgeInsets.all(8.0),
           ),
         ),
         Expanded(
-          flex: 2,
+          flex: 3,
           child: Container(
             child: Text(realtime),
             padding: EdgeInsets.all(8.0),
@@ -261,16 +274,19 @@ class _LBRunInfo extends StatelessWidget {
         ),
         igt != '0s'
             ? Expanded(
-                flex: 2,
+                flex: 3,
                 child: Container(
                   child: Text(igt),
                   padding: EdgeInsets.all(8.0),
                 ),
               )
             : Text(''),
-        Container(
-          child: Text(date),
-          padding: EdgeInsets.all(8.0),
+        Expanded(
+          flex: 3,
+          child: Container(
+            child: Text(date),
+            padding: EdgeInsets.all(8.0),
+          ),
         ),
       ],
     );
