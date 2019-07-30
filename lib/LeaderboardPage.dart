@@ -3,6 +3,18 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import 'API.dart';
 
+String ordinal(int num) {
+ if (num % 100 == 11) return num.toString() + 'th';
+ else if (num % 100 == 12) return num.toString() + 'th';
+ else if (num % 100 == 13) return num.toString() + 'th';
+
+ else if (num % 10 == 1) return num.toString() + 'st';
+ else if (num % 10 == 2) return num.toString() + 'nd';
+ else if (num % 10 == 3) return num.toString() + 'rd';
+
+ return num.toString() + 'th';
+}
+
 class LeaderboardPage extends StatelessWidget {
   final String abbreviation;
   final String leaderboardURL;
@@ -66,8 +78,15 @@ class LeaderboardPage extends StatelessWidget {
                     itemCount: snapshot.data.runs.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Container(
-
-                      );
+                        child: _LBRunInfo(
+                          ordinal(snapshot.data.runs[index].placing),
+                          snapshot.data.players[index],
+                          snapshot.data.runs[index].realtime,
+                          snapshot.data.runs[index].igt,
+                          snapshot.data.runs[index].date,
+                          snapshot.data.runs[index].videoLinks,
+                        ),
+                          );
                     },
                   );
                 } else if (snapshot.hasError) {
@@ -193,6 +212,30 @@ class _GameInfo extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ],
+    );
+  }
+}
+
+class _LBRunInfo extends StatelessWidget {
+  final String placing;
+  final Player player;
+  final String realtime;
+  final String igt;
+  final String date;
+  final List<String> videoLinks;
+
+  _LBRunInfo(this.placing, this.player, this.realtime, this.igt, this.date,
+      this.videoLinks);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          flex: 1,
+          child: Text(placing),
         ),
       ],
     );
