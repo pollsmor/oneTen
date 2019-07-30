@@ -37,7 +37,7 @@ class LeaderboardPage extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(8.0),
             child: FutureBuilder<Game>(
-              future: getGame(abbreviation),
+              future: fetchGame(abbreviation),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return _GameInfo(
@@ -62,7 +62,14 @@ class LeaderboardPage extends StatelessWidget {
               future: getLeaderboard(leaderboardURL),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return Text('lol');
+                  return ListView.builder(
+                    itemCount: snapshot.data.runs.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Container(
+
+                      );
+                    },
+                  );
                 } else if (snapshot.hasError) {
                   return Text('${snapshot.error}');
                 }
@@ -90,7 +97,13 @@ class _GameInfo extends StatelessWidget {
       this.assets, this.regions, this.platforms);
 
   Widget build(BuildContext context) {
+    String modNames = '';
+    for (int i = 0; i < moderators.length; ++i)
+      modNames += (moderators[i].name + ', ');
+    modNames = modNames.substring(0, modNames.length - 2);
+
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           child: Row(
@@ -168,8 +181,9 @@ class _GameInfo extends StatelessWidget {
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
               ),
+              Padding(padding: EdgeInsets.all(4.0)),
               Text(
-                'Mods: ' + ('$platforms'.substring(1, '$platforms'.length - 1)),
+                'Moderators: $modNames',
                 style: TextStyle(
                   fontSize: 13.0,
                   fontWeight: FontWeight.w400,

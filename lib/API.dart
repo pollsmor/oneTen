@@ -69,15 +69,19 @@ Leaderboard parseLeaderboard(String responseBody) {
   return Leaderboard.fromJson(json.decode(responseBody)['data']);
 }
 
-Future<Game> getGame(String abbreviation) async {
+Future<Game> fetchGame(String abbreviation) async {
   final response = await http.get(
       '$baseurl/games/$abbreviation?embed=categories,moderators,platforms,regions');
 
   if (response.statusCode == 200) {
-    return Game.fromJson(json.decode(response.body)['data']);
+    return compute(parseGame, response.body);
   }
 
   throw Exception('Failed to load game.');
+}
+
+Game parseGame(String responseBody) {
+  return Game.fromJson(json.decode(responseBody)['data']);
 }
 
 class Ruleset {
@@ -168,6 +172,7 @@ class Game {
 
     List<String> regionsList;
     List<String> platformsList;
+    List<Player> moderatorsList;
 
     if (json['regions'] is Map<String, dynamic>) {
       regionsList = List<String>(json['regions']['data'].length);
@@ -182,6 +187,14 @@ class Game {
         platformsList[i] = list2[i]['name'];
     }
 
+    if (json['moderators']['data'] != null) {
+      print(json['moderators']);
+      moderatorsList = List<Player>(json['moderators']['data'].length);
+      var list3 = json['moderators']['data'] as List;
+      for (int i = 0; i < list3.length; ++i)
+        moderatorsList[i] = Player.fromJson(list3[i]);
+    }
+
     return Game(
       id: json['id'],
       name: json['names']['international'],
@@ -189,7 +202,7 @@ class Game {
       releaseDate: json['release-date'],
       platforms: platformsList,
       regions: regionsList,
-      //moderators: moderatorsList,
+      moderators: moderatorsList,
       ruleset: Ruleset.fromJson(json['ruleset']),
       assets: Assets.fromJson(json['assets']),
       //categories: categoriesList,
