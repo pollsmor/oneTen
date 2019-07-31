@@ -88,8 +88,40 @@ class LeaderboardPage extends StatelessWidget {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Column(
+                    //2, 5, 4, 3
                     children: [
-                      Text('lol'),
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: Container(
+                              child: Text('Rank'),
+                              padding: EdgeInsets.all(8.0),
+                            )
+                          ),
+                          Expanded(
+                            flex: 5,
+                              child: Container(
+                                child: Text('Player'),
+                                padding: EdgeInsets.all(8.0),
+                              )
+                          ),
+                          Expanded(
+                            flex: 4,
+                              child: Container(
+                                child: Text('Real time'),
+                                padding: EdgeInsets.all(8.0),
+                              )
+                          ),
+                          Expanded(
+                            flex: 3,
+                              child: Container(
+                                child: Text('In-game time'),
+                                padding: EdgeInsets.all(8.0),
+                              )
+                          ),
+                        ],
+                      ),
                       Expanded(
                         child: ListView.builder(
                           itemCount: snapshot.data.runs.length,
@@ -100,7 +132,6 @@ class LeaderboardPage extends StatelessWidget {
                                 snapshot.data.players[index],
                                 snapshot.data.runs[index].realtime,
                                 snapshot.data.runs[index].igt,
-                                snapshot.data.runs[index].date,
                                 snapshot.data.runs[index].videoLinks,
                               ),
                             );
@@ -243,25 +274,24 @@ class _LBRunInfo extends StatelessWidget {
   final Player player;
   final String realtime;
   final String igt;
-  final String date;
   final List<String> videoLinks;
 
-  _LBRunInfo(this.placing, this.player, this.realtime, this.igt, this.date,
-      this.videoLinks);
+  _LBRunInfo(
+      this.placing, this.player, this.realtime, this.igt, this.videoLinks);
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Expanded(
-          flex: 1,
+          flex: 2,
           child: Container(
             child: Text(placing),
             padding: EdgeInsets.all(8.0),
           ),
         ),
         Expanded(
-          flex: 3,
+          flex: 5,
           child: Container(
             child: Text(
               player.name,
@@ -273,25 +303,16 @@ class _LBRunInfo extends StatelessWidget {
           ),
         ),
         Expanded(
-          flex: 2,
+          flex: 4,
           child: Container(
             child: Text(realtime),
             padding: EdgeInsets.all(8.0),
           ),
         ),
-        igt != '0s'
-            ? Expanded(
-                flex: 2,
-                child: Container(
-                  child: Text(igt),
-                  padding: EdgeInsets.all(8.0),
-                ),
-              )
-            : Text(''),
         Expanded(
-          flex: 2,
+          flex: 3,
           child: Container(
-            child: Text(date),
+            child: igt != '0s' ? Text(igt) : Text('--'),
             padding: EdgeInsets.all(8.0),
           ),
         ),
