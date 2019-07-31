@@ -28,17 +28,20 @@ class HexToColor extends Color {
 }
 
 class LeaderboardPage extends StatelessWidget {
+  final String gameName;
   final String abbreviation;
   final String leaderboardURL;
 
-  LeaderboardPage(this.abbreviation, this.leaderboardURL);
+  LeaderboardPage(this.gameName, this.abbreviation, this.leaderboardURL);
 
   @override
   Widget build(BuildContext context) {
     print(leaderboardURL);
 
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
+        elevation: 0.0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -46,7 +49,10 @@ class LeaderboardPage extends StatelessWidget {
           },
         ),
         title: Text(
-          abbreviation,
+          gameName,
+          style: TextStyle(
+            fontSize: 18.0,
+          ),
           overflow: TextOverflow.ellipsis,
         ),
         actions: [
@@ -90,43 +96,43 @@ class LeaderboardPage extends StatelessWidget {
                   return Column(
                     //2, 5, 4, 3
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: Container(
-                              child: Text('Rank'),
-                              padding: EdgeInsets.all(8.0),
-                            )
-                          ),
-                          Expanded(
-                            flex: 5,
-                              child: Container(
-                                child: Text('Player'),
-                                padding: EdgeInsets.all(8.0),
-                              )
-                          ),
-                          Expanded(
-                            flex: 4,
-                              child: Container(
-                                child: Text('Real time'),
-                                padding: EdgeInsets.all(8.0),
-                              )
-                          ),
-                          Expanded(
-                            flex: 3,
-                              child: Container(
-                                child: Text('In-game time'),
-                                padding: EdgeInsets.all(8.0),
-                              )
-                          ),
-                        ],
+                      Container(
+                        color: Theme.of(context).primaryColorLight,
+                        child: Row(
+                          children: [
+                            Expanded(
+                                flex: 2,
+                                child: Container(
+                                  child: Text('Rank'),
+                                  padding: EdgeInsets.all(8.0),
+                                )),
+                            Expanded(
+                                flex: 5,
+                                child: Container(
+                                  child: Text('Player'),
+                                  padding: EdgeInsets.all(8.0),
+                                )),
+                            Expanded(
+                                flex: 4,
+                                child: Container(
+                                  child: Text('Real time'),
+                                  padding: EdgeInsets.all(8.0),
+                                )),
+                            Expanded(
+                                flex: 3,
+                                child: Container(
+                                  child: Text('In-game time'),
+                                  padding: EdgeInsets.all(8.0),
+                                )),
+                          ],
+                        ),
                       ),
                       Expanded(
                         child: ListView.builder(
                           itemCount: snapshot.data.runs.length,
                           itemBuilder: (BuildContext context, int index) {
                             return Container(
+                              color: Theme.of(context).primaryColorLight,
                               child: _LBRunInfo(
                                 ordinal(snapshot.data.runs[index].placing),
                                 snapshot.data.players[index],

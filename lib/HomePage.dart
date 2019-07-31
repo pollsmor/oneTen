@@ -17,12 +17,19 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(0.0),
-        child: AppBar(
-          brightness: Brightness.dark,
-          elevation: 0.0,
+      appBar: AppBar(
+        title: Text(
+          'oneTen',
+          style: TextStyle(fontSize: 18.0),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.more_vert),
+            onPressed: () {},
+          )
+        ],
+        brightness: Brightness.light,
+        elevation: 0.0,
       ),
       body: IndexedStack(
         index: _selectedIndex,
@@ -36,7 +43,9 @@ class _HomePageState extends State<HomePage> {
     return BottomNavigationBar(
       items: [
         BottomNavigationBarItem(
-          title: Text('Favorites'),
+          title: Text(
+            'Favorites',
+          ),
           icon: Icon(Icons.favorite_border),
         ),
         BottomNavigationBarItem(
@@ -46,6 +55,9 @@ class _HomePageState extends State<HomePage> {
       ],
       onTap: _onItemTapped,
       currentIndex: _selectedIndex,
+      backgroundColor: Theme.of(context).primaryColor,
+      unselectedItemColor: Theme.of(context).primaryColorDark,
+      selectedItemColor: Theme.of(context).accentColor,
     );
   }
 

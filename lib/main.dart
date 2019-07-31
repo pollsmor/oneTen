@@ -12,6 +12,10 @@ class MyApp extends StatelessWidget {
       home: HomePage(),
       theme: ThemeData(
         fontFamily: 'Rubik',
+        primaryColor: Color(0xfff2f2f2),
+        primaryColorLight: Colors.white,
+        primaryColorDark: Colors.black,
+        accentColor: Colors.blue,
       ),
       debugShowCheckedModeBanner: false,
     );

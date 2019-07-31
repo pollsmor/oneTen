@@ -33,18 +33,22 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
                 itemCount: snapshot.data.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Container(
-                    margin: EdgeInsets.fromLTRB(0.0, 0.5, 0.0, 0.5),
-                    child: _RunInfo(
-                      snapshot.data[index].game,
-                      snapshot.data[index].game.name,
-                      snapshot.data[index].category.name,
-                      snapshot.data[index].player.name,
-                      snapshot.data[index].player.color,
-                      snapshot.data[index].player.country,
-                      snapshot.data[index].date,
-                      snapshot.data[index].realtime,
-                      snapshot.data[index].igt,
-                      snapshot.data[index].game.assets.coverURL,
+                    color: Theme.of(context).primaryColor,
+                    margin: EdgeInsets.fromLTRB(0.0, 2.0, 0.0, 2.0),
+                    child: Container(
+                      color: Theme.of(context).primaryColorLight,
+                      child: _RunInfo(
+                        snapshot.data[index].game,
+                        snapshot.data[index].game.name,
+                        snapshot.data[index].category.name,
+                        snapshot.data[index].player.name,
+                        snapshot.data[index].player.color,
+                        snapshot.data[index].player.country,
+                        snapshot.data[index].date,
+                        snapshot.data[index].realtime,
+                        snapshot.data[index].igt,
+                        snapshot.data[index].game.assets.coverURL,
+                      ),
                     ),
                   );
                 },
@@ -120,8 +124,8 @@ class _RunInfo extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>
-                        LeaderboardPage(game.abbreviation, game.leaderboardURL)),
+                    builder: (context) => LeaderboardPage(
+                        game.name, game.abbreviation, game.leaderboardURL)),
               );
             },
           ),
