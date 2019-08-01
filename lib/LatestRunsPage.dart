@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import 'API.dart';
 import 'LeaderboardPage.dart';
+import 'DetailedRunPage.dart';
 
 class HexToColor extends Color {
   static _hexToColor(String code) {
@@ -35,19 +36,29 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
                   return Container(
                     color: Theme.of(context).primaryColor,
                     margin: EdgeInsets.fromLTRB(0.0, 2.0, 0.0, 2.0),
-                    child: Container(
-                      color: Theme.of(context).primaryColorLight,
-                      child: _RunInfo(
-                        snapshot.data[index].game,
-                        snapshot.data[index].game.name,
-                        snapshot.data[index].category.name,
-                        snapshot.data[index].player.name,
-                        snapshot.data[index].player.color,
-                        snapshot.data[index].player.country,
-                        snapshot.data[index].date,
-                        snapshot.data[index].realtime,
-                        snapshot.data[index].igt,
-                        snapshot.data[index].game.assets.coverURL,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetailedRunPage(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        color: Theme.of(context).primaryColorLight,
+                        child: _RunInfo(
+                          snapshot.data[index].game,
+                          snapshot.data[index].game.name,
+                          snapshot.data[index].category.name,
+                          snapshot.data[index].player.name,
+                          snapshot.data[index].player.color,
+                          snapshot.data[index].player.country,
+                          snapshot.data[index].date,
+                          snapshot.data[index].realtime,
+                          snapshot.data[index].igt,
+                          snapshot.data[index].game.assets.coverURL,
+                        ),
                       ),
                     ),
                   );
