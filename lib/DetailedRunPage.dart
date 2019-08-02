@@ -13,19 +13,25 @@ class DetailedRunPage extends StatelessWidget {
             Navigator.pop(context);
           },
         ),
-        title: Text(
-          'lmao',
-          style: TextStyle(
-            fontSize: 18.0,
-          ),
-          overflow: TextOverflow.ellipsis,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(padding: EdgeInsets.all(4.0)),
+            Text(
+              'Metroid: Zero Mission',
+              style: TextStyle(
+                fontSize: 18.0,
+              ),
+            ),
+            Text(
+              '100% Normal',
+              style: TextStyle(
+                fontSize: 13.0,
+                fontWeight: FontWeight.w300,
+              ),
+            ),
+          ],
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.favorite_border),
-            onPressed: () {},
-          )
-        ],
       ),
     );
   }
