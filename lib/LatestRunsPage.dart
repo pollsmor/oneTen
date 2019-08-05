@@ -41,7 +41,11 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => DetailedRunPage(),
+                            builder: (context) => DetailedRunPage(
+                              snapshot.data[index].game.name,
+                              snapshot.data[index].category,
+                              snapshot.data[index].game.leaderboardURL,
+                            ),
                           ),
                         );
                       },

@@ -54,7 +54,7 @@ List<LatestRun> parseLatestRuns(String responseBody) {
 }
 
 //Does not work with levelled games
-Future<Leaderboard> getLeaderboard(String leaderboardURL) async {
+Future<Leaderboard> fetchLeaderboard(String leaderboardURL) async {
   final response = await http
       .get('$leaderboardURL?embed=game,category,players,regions,platforms');
 
@@ -369,6 +369,10 @@ class LeaderboardRun {
       igt: calcTime(igtSecs),
     );
   }
+}
+
+class DetailedRun {
+
 }
 
 class Leaderboard {

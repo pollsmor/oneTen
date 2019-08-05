@@ -90,7 +90,7 @@ class LeaderboardPage extends StatelessWidget {
           Padding(padding: EdgeInsets.all(8.0)),
           Expanded(
             child: FutureBuilder<Leaderboard>(
-              future: getLeaderboard(leaderboardURL),
+              future: fetchLeaderboard(leaderboardURL),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Column(

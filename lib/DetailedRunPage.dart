@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
 
+import 'API.dart';
+
 class DetailedRunPage extends StatelessWidget {
+  final String gameName;
+  final Category category;
+  final String leaderboardURL;
+
+  DetailedRunPage(this.gameName, this.category, this.leaderboardURL);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,13 +26,13 @@ class DetailedRunPage extends StatelessWidget {
           children: [
             Padding(padding: EdgeInsets.all(4.0)),
             Text(
-              'Metroid: Zero Mission',
+              gameName,
               style: TextStyle(
                 fontSize: 18.0,
               ),
             ),
             Text(
-              '100% Normal',
+              category.name,
               style: TextStyle(
                 fontSize: 13.0,
                 fontWeight: FontWeight.w300,
