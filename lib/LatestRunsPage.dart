@@ -45,6 +45,7 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
                               snapshot.data[index].game.name,
                               snapshot.data[index].category,
                               snapshot.data[index].game.leaderboardURL,
+                              index,
                             ),
                           ),
                         );

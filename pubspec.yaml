@@ -28,6 +28,8 @@ dependencies:
 
   cached_network_image: ^1.1.0
 
+  video_player:
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
