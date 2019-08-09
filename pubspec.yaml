@@ -30,6 +30,8 @@ dependencies:
 
   webview_flutter: ^0.3.11
 
+  country_icons: ^1.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

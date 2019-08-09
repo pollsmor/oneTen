@@ -168,7 +168,7 @@ class _RunInfo extends StatelessWidget {
                 ),
                 Padding(padding: EdgeInsets.all(4.0)),
                 Text(
-                  rta != '0 secs' ? 'RTA — $rta' : 'No RTA',
+                  rta != '0s' ? 'RTA — $rta' : 'No RTA',
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -177,7 +177,7 @@ class _RunInfo extends StatelessWidget {
                 ),
                 Padding(padding: EdgeInsets.all(4.0)),
                 Text(
-                  igt != '0 secs' ? 'IGT — $igt' : 'No IGT',
+                  igt != '0s' ? 'IGT — $igt' : 'No IGT',
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
