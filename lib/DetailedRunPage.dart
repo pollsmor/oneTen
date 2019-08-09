@@ -32,6 +32,7 @@ class DetailedRunPage extends StatelessWidget {
   final Category category;
   final String leaderboardURL;
   final int runIndex;
+  WebViewController _controller;
 
   DetailedRunPage(
       this.gameName, this.category, this.leaderboardURL, this.runIndex);
@@ -92,6 +93,12 @@ class DetailedRunPage extends StatelessWidget {
                   child: WebView(
                     initialUrl: snapshot.data.runs[runIndex].videoLinks[0],
                     javascriptMode: JavascriptMode.unrestricted,
+                    onWebViewCreated: (controller) {
+                      _controller = controller;
+                    },
+                    onPageFinished: (url) {
+                      _controller.evaluateJavascript(
+                    },
                   ),
                 ),
               ],
