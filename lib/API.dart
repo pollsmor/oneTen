@@ -36,7 +36,7 @@ String calcTime(double seconds) {
 
 Future<List<LatestRun>> fetchLatestRuns() async {
   final response = await http.get(
-      '$baseurl/runs?status=verified&orderby=verify-date&direction=desc&embed=game,category,players,platform,region');
+      '$baseurl/runs?status=verified&orderby=submitted&direction=desc&embed=game,category,level,players,region,plaform');
 
   if (response.statusCode == 200) {
     return compute(parseLatestRuns, response.body);
@@ -59,7 +59,7 @@ Future<Leaderboard> fetchLeaderboard(String leaderboardURL) async {
       .get('$leaderboardURL?embed=game,category,players,regions,platforms');
 
   if (response.statusCode == 200) {
-      return compute(parseLeaderboard, response.body);
+    return compute(parseLeaderboard, response.body);
   }
 
   throw Exception('Failed to load leaderboard.');
@@ -144,27 +144,26 @@ class Game {
   final List<Category> categories;
   final String leaderboardURL;
 
-  Game(
-      {this.id,
-      this.name,
-      this.abbreviation,
-      this.releaseDate,
-      this.ruleset,
-      this.platforms,
-      this.regions,
-      this.moderators,
-      this.assets,
-      this.categories,
-      this.leaderboardURL,});
+  Game({
+    this.id,
+    this.name,
+    this.abbreviation,
+    this.releaseDate,
+    this.ruleset,
+    this.platforms,
+    this.regions,
+    this.moderators,
+    this.assets,
+    this.categories,
+    this.leaderboardURL,
+  });
 
   factory Game.fromJson(Map<String, dynamic> json) {
     String leaderboardURL;
 
     if (json['links'][json['links'].length - 1]['rel'] == 'leaderboard') {
       leaderboardURL = json['links'][json['links'].length - 1]['uri'];
-    }
-
-    else {
+    } else {
       leaderboardURL = json['links'][2]['uri'];
     }
 
@@ -298,31 +297,61 @@ class Player {
 class LatestRun {
   final Game game;
   final Category category;
+  final List<String> videoLinks;
+  final String comment;
+  final String verifyDate;
   final Player player;
   final String date;
   final String realtime;
   final String igt;
+  final String region;
+  final String platform;
+  final String yearPlatform;
 
   LatestRun(
       {this.game,
       this.category,
+      this.videoLinks,
+      this.comment,
+      this.verifyDate,
       this.player,
       this.date,
       this.realtime,
-      this.igt});
+      this.igt,
+      this.region,
+      this.platform,
+      this.yearPlatform});
 
   factory LatestRun.fromJson(Map<String, dynamic> json) {
-    //Get the times in seconds
-    double realtimeSecs = json['times']['realtime_t'].toDouble();
-    double igtSecs = json['times']['ingame_t'].toDouble();
+    //Handles getting the list of videos
+    var list = json['videos'] != null ? json['videos']['links'] as List : null;
+    List<String> videoLinksList;
+    if (list != null) {
+      videoLinksList = List<String>(list.length);
+      for (int i = 0; i < list.length; ++i) {
+        videoLinksList[i] = list[i]['uri'];
+      }
+    }
 
     return LatestRun(
       game: Game.fromJson(json['game']['data']),
       category: Category.fromJson(json['category']['data']),
+      videoLinks: videoLinksList,
+      comment: json['comment'],
+      verifyDate: json['status']['verify-date'],
       player: Player.fromJson(json['players']['data'][0]),
       date: json['date'],
-      realtime: calcTime(realtimeSecs),
-      igt: calcTime(igtSecs),
+      realtime: calcTime(json['times']['realtime_t'].toDouble()),
+      igt: calcTime(json['times']['ingame_t'].toDouble()),
+      region: json['region']['data'] is Map<String, dynamic>
+          ? json['region']['data']['name']
+          : "",
+      platform: json['platform'] != null
+          ? json['platform']['data']['name']
+          : '',
+      yearPlatform: json['platform'] != null
+          ? json['platform']['data']['released']
+          : '',
     );
   }
 }
@@ -369,10 +398,6 @@ class LeaderboardRun {
       igt: calcTime(igtSecs),
     );
   }
-}
-
-class DetailedRun {
-
 }
 
 class Leaderboard {

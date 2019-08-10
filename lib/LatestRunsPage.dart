@@ -25,7 +25,7 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
   Widget build(BuildContext context) {
     return Center(
       child: FutureBuilder<List<LatestRun>>(
-        future: runs,
+        future: fetchLatestRuns(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return RefreshIndicator(
@@ -42,10 +42,18 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => DetailedRunPage(
-                              snapshot.data[index].game.name,
+                              snapshot.data[index].game,
                               snapshot.data[index].category,
-                              snapshot.data[index].game.leaderboardURL,
-                              index,
+                              snapshot.data[index].videoLinks,
+                              snapshot.data[index].comment,
+                              snapshot.data[index].verifyDate,
+                              snapshot.data[index].player,
+                              snapshot.data[index].date,
+                              snapshot.data[index].realtime,
+                              snapshot.data[index].igt,
+                              snapshot.data[index].region,
+                              snapshot.data[index].platform,
+                              snapshot.data[index].yearPlatform,
                             ),
                           ),
                         );
@@ -54,15 +62,11 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
                         color: Theme.of(context).primaryColorLight,
                         child: _RunInfo(
                           snapshot.data[index].game,
-                          snapshot.data[index].game.name,
-                          snapshot.data[index].category.name,
-                          snapshot.data[index].player.name,
-                          snapshot.data[index].player.color,
-                          snapshot.data[index].player.country,
+                          snapshot.data[index].category,
+                          snapshot.data[index].player,
                           snapshot.data[index].date,
                           snapshot.data[index].realtime,
                           snapshot.data[index].igt,
-                          snapshot.data[index].game.assets.coverURL,
                         ),
                       ),
                     ),
@@ -94,27 +98,20 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
 
 class _RunInfo extends StatelessWidget {
   final Game game;
-  final String gameName;
-  final String category;
-  final String player;
-  final String playerColor;
-  final String country;
+  final Category category;
+  final Player player;
   final String date;
   final String rta;
   final String igt;
-  final String coverURL;
 
   _RunInfo(
-      this.game,
-      this.gameName,
-      this.category,
-      this.player,
-      this.playerColor,
-      this.country,
-      this.date,
-      this.rta,
-      this.igt,
-      this.coverURL);
+    this.game,
+    this.category,
+    this.player,
+    this.date,
+    this.rta,
+    this.igt,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +127,7 @@ class _RunInfo extends StatelessWidget {
                 child: AspectRatio(
                   aspectRatio: 1.0,
                   child: CachedNetworkImage(
-                    imageUrl: coverURL,
+                    imageUrl: game.assets.coverURL,
                     errorWidget: (context, url, error) => Icon(Icons.error),
                   ),
                 ),
@@ -140,8 +137,7 @@ class _RunInfo extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => LeaderboardPage(
-                        game.name, game.abbreviation, game.leaderboardURL)),
+                    builder: (context) => LeaderboardPage(game.abbreviation)),
               );
             },
           ),
@@ -153,7 +149,7 @@ class _RunInfo extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  gameName,
+                  game.name,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -162,7 +158,7 @@ class _RunInfo extends StatelessWidget {
                 ),
                 Padding(padding: EdgeInsets.all(4.0)),
                 Text(
-                  category,
+                  category.name,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -205,11 +201,11 @@ class _RunInfo extends StatelessWidget {
                 ),
                 Padding(padding: EdgeInsets.all(4.0)),
                 Text(
-                  '$player',
+                  player.name,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    color: Color(HexToColor._hexToColor(playerColor)),
+                    color: Color(HexToColor._hexToColor(player.color)),
                     fontSize: 14.0,
                     fontWeight: FontWeight.bold,
                   ),

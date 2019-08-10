@@ -28,11 +28,9 @@ class HexToColor extends Color {
 }
 
 class LeaderboardPage extends StatelessWidget {
-  final String gameName;
-  final String abbreviation;
   final String leaderboardURL;
 
-  LeaderboardPage(this.gameName, this.abbreviation, this.leaderboardURL);
+  LeaderboardPage(this.leaderboardURL);
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +47,7 @@ class LeaderboardPage extends StatelessWidget {
           },
         ),
         title: Text(
-          gameName,
+          'Placeholder',
           style: TextStyle(
             fontSize: 18.0,
           ),
@@ -62,99 +60,74 @@ class LeaderboardPage extends StatelessWidget {
           )
         ],
       ),
-      body: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.all(8.0),
-            child: FutureBuilder<Game>(
-              future: fetchGame(abbreviation),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return _GameInfo(
-                    snapshot.data.name,
-                    snapshot.data.releaseDate,
-                    snapshot.data.ruleset,
-                    snapshot.data.moderators,
-                    snapshot.data.assets,
-                    snapshot.data.regions,
-                    snapshot.data.platforms,
-                  );
-                } else if (snapshot.hasError) {
-                  return Text('${snapshot.error}');
-                }
-
-                return Text('');
-              },
-            ),
-          ),
-          Padding(padding: EdgeInsets.all(8.0)),
-          Expanded(
-            child: FutureBuilder<Leaderboard>(
-              future: fetchLeaderboard(leaderboardURL),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Column(
-                    //2, 5, 4, 3
-                    children: [
-                      Container(
-                        color: Theme.of(context).primaryColorLight,
-                        child: Row(
-                          children: [
-                            Expanded(
-                                flex: 2,
-                                child: Container(
-                                  child: Text('Rank'),
-                                  padding: EdgeInsets.all(8.0),
-                                )),
-                            Expanded(
-                                flex: 5,
-                                child: Container(
-                                  child: Text('Player'),
-                                  padding: EdgeInsets.all(8.0),
-                                )),
-                            Expanded(
-                                flex: 4,
-                                child: Container(
-                                  child: Text('Real time'),
-                                  padding: EdgeInsets.all(8.0),
-                                )),
-                            Expanded(
-                                flex: 3,
-                                child: Container(
-                                  child: Text('In-game time'),
-                                  padding: EdgeInsets.all(8.0),
-                                )),
-                          ],
-                        ),
+      body: FutureBuilder<Leaderboard>(
+        builder: (context, snapshot) {
+          return Column(
+            children: [
+              _GameInfo(
+                snapshot.data.game.name,
+                snapshot.data.game.releaseDate,
+                snapshot.data.game.ruleset,
+                snapshot.data.game.moderators,
+                snapshot.data.game.assets,
+                snapshot.data.game.regions,
+                snapshot.data.game.platforms,
+              ),
+              Container(
+                color: Theme.of(context).primaryColorLight,
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: Container(
+                        child: Text('Rank'),
+                        padding: EdgeInsets.all(8.0),
                       ),
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: snapshot.data.runs.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Container(
-                              color: Theme.of(context).primaryColorLight,
-                              child: _LBRunInfo(
-                                ordinal(snapshot.data.runs[index].placing),
-                                snapshot.data.players[index],
-                                snapshot.data.runs[index].realtime,
-                                snapshot.data.runs[index].igt,
-                                snapshot.data.runs[index].videoLinks,
-                              ),
-                            );
-                          },
-                        ),
-                      )
-                    ],
-                  );
-                } else if (snapshot.hasError) {
-                  return Text('${snapshot.error}');
-                }
-
-                return Text('');
-              },
-            ),
-          ),
-        ],
+                    ),
+                    Expanded(
+                      flex: 5,
+                      child: Container(
+                        child: Text('Player'),
+                        padding: EdgeInsets.all(8.0),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 4,
+                      child: Container(
+                        child: Text('Real time'),
+                        padding: EdgeInsets.all(8.0),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child: Container(
+                        child: Text('In-game time'),
+                        padding: EdgeInsets.all(8.0),
+                      ),
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: snapshot.data.runs.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Container(
+                            color: Theme.of(context).primaryColorLight,
+                            child: _LBRunInfo(
+                              ordinal(snapshot.data.runs[index].placing),
+                              snapshot.data.players[index],
+                              snapshot.data.runs[index].realtime,
+                              snapshot.data.runs[index].igt,
+                              snapshot.data.runs[index].videoLinks,
+                            ),
+                          );
+                        },
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
