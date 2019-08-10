@@ -118,12 +118,12 @@ class _RunInfo extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          flex: 2,
+          flex: 1,
           child: GestureDetector(
             child: Container(
-              padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
+              padding: EdgeInsets.fromLTRB(4.0, 0.0, 4.0, 0.0),
               child: SizedBox(
-                height: 125.0,
+                height: 100.0,
                 child: AspectRatio(
                   aspectRatio: 1.0,
                   child: CachedNetworkImage(
@@ -143,7 +143,7 @@ class _RunInfo extends StatelessWidget {
           ),
         ),
         Expanded(
-          flex: 7,
+          flex: 5,
           child: Container(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -153,7 +153,7 @@ class _RunInfo extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontWeight: FontWeight.bold,
+                    fontSize: 16.0,
                   ),
                 ),
                 Padding(padding: EdgeInsets.all(4.0)),
@@ -162,7 +162,17 @@ class _RunInfo extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-                Padding(padding: EdgeInsets.all(4.0)),
+              ],
+            ),
+          ),
+        ),
+        Expanded(
+          flex: 3,
+          child: Container(
+            padding: EdgeInsets.only(right: 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
                 Text(
                   rta != '0s' ? 'RTA — $rta' : 'No RTA',
                   maxLines: 2,
@@ -170,6 +180,7 @@ class _RunInfo extends StatelessWidget {
                   style: TextStyle(
                     fontWeight: FontWeight.w300,
                   ),
+                  textAlign: TextAlign.right,
                 ),
                 Padding(padding: EdgeInsets.all(4.0)),
                 Text(
@@ -179,25 +190,7 @@ class _RunInfo extends StatelessWidget {
                   style: TextStyle(
                     fontWeight: FontWeight.w300,
                   ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        Expanded(
-          flex: 4,
-          child: Container(
-            padding: EdgeInsets.only(right: 8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  '$date',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 12.0,
-                  ),
+                  textAlign: TextAlign.right,
                 ),
                 Padding(padding: EdgeInsets.all(4.0)),
                 Text(
@@ -206,9 +199,9 @@ class _RunInfo extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: Color(HexToColor._hexToColor(player.color)),
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 16.0,
                   ),
+                  textAlign: TextAlign.left,
                 ),
               ],
             ),
