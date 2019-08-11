@@ -46,13 +46,6 @@ class LeaderboardPage extends StatelessWidget {
             Navigator.pop(context);
           },
         ),
-        title: Text(
-          'Placeholder',
-          style: TextStyle(
-            fontSize: 18.0,
-          ),
-          overflow: TextOverflow.ellipsis,
-        ),
         actions: [
           IconButton(
             icon: Icon(Icons.favorite_border),
@@ -61,72 +54,72 @@ class LeaderboardPage extends StatelessWidget {
         ],
       ),
       body: FutureBuilder<Leaderboard>(
+        future: fetchLeaderboard(leaderboardURL),
         builder: (context, snapshot) {
-          return Column(
-            children: [
-              _GameInfo(
-                snapshot.data.game.name,
-                snapshot.data.game.releaseDate,
-                snapshot.data.game.ruleset,
-                snapshot.data.game.moderators,
-                snapshot.data.game.assets,
-                snapshot.data.game.regions,
-                snapshot.data.game.platforms,
-              ),
-              Container(
-                color: Theme.of(context).primaryColorLight,
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: Container(
-                        child: Text('Rank'),
-                        padding: EdgeInsets.all(8.0),
+          if (snapshot.hasData) {
+            return Column(
+              children: [
+                _GameInfo(snapshot.data.game),
+                Container(
+                  color: Theme.of(context).primaryColorLight,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Container(
+                          child: Text('Rank'),
+                          padding: EdgeInsets.all(8.0),
+                        ),
                       ),
-                    ),
-                    Expanded(
-                      flex: 5,
-                      child: Container(
-                        child: Text('Player'),
-                        padding: EdgeInsets.all(8.0),
+                      Expanded(
+                        flex: 5,
+                        child: Container(
+                          child: Text('Player'),
+                          padding: EdgeInsets.all(8.0),
+                        ),
                       ),
-                    ),
-                    Expanded(
-                      flex: 4,
-                      child: Container(
-                        child: Text('Real time'),
-                        padding: EdgeInsets.all(8.0),
+                      Expanded(
+                        flex: 4,
+                        child: Container(
+                          child: Text('Real time'),
+                          padding: EdgeInsets.all(8.0),
+                        ),
                       ),
-                    ),
-                    Expanded(
-                      flex: 3,
-                      child: Container(
-                        child: Text('In-game time'),
-                        padding: EdgeInsets.all(8.0),
+                      Expanded(
+                        flex: 3,
+                        child: Container(
+                          child: Text('In-game time'),
+                          padding: EdgeInsets.all(8.0),
+                        ),
                       ),
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: snapshot.data.runs.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Container(
-                            color: Theme.of(context).primaryColorLight,
-                            child: _LBRunInfo(
-                              ordinal(snapshot.data.runs[index].placing),
-                              snapshot.data.players[index],
-                              snapshot.data.runs[index].realtime,
-                              snapshot.data.runs[index].igt,
-                              snapshot.data.runs[index].videoLinks,
-                            ),
-                          );
-                        },
-                      ),
-                    )
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          );
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: snapshot.data.runs.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Container(
+                        color: Theme.of(context).primaryColorLight,
+                        child: _LBRunInfo(
+                          ordinal(snapshot.data.runs[index].placing),
+                          snapshot.data.players[index],
+                          snapshot.data.runs[index].realtime,
+                          snapshot.data.runs[index].igt,
+                          snapshot.data.runs[index].videoLinks,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            );
+
+          } else if (snapshot.hasError) {
+            return Text('${snapshot.error}');
+          }
+
+          return CircularProgressIndicator();
         },
       ),
     );
@@ -134,22 +127,17 @@ class LeaderboardPage extends StatelessWidget {
 }
 
 class _GameInfo extends StatelessWidget {
-  final String name;
-  final String releaseDate;
-  final Ruleset ruleset;
-  final List<Player> moderators;
-  final Assets assets;
-  final List<String> regions;
-  final List<String> platforms;
+  final Game game;
 
-  _GameInfo(this.name, this.releaseDate, this.ruleset, this.moderators,
-      this.assets, this.regions, this.platforms);
+  _GameInfo(this.game);
 
   Widget build(BuildContext context) {
     String modNames = '';
-    for (int i = 0; i < moderators.length; ++i)
-      modNames += (moderators[i].name + ', ');
-    modNames = modNames.substring(0, modNames.length - 2);
+    if (game.moderators != null) {
+      for (int i = 0; i < game.moderators.length; ++i)
+        modNames += (game.moderators[i].name + ', ');
+      modNames = modNames.substring(0, modNames.length - 2);
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -168,7 +156,7 @@ class _GameInfo extends StatelessWidget {
                 child: SizedBox(
                   height: 100.0,
                   child: CachedNetworkImage(
-                    imageUrl: assets.coverURL,
+                    imageUrl: game.assets.coverURL,
                     errorWidget: (context, url, error) => Icon(Icons.error),
                   ),
                 ),
@@ -177,7 +165,7 @@ class _GameInfo extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      name,
+                      game.name,
                       style: TextStyle(
                         fontSize: 16.0,
                       ),
@@ -187,7 +175,7 @@ class _GameInfo extends StatelessWidget {
                     ),
                     Padding(padding: EdgeInsets.all(4.0)),
                     Text(
-                      releaseDate,
+                      game.releaseDate,
                       style: TextStyle(
                         fontSize: 16.0,
                         fontWeight: FontWeight.w300,
@@ -209,8 +197,9 @@ class _GameInfo extends StatelessWidget {
             children: [
               Text(
                 'Regions: ' +
-                    ('$regions' != '[]'
-                        ? '$regions'.substring(1, '$regions'.length - 1)
+                    ('$game.regions' != '[]'
+                        ? '$game.regions'
+                            .substring(1, '$game.regions'.length - 1)
                         : 'N/A'),
                 style: TextStyle(
                   fontSize: 13.0,
@@ -222,7 +211,8 @@ class _GameInfo extends StatelessWidget {
               Padding(padding: EdgeInsets.all(4.0)),
               Text(
                 'Platforms: ' +
-                    ('$platforms'.substring(1, '$platforms'.length - 1)),
+                    ('$game.platforms'
+                        .substring(1, '$game.platforms'.length - 1)),
                 style: TextStyle(
                   fontSize: 13.0,
                   fontWeight: FontWeight.w400,
@@ -240,6 +230,7 @@ class _GameInfo extends StatelessWidget {
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
               ),
+              Padding(padding: EdgeInsets.all(4.0)),
             ],
           ),
         ),

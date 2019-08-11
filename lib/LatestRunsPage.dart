@@ -137,7 +137,7 @@ class _RunInfo extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => LeaderboardPage(game.abbreviation)),
+                    builder: (context) => LeaderboardPage(game.leaderboardURL)),
               );
             },
           ),

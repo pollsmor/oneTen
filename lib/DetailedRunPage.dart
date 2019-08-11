@@ -149,17 +149,25 @@ class DetailedRunPage extends StatelessWidget {
                     fontWeight: FontWeight.w300,
                   ),
                 ),
-                Padding(
-                    child: Divider(
-                      height: 4.0,
-                    ),
-                    padding: EdgeInsets.all(4.0)),
+                Padding(padding: EdgeInsets.all(4.0)),
                 Text(
-                  comment,
+                  comment != '' ? 'Comment: $comment' : 'No comment',
                   textAlign: TextAlign.left,
                 ),
               ],
             ),
+          ),
+          Divider(
+            height: 4.0,
+          ),
+          Padding(
+            child: Text(
+              'Evidence',
+              style: TextStyle(
+                fontSize: 18.0,
+              ),
+            ),
+            padding: EdgeInsets.only(top: 4.0),
           ),
           videoLinks != null
               ? Expanded(
