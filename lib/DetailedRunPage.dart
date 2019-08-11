@@ -161,58 +161,68 @@ class DetailedRunPage extends StatelessWidget {
               ],
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: videoLinks.length,
-              itemBuilder: (BuildContext context, int index) {
-                return MaterialButton(
-                  child: Text('Video $index'),
-                  color: Colors.blue,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Scaffold(
-                          appBar: AppBar(
-                            elevation: 0.0,
-                            leading: IconButton(
-                              icon: Icon(Icons.arrow_back),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                            title: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(padding: EdgeInsets.all(4.0)),
-                                Text(
-                                  game.name,
-                                  style: TextStyle(
-                                    fontSize: 18.0,
+          videoLinks != null
+              ? Expanded(
+                  child: ListView.builder(
+                    itemCount: videoLinks.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Container(
+                        margin: EdgeInsets.all(8.0),
+                        child: MaterialButton(
+                          height: 45.0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16.0),
+                          ),
+                          child: Text(videoLinks[index]),
+                          color: Theme.of(context).primaryColorLight,
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Scaffold(
+                                  appBar: AppBar(
+                                    elevation: 0.0,
+                                    leading: IconButton(
+                                      icon: Icon(Icons.arrow_back),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                    title: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(padding: EdgeInsets.all(4.0)),
+                                        Text(
+                                          game.name,
+                                          style: TextStyle(
+                                            fontSize: 18.0,
+                                          ),
+                                        ),
+                                        Text(
+                                          category.name,
+                                          style: TextStyle(
+                                            fontSize: 13.0,
+                                            fontWeight: FontWeight.w300,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  body: WebView(
+                                    initialUrl: videoLinks[index],
+                                    javascriptMode: JavascriptMode.unrestricted,
                                   ),
                                 ),
-                                Text(
-                                  category.name,
-                                  style: TextStyle(
-                                    fontSize: 13.0,
-                                    fontWeight: FontWeight.w300,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          body: WebView(
-                            initialUrl: videoLinks[index],
-                            javascriptMode: JavascriptMode.unrestricted,
-                          ),
+                              ),
+                            );
+                          },
                         ),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-          ),
+                      );
+                    },
+                  ),
+                )
+              : Text(''),
         ],
       ),
     );

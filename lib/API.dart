@@ -337,7 +337,7 @@ class LatestRun {
       game: Game.fromJson(json['game']['data']),
       category: Category.fromJson(json['category']['data']),
       videoLinks: videoLinksList,
-      comment: json['comment'],
+      comment: json['comment'] != null ? json['comment'] : '',
       verifyDate: json['status']['verify-date'],
       player: Player.fromJson(json['players']['data'][0]),
       date: json['date'],
@@ -346,12 +346,10 @@ class LatestRun {
       region: json['region']['data'] is Map<String, dynamic>
           ? json['region']['data']['name']
           : "",
-      platform: json['platform'] != null
-          ? json['platform']['data']['name']
-          : '',
-      yearPlatform: json['platform'] != null
-          ? json['platform']['data']['released']
-          : '',
+      platform:
+          json['platform'] != null ? json['platform']['data']['name'] : '',
+      yearPlatform:
+          json['platform'] != null ? json['platform']['data']['released'] : '',
     );
   }
 }
