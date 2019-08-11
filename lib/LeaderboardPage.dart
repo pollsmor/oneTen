@@ -59,7 +59,7 @@ class LeaderboardPage extends StatelessWidget {
           if (snapshot.hasData) {
             return Column(
               children: [
-                _GameInfo(snapshot.data.game),
+                _GameInfo(snapshot.data.game, snapshot.data.regions, snapshot.data.platforms),
                 Container(
                   color: Theme.of(context).primaryColorLight,
                   child: Row(
@@ -106,7 +106,6 @@ class LeaderboardPage extends StatelessWidget {
                           snapshot.data.players[index],
                           snapshot.data.runs[index].realtime,
                           snapshot.data.runs[index].igt,
-                          snapshot.data.runs[index].videoLinks,
                         ),
                       );
                     },
@@ -127,8 +126,10 @@ class LeaderboardPage extends StatelessWidget {
 
 class _GameInfo extends StatelessWidget {
   final Game game;
+  List<String> regions;
+  List<String> platforms;
 
-  _GameInfo(this.game);
+  _GameInfo(this.game, this.regions, this.platforms);
 
   Widget build(BuildContext context) {
     return Column(
@@ -188,11 +189,7 @@ class _GameInfo extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Regions: ' +
-                    ('$game.regions' != '[]'
-                        ? '$game.regions'
-                            .substring(1, '$game.regions'.length - 1)
-                        : 'N/A'),
+                'Regions: ' + ('$regions' != '[]' ? '$regions'.substring(1, '$regions'.length - 1) : 'N/A'),
                 style: TextStyle(
                   fontSize: 13.0,
                   fontWeight: FontWeight.w400,
@@ -202,9 +199,7 @@ class _GameInfo extends StatelessWidget {
               ),
               Padding(padding: EdgeInsets.all(4.0)),
               Text(
-                'Platforms: ' +
-                    ('$game.platforms'
-                        .substring(1, '$game.platforms'.length - 1)),
+                'Platforms: ' + ('$platforms' != '[]' ? '$platforms'.substring(1, '$platforms'.length - 1) : 'N/A'),
                 style: TextStyle(
                   fontSize: 13.0,
                   fontWeight: FontWeight.w400,
@@ -226,10 +221,8 @@ class _LBRunInfo extends StatelessWidget {
   final Player player;
   final String realtime;
   final String igt;
-  final List<String> videoLinks;
 
-  _LBRunInfo(
-      this.placing, this.player, this.realtime, this.igt, this.videoLinks);
+  _LBRunInfo(this.placing, this.player, this.realtime, this.igt);
 
   @override
   Widget build(BuildContext context) {
