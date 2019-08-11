@@ -102,7 +102,7 @@ class LeaderboardPage extends StatelessWidget {
                       return Container(
                         color: Theme.of(context).primaryColorLight,
                         child: _LBRunInfo(
-                          ordinal(snapshot.data.runs[index].placing),
+                          ordinal(index + 1),
                           snapshot.data.players[index],
                           snapshot.data.runs[index].realtime,
                           snapshot.data.runs[index].igt,
@@ -114,7 +114,6 @@ class LeaderboardPage extends StatelessWidget {
                 ),
               ],
             );
-
           } else if (snapshot.hasError) {
             return Text('${snapshot.error}');
           }
@@ -132,13 +131,6 @@ class _GameInfo extends StatelessWidget {
   _GameInfo(this.game);
 
   Widget build(BuildContext context) {
-    String modNames = '';
-    if (game.moderators != null) {
-      for (int i = 0; i < game.moderators.length; ++i)
-        modNames += (game.moderators[i].name + ', ');
-      modNames = modNames.substring(0, modNames.length - 2);
-    }
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -213,16 +205,6 @@ class _GameInfo extends StatelessWidget {
                 'Platforms: ' +
                     ('$game.platforms'
                         .substring(1, '$game.platforms'.length - 1)),
-                style: TextStyle(
-                  fontSize: 13.0,
-                  fontWeight: FontWeight.w400,
-                ),
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-              ),
-              Padding(padding: EdgeInsets.all(4.0)),
-              Text(
-                'Moderators: $modNames',
                 style: TextStyle(
                   fontSize: 13.0,
                   fontWeight: FontWeight.w400,

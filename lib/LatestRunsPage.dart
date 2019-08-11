@@ -19,12 +19,12 @@ class LatestRunsPage extends StatefulWidget {
 }
 
 class _LatestRunsPageState extends State<LatestRunsPage> {
-  Future<List<LatestRun>> runs = fetchLatestRuns();
+  Future<List<Run>> runs = fetchLatestRuns();
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: FutureBuilder<List<LatestRun>>(
+      child: FutureBuilder<List<Run>>(
         future: fetchLatestRuns(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
