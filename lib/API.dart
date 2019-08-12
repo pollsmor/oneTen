@@ -232,6 +232,22 @@ class Category {
   }
 }
 
+class Level {
+  final String name;
+  final String rules;
+  final String leaderboardURL;
+
+  Level({this.name, this.rules, this.leaderboardURL});
+
+  factory Level.fromJson(Map<String, dynamic> json) {
+    return Level(
+      name: json['name'],
+      rules: json['rules'],
+      leaderboardURL: json['links'][json['links'].length - 1]['uri'],
+    );
+  }
+}
+
 class Player {
   final String name;
   final String color;
@@ -296,7 +312,9 @@ class Player {
 }
 
 class Run {
+  final String id;
   final Game game;
+  final Level level;
   final Category category;
   final List<String> videoLinks;
   final String comment;
@@ -308,9 +326,12 @@ class Run {
   final String region;
   final String platform;
   final String yearPlatform;
+  final String leaderboardURL;
 
   Run(
-      {this.game,
+      {this.id,
+      this.game,
+        this.level,
       this.category,
       this.videoLinks,
       this.comment,
@@ -321,7 +342,8 @@ class Run {
       this.igt,
       this.region,
       this.platform,
-      this.yearPlatform});
+      this.yearPlatform,
+      this.leaderboardURL});
 
   factory Run.fromJson(Map<String, dynamic> json) {
     //Handles getting the list of videos
@@ -339,8 +361,16 @@ class Run {
       }
     }
 
+    String leaderboardURL = '';
+    if (json['level']['data'] is Map<String, dynamic>) {
+      leaderboardURL = json['level']['data']['links'][json['level']['data']['links'].length - 1]['uri'];
+    } else {
+      leaderboardURL = json['category']['data']['links'][json['category']['data']['links'].length - 1]['uri'];
+    }
+
     return Run(
       game: Game.fromJson(json['game']['data']),
+      level: json['level']['data'] is Map<String, dynamic> ? Level.fromJson(json['level']['data']) : null,
       category: Category.fromJson(json['category']['data']),
       videoLinks: videoLinksList,
       comment: json['comment'] != null ? json['comment'] : '',
@@ -356,21 +386,52 @@ class Run {
           json['platform'] != null ? json['platform']['data']['name'] : '',
       yearPlatform:
           json['platform'] != null ? json['platform']['data']['released'] : '',
+      leaderboardURL: leaderboardURL,
     );
   }
 }
 
 class LeaderboardRun {
   final int place;
+  final String id;
+  final List<String> videoLinks;
+  final String comment;
+  final String verifyDate;
   final String date;
   final String realtime;
   final String igt;
 
-  LeaderboardRun({this.place, this.date, this.realtime, this.igt});
+  LeaderboardRun(
+      {this.place,
+      this.id,
+      this.videoLinks,
+      this.comment,
+      this.verifyDate,
+      this.date,
+      this.realtime,
+      this.igt});
 
   factory LeaderboardRun.fromJson(Map<String, dynamic> json) {
+    var videos = json['run']['videos'] != null ? json['run']['videos'] : null;
+    List<String> videoLinksList;
+    if (videos != null) {
+      if (videos['links'] != null) {
+        videoLinksList = List<String>(videos['links'].length);
+        for (int i = 0; i < videos['links'].length; ++i) {
+          videoLinksList[i] = videos['links'][i]['uri'];
+        }
+      } else {
+        videoLinksList = List<String>(1);
+        videoLinksList[0] = videos['text'];
+      }
+    }
+
     return LeaderboardRun(
       place: json['place'],
+      id: json['run']['id'],
+      videoLinks: videoLinksList,
+      comment: json['run']['comment'],
+      verifyDate: json['run']['status']['verify-date'],
       date: json['run']['date'],
       realtime: calcTime(json['run']['times']['realtime_t'].toDouble()),
       igt: calcTime(json['run']['times']['ingame_t'].toDouble()),
