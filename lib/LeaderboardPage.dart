@@ -126,8 +126,8 @@ class LeaderboardPage extends StatelessWidget {
 
 class _GameInfo extends StatelessWidget {
   final Game game;
-  List<String> regions;
-  List<String> platforms;
+  final List<String> regions;
+  final List<String> platforms;
 
   _GameInfo(this.game, this.regions, this.platforms);
 

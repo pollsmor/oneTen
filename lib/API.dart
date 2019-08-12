@@ -328,6 +328,9 @@ class Run {
     if (videos != null) {
       videoLinksList = List<String>(videos['links'].length);
       if (videos['links'] != null) {
+        for (int i = 0; i < videos['links'].length; ++i) {
+          videoLinksList[i] = videos['links'][i]['uri'];
+        }
       } else {
         videoLinksList = List<String>(1);
         videoLinksList[0] = videos['text'];
