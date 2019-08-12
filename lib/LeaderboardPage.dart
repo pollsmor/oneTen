@@ -19,12 +19,8 @@ String ordinal(int num) {
   return num.toString() + 'th';
 }
 
-class HexToColor extends Color {
-  static _hexToColor(String code) {
-    return int.parse(code.substring(1), radix: 16) + 0xFF000000;
-  }
-
-  HexToColor(final String code) : super(_hexToColor(code));
+hexToColor(String code) {
+  return int.parse(code.substring(1), radix: 16) + 0xFF000000;
 }
 
 class LeaderboardPage extends StatelessWidget {
@@ -57,9 +53,17 @@ class LeaderboardPage extends StatelessWidget {
         future: fetchLeaderboard(leaderboardURL),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return Column(
+            return ListView(
               children: [
-                _GameInfo(snapshot.data.game, snapshot.data.regions, snapshot.data.platforms),
+                _GameInfo(snapshot.data.game, snapshot.data.regions,
+                    snapshot.data.platforms),
+                Divider(height: 4.0),
+                Padding(padding: EdgeInsets.all(4.0)),
+                Text('Rules'),
+                Container(
+                  child: Text(snapshot.data.category.rules),
+                  padding: EdgeInsets.all(8.0),
+                ),
                 Container(
                   color: Theme.of(context).primaryColorLight,
                   child: Row(
@@ -95,21 +99,27 @@ class LeaderboardPage extends StatelessWidget {
                     ],
                   ),
                 ),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: snapshot.data.runs.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Container(
-                        color: Theme.of(context).primaryColorLight,
-                        child: _LBRunInfo(
-                          ordinal(index + 1),
-                          snapshot.data.players[index],
-                          snapshot.data.runs[index].realtime,
-                          snapshot.data.runs[index].igt,
-                        ),
-                      );
-                    },
-                  ),
+                ListView.separated(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: snapshot.data.runs.length,
+                  separatorBuilder: (context, index) {
+                    return Divider(
+                      height: 0.0,
+                      color: Colors.white,
+                    );
+                  },
+                  itemBuilder: (BuildContext context, int index) {
+                    return Container(
+                      color: Theme.of(context).primaryColorLight,
+                      child: _LBRunInfo(
+                        ordinal(index + 1),
+                        snapshot.data.players[index],
+                        snapshot.data.runs[index].realtime,
+                        snapshot.data.runs[index].igt,
+                      ),
+                    );
+                  },
                 ),
               ],
             );
@@ -184,12 +194,15 @@ class _GameInfo extends StatelessWidget {
           ),
         ),
         Container(
-          margin: EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 0.0),
+          margin: EdgeInsets.fromLTRB(0.0,16.0, 0.0, 0.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Regions: ' + ('$regions' != '[]' ? '$regions'.substring(1, '$regions'.length - 1) : 'N/A'),
+                'Regions: ' +
+                    ('$regions' != '[]'
+                        ? '$regions'.substring(1, '$regions'.length - 1)
+                        : 'N/A'),
                 style: TextStyle(
                   fontSize: 13.0,
                   fontWeight: FontWeight.w400,
@@ -199,7 +212,10 @@ class _GameInfo extends StatelessWidget {
               ),
               Padding(padding: EdgeInsets.all(4.0)),
               Text(
-                'Platforms: ' + ('$platforms' != '[]' ? '$platforms'.substring(1, '$platforms'.length - 1) : 'N/A'),
+                'Platforms: ' +
+                    ('$platforms' != '[]'
+                        ? '$platforms'.substring(1, '$platforms'.length - 1)
+                        : 'N/A'),
                 style: TextStyle(
                   fontSize: 13.0,
                   fontWeight: FontWeight.w400,
@@ -241,7 +257,7 @@ class _LBRunInfo extends StatelessWidget {
             child: Text(
               player.name,
               style: TextStyle(
-                color: Color(HexToColor._hexToColor(player.color)),
+                color: Color(hexToColor(player.color)),
               ),
             ),
             padding: EdgeInsets.all(8.0),
@@ -250,7 +266,7 @@ class _LBRunInfo extends StatelessWidget {
         Expanded(
           flex: 4,
           child: Container(
-            child: Text(realtime),
+            child: realtime != '0s' ? Text(realtime) : Text('--'),
             padding: EdgeInsets.all(8.0),
           ),
         ),

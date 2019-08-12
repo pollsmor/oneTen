@@ -258,7 +258,7 @@ class Player {
     //For runs without players
     if (json['rel'] == 'guest') {
       return Player(
-        name: 'Guest',
+        name: json['name'] + ' (guest)',
         color: '#000000',
         country: '',
         twitch: '',
