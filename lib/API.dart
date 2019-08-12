@@ -219,13 +219,15 @@ class Game {
 class Category {
   final String name;
   final String rules;
+  final String leaderboardURL;
 
-  Category({this.name, this.rules});
+  Category({this.name, this.rules, this.leaderboardURL});
 
   factory Category.fromJson(Map<String, dynamic> json) {
     return Category(
       name: json['name'],
       rules: json['rules'],
+      leaderboardURL: json['links'][json['links'].length - 1]['uri'],
     );
   }
 }
@@ -326,8 +328,8 @@ class Run {
     var videos = json['videos'] != null ? json['videos'] : null;
     List<String> videoLinksList;
     if (videos != null) {
-      videoLinksList = List<String>(videos['links'].length);
       if (videos['links'] != null) {
+        videoLinksList = List<String>(videos['links'].length);
         for (int i = 0; i < videos['links'].length; ++i) {
           videoLinksList[i] = videos['links'][i]['uri'];
         }

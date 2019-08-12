@@ -118,7 +118,7 @@ class _RunInfo extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          flex: 1,
+          flex: 2,
           child: GestureDetector(
             child: Container(
               padding: EdgeInsets.fromLTRB(4.0, 0.0, 4.0, 0.0),
@@ -143,7 +143,7 @@ class _RunInfo extends StatelessWidget {
           ),
         ),
         Expanded(
-          flex: 5,
+          flex: 8,
           child: Container(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -167,11 +167,11 @@ class _RunInfo extends StatelessWidget {
           ),
         ),
         Expanded(
-          flex: 3,
+          flex: 7,
           child: Container(
             padding: EdgeInsets.only(right: 8.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
                   rta != '0s' ? 'RTA — $rta' : 'No RTA',
