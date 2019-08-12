@@ -5,12 +5,8 @@ import 'API.dart';
 import 'LeaderboardPage.dart';
 import 'DetailedRunPage.dart';
 
-class HexToColor extends Color {
-  static _hexToColor(String code) {
-    return int.parse(code.substring(1), radix: 16) + 0xFF000000;
-  }
-
-  HexToColor(final String code) : super(_hexToColor(code));
+hexToColor(String code) {
+  return int.parse(code.substring(1), radix: 16) + 0xFF000000;
 }
 
 class LatestRunsPage extends StatefulWidget {
@@ -198,7 +194,7 @@ class _RunInfo extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    color: Color(HexToColor._hexToColor(player.color)),
+                    color: Color(hexToColor(player.color)),
                     fontSize: 16.0,
                   ),
                   textAlign: TextAlign.left,

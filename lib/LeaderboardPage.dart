@@ -53,7 +53,7 @@ class LeaderboardPage extends StatelessWidget {
         future: fetchLeaderboard(leaderboardURL),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return ListView(
+            return Column(
               children: [
                 _GameInfo(snapshot.data.game, snapshot.data.category,
                     snapshot.data.regions, snapshot.data.platforms),
@@ -92,27 +92,29 @@ class LeaderboardPage extends StatelessWidget {
                     ],
                   ),
                 ),
-                ListView.separated(
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: snapshot.data.runs.length,
-                  separatorBuilder: (context, index) {
-                    return Divider(
-                      height: 0.0,
-                      color: Colors.white,
-                    );
-                  },
-                  itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                      color: Theme.of(context).primaryColorLight,
-                      child: _LBRunInfo(
-                        ordinal(index + 1),
-                        snapshot.data.players[index],
-                        snapshot.data.runs[index].realtime,
-                        snapshot.data.runs[index].igt,
-                      ),
-                    );
-                  },
+                Expanded(
+                  child: ListView.separated(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: snapshot.data.runs.length,
+                    separatorBuilder: (context, index) {
+                      return Divider(
+                        height: 0.0,
+                        color: Colors.white,
+                      );
+                    },
+                    itemBuilder: (BuildContext context, int index) {
+                      return Container(
+                        color: Theme.of(context).primaryColorLight,
+                        child: _LBRunInfo(
+                          ordinal(index + 1),
+                          snapshot.data.players[index],
+                          snapshot.data.runs[index].realtime,
+                          snapshot.data.runs[index].igt,
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ],
             );
@@ -220,9 +222,24 @@ class _GameInfo extends StatelessWidget {
               Padding(padding: EdgeInsets.all(4.0)),
               Divider(height: 4.0),
               Padding(padding: EdgeInsets.all(4.0)),
-              Text('Rules'),
-              Text(category.rules),
-              Padding(padding: EdgeInsets.all(4.0)),
+              MaterialButton(
+                child: Text('Rules'),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (_) => SimpleDialog(
+                      backgroundColor: Theme.of(context).primaryColor,
+                      children: [
+                        Container(
+                          child: Text(category.rules),
+                          color: Theme.of(context).primaryColor,
+                          padding: EdgeInsets.all(8.0),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
             ],
           ),
         ),
