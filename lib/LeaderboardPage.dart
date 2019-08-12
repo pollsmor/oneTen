@@ -55,15 +55,8 @@ class LeaderboardPage extends StatelessWidget {
           if (snapshot.hasData) {
             return ListView(
               children: [
-                _GameInfo(snapshot.data.game, snapshot.data.regions,
-                    snapshot.data.platforms),
-                Divider(height: 4.0),
-                Padding(padding: EdgeInsets.all(4.0)),
-                Text('Rules'),
-                Container(
-                  child: Text(snapshot.data.category.rules),
-                  padding: EdgeInsets.all(8.0),
-                ),
+                _GameInfo(snapshot.data.game, snapshot.data.category,
+                    snapshot.data.regions, snapshot.data.platforms),
                 Container(
                   color: Theme.of(context).primaryColorLight,
                   child: Row(
@@ -136,10 +129,11 @@ class LeaderboardPage extends StatelessWidget {
 
 class _GameInfo extends StatelessWidget {
   final Game game;
+  final Category category;
   final List<String> regions;
   final List<String> platforms;
 
-  _GameInfo(this.game, this.regions, this.platforms);
+  _GameInfo(this.game, this.category, this.regions, this.platforms);
 
   Widget build(BuildContext context) {
     return Column(
@@ -194,7 +188,7 @@ class _GameInfo extends StatelessWidget {
           ),
         ),
         Container(
-          margin: EdgeInsets.fromLTRB(0.0,16.0, 0.0, 0.0),
+          margin: EdgeInsets.fromLTRB(8.0, 16.0, 0.0, 0.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -223,6 +217,11 @@ class _GameInfo extends StatelessWidget {
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
               ),
+              Padding(padding: EdgeInsets.all(4.0)),
+              Divider(height: 4.0),
+              Padding(padding: EdgeInsets.all(4.0)),
+              Text('Rules'),
+              Text(category.rules),
               Padding(padding: EdgeInsets.all(4.0)),
             ],
           ),
