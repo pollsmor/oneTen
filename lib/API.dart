@@ -255,7 +255,7 @@ class Level {
 class Player {
   final String name;
   final String color;
-  final String country;
+  final String countrycode;
   final String twitch;
   final String hitbox;
   final String youtube;
@@ -266,7 +266,7 @@ class Player {
   Player(
       {this.name,
       this.color,
-      this.country,
+      this.countrycode,
       this.twitch,
       this.hitbox,
       this.youtube,
@@ -280,7 +280,7 @@ class Player {
       return Player(
         name: json['name'] + ' (guest)',
         color: '#000000',
-        country: '',
+        countrycode: '',
         twitch: '',
         hitbox: '',
         youtube: '',
@@ -302,9 +302,8 @@ class Player {
     return Player(
       name: name,
       color: color,
-      country: json['location'] != null
-          ? json['location']['country']['names']['international']
-          : '',
+      countrycode:
+          json['location'] != null ? json['location']['country']['code'] : '',
       twitch: json['twitch'] != null ? json['twitch']['uri'] : '',
       hitbox: json['hitbox'] != null ? json['hitbox']['uri'] : '',
       youtube: json['youtube'] != null ? json['youtube']['uri'] : '',

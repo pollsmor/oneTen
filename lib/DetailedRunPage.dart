@@ -86,8 +86,11 @@ class DetailedRunPage extends StatelessWidget {
                   children: [
                     SizedBox(
                       height: 15.0,
-                      child: Image.asset('icons/flags/png/us.png',
-                          package: 'country_icons'),
+                      child: player.countrycode != ''
+                          ? Image.asset(
+                              'icons/flags/png/' + player.countrycode + '.png',
+                              package: 'country_icons')
+                          : Text(''),
                     ),
                     Padding(padding: EdgeInsets.all(4.0)),
                     Text(
