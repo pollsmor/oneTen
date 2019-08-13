@@ -55,6 +55,7 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
                           snapshot.data[index].date,
                           snapshot.data[index].realtime,
                           snapshot.data[index].igt,
+                          snapshot.data[index].leaderboardURL,
                         ),
                       ),
                     ),
@@ -91,15 +92,10 @@ class _RunInfo extends StatelessWidget {
   final String date;
   final String rta;
   final String igt;
+  final String leaderboardURL;
 
-  _RunInfo(
-    this.game,
-    this.category,
-    this.player,
-    this.date,
-    this.rta,
-    this.igt,
-  );
+  _RunInfo(this.game, this.category, this.player, this.date, this.rta, this.igt,
+      this.leaderboardURL);
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +121,7 @@ class _RunInfo extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => LeaderboardPage(game.leaderboardURL)),
+                    builder: (context) => LeaderboardPage(leaderboardURL)),
               );
             },
           ),

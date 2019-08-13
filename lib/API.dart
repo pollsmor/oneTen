@@ -55,7 +55,7 @@ List<Run> parseLatestRuns(String responseBody) {
 //Does not work with levelled games
 Future<Leaderboard> fetchLeaderboard(String leaderboardURL) async {
   final response = await http
-      .get('$leaderboardURL?embed=game,category,players,regions,platforms');
+      .get('$leaderboardURL?embed=game,category,level,players,regions,platforms');
 
   if (response.statusCode == 200) {
     return compute(parseLeaderboard, response.body);
@@ -444,7 +444,7 @@ class Leaderboard {
   final List<Player> players; //same index as for runs
   final Game game;
   final Category category;
-  final String level;
+  final Level level;
   final List<String> regions;
   final List<String> platforms;
 
@@ -481,7 +481,7 @@ class Leaderboard {
       players: playersList,
       game: Game.fromJson(json['game']['data']),
       category: Category.fromJson(json['category']['data']),
-      level: json['level'],
+      level: json['level']['data'] is Map<String, dynamic> ? Level.fromJson(json['level']['data']) : null,
       regions: regionsList,
       platforms: platformsList,
     );

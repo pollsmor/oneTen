@@ -38,6 +38,8 @@ class DetailedRunPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(leaderboardURL);
+
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
