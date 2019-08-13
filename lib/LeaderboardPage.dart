@@ -105,7 +105,7 @@ class LeaderboardPage extends StatelessWidget {
                       return Container(
                         color: Theme.of(context).primaryColorLight,
                         child: _LBRunInfo(
-                          ordinal(index + 1),
+                          ordinal(snapshot.data.runs[index].place),
                           snapshot.data.players[index],
                           snapshot.data.runs[index].realtime,
                           snapshot.data.runs[index].igt,

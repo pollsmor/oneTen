@@ -38,12 +38,15 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => DetailedRunPage(
-                              snapshot.data[index].id,
-                              snapshot.data[index].game.name,
-                              snapshot.data[index].category.name,
-                              snapshot.data[index].level,
-                              snapshot.data[index].leaderboardURL,
-                            ),
+                                snapshot.data[index].game.name,
+                                snapshot.data[index].category.name,
+                                snapshot.data[index].level,
+                                snapshot.data[index].player,
+                                snapshot.data[index].realtime,
+                                snapshot.data[index].igt,
+                                snapshot.data[index].date,
+                                snapshot.data[index].comment,
+                                snapshot.data[index].videoLinks),
                           ),
                         );
                       },
