@@ -36,7 +36,7 @@ String calcTime(double seconds) {
 
 Future<List<Run>> fetchLatestRuns() async {
   final response = await http.get(
-      '$baseurl/runs?status=verified&orderby=submitted&direction=desc&embed=game,category,level,players,region,plaform');
+      '$baseurl/runs?status=verified&orderby=submitted&direction=desc&embed=game.levels,game.categories,game.moderators,game.platforms,game.regions,category,level,players,region,platform');
 
   if (response.statusCode == 200) {
     return compute(parseLatestRuns, response.body);
@@ -52,7 +52,6 @@ List<Run> parseLatestRuns(String responseBody) {
   return runs;
 }
 
-//Does not work with levelled games
 Future<Leaderboard> fetchLeaderboard(String leaderboardURL) async {
   final response = await http.get(
       '$leaderboardURL?embed=game,category,level,players,regions,platforms');
@@ -66,21 +65,6 @@ Future<Leaderboard> fetchLeaderboard(String leaderboardURL) async {
 
 Leaderboard parseLeaderboard(String responseBody) {
   return Leaderboard.fromJson(json.decode(responseBody)['data']);
-}
-
-Future<Game> fetchGame(String abbreviation) async {
-  final response = await http.get(
-      '$baseurl/games/$abbreviation?embed=categories,moderators,platforms,regions');
-
-  if (response.statusCode == 200) {
-    return compute(parseGame, response.body);
-  }
-
-  throw Exception('Failed to load game.');
-}
-
-Game parseGame(String responseBody) {
-  return Game.fromJson(json.decode(responseBody)['data']);
 }
 
 class Ruleset {
@@ -99,7 +83,8 @@ class Ruleset {
     return Ruleset(
       verification: json['require-verification'],
       requireVideo: json['require-video'],
-      defaultRTA: json['default-time'] == 'realtime',
+      defaultRTA: json['default-time'] == 'realtime' ||
+          json['default-time'] == 'realtime_noloads',
       emusAllowed: json['emulators-allowed'],
     );
   }
@@ -107,22 +92,15 @@ class Ruleset {
 
 class Assets {
   final String coverURL;
-  final String background;
   final String trophy1st;
   final String trophy2nd;
   final String trophy3rd;
 
-  Assets(
-      {this.coverURL,
-      this.background,
-      this.trophy1st,
-      this.trophy2nd,
-      this.trophy3rd});
+  Assets({this.coverURL, this.trophy1st, this.trophy2nd, this.trophy3rd});
 
   factory Assets.fromJson(Map<String, dynamic> json) {
     return Assets(
       coverURL: json['cover-large']['uri'],
-      background: json['background'] != null ? json['background']['uri'] : null,
       trophy1st: json['trophy-1st']['uri'],
       trophy2nd: json['trophy-2nd']['uri'],
       trophy3rd: json['trophy-3rd']['uri'],
@@ -133,7 +111,6 @@ class Assets {
 class Game {
   final String id;
   final String name;
-  final String abbreviation;
   final String releaseDate;
   final Ruleset ruleset;
   final List<String> platforms;
@@ -141,12 +118,12 @@ class Game {
   final List<Player> moderators;
   final Assets assets;
   final List<Category> categories;
+  final List<Level> levels;
   final String leaderboardURL;
 
   Game({
     this.id,
     this.name,
-    this.abbreviation,
     this.releaseDate,
     this.ruleset,
     this.platforms,
@@ -154,63 +131,47 @@ class Game {
     this.moderators,
     this.assets,
     this.categories,
+    this.levels,
     this.leaderboardURL,
   });
 
   factory Game.fromJson(Map<String, dynamic> json) {
+    var list = json['platforms']['data'] as List;
+    List<String> platformsList = list.map((i) => list[i]['name']).toList();
+
+    var list2 = json['regions']['data'] as List;
+    List<String> regionsList = list2.map((i) => list2[i]['name']).toList();
+
+    var list3 = json['moderators']['data'] as List;
+    List<Player> modsList = list3.map((i) => Player.fromJson(list3[i]));
+
+    var list4 = json['categories']['data'] as List;
+    List<Category> categoriesList =
+        list4.map((i) => Category.fromJson(list4[i]));
+
+    var list5 = json['levels']['data'] as List;
+    List<Level> levelsList = list5.map((i) => Level.fromJson(list5[i]));
+
+    //------------------------------------------------
     String leaderboardURL;
 
-    if (json['links'][json['links'].length - 1]['rel'] == 'leaderboard') {
+    if (json['links'][json['links'].length - 1]['rel'] == 'leaderboard')
       leaderboardURL = json['links'][json['links'].length - 1]['uri'];
-    } else {
+    else
       leaderboardURL = json['links'][2]['uri'];
-    }
-
-    //----------------------------------------------------
-
-    List<String> regionsList;
-    List<String> platformsList;
-    List<Player> moderatorsList;
-    List<Category> categoriesList;
-
-    if (json['regions'] is Map<String, dynamic>) {
-      regionsList = List<String>(json['regions']['data'].length);
-      var list = json['regions']['data'] as List;
-      for (int i = 0; i < list.length; ++i) regionsList[i] = list[i]['name'];
-    }
-
-    if (json['platforms'] is Map<String, dynamic>) {
-      platformsList = List<String>(json['platforms']['data'].length);
-      var list2 = json['platforms']['data'] as List;
-      for (int i = 0; i < list2.length; ++i)
-        platformsList[i] = list2[i]['name'];
-    }
-
-    if (json['moderators']['data'] != null) {
-      moderatorsList = List<Player>(json['moderators']['data'].length);
-      var list3 = json['moderators']['data'] as List;
-      for (int i = 0; i < list3.length; ++i)
-        moderatorsList[i] = Player.fromJson(list3[i]);
-    }
-
-    if (json['categories'] != null) {
-      categoriesList = List<Category>(json['categories']['data'].length);
-      var list4 = json['categories']['data'] as List;
-      for (int i = 0; i < list4.length; ++i)
-        categoriesList[i] = Category.fromJson(list4[i]);
-    }
+    //------------------------------------------------
 
     return Game(
       id: json['id'],
       name: json['names']['international'],
-      abbreviation: json['abbreviation'],
       releaseDate: json['release-date'],
       platforms: platformsList,
       regions: regionsList,
-      moderators: moderatorsList,
+      moderators: modsList,
       ruleset: Ruleset.fromJson(json['ruleset']),
       assets: Assets.fromJson(json['assets']),
       categories: categoriesList,
+      levels: levelsList,
       leaderboardURL: leaderboardURL,
     );
   }
@@ -219,15 +180,17 @@ class Game {
 class Category {
   final String id;
   final String name;
+  final String type;
   final String rules;
   final String leaderboardURL;
 
-  Category({this.id, this.name, this.rules, this.leaderboardURL});
+  Category({this.id, this.name, this.type, this.rules, this.leaderboardURL});
 
   factory Category.fromJson(Map<String, dynamic> json) {
     return Category(
       id: json['id'],
       name: json['name'],
+      type: json['type'],
       rules: json['rules'],
       leaderboardURL: json['links'][json['links'].length - 1]['uri'],
     );
@@ -246,7 +209,7 @@ class Level {
     return Level(
       id: json['id'],
       name: json['name'],
-      rules: json['rules'],
+      rules: json['rules'] != null ? json['rules'] : '',
       leaderboardURL: json['links'][json['links'].length - 1]['uri'],
     );
   }
@@ -317,12 +280,12 @@ class Player {
 class Run {
   final String id;
   final Game game;
-  final Level level;
   final Category category;
+  final Level level;
   final List<String> videoLinks;
   final String comment;
   final String verifyDate;
-  final Player player;
+  final Player player; //eventually add support for co-op runs
   final String date;
   final String realtime;
   final String igt;
@@ -334,8 +297,8 @@ class Run {
   Run(
       {this.id,
       this.game,
-      this.level,
       this.category,
+      this.level,
       this.videoLinks,
       this.comment,
       this.verifyDate,
@@ -381,10 +344,10 @@ class Run {
     return Run(
       id: json['id'],
       game: Game.fromJson(json['game']['data']),
+      category: Category.fromJson(json['category']['data']),
       level: json['level']['data'] is Map<String, dynamic>
           ? Level.fromJson(json['level']['data'])
           : null,
-      category: Category.fromJson(json['category']['data']),
       videoLinks: videoLinksList,
       comment: json['comment'] != null ? json['comment'] : '',
       verifyDate: json['status']['verify-date'],

@@ -19,63 +19,61 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: FutureBuilder<List<Run>>(
-        future: fetchLatestRuns(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return RefreshIndicator(
-              child: ListView.builder(
-                physics: AlwaysScrollableScrollPhysics(),
-                itemCount: snapshot.data.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    color: Theme.of(context).primaryColor,
-                    margin: EdgeInsets.fromLTRB(0.0, 2.0, 0.0, 2.0),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DetailedRunPage(
-                                snapshot.data[index].game.name,
-                                snapshot.data[index].category.name,
-                                snapshot.data[index].level,
-                                snapshot.data[index].player,
-                                snapshot.data[index].realtime,
-                                snapshot.data[index].igt,
-                                snapshot.data[index].date,
-                                snapshot.data[index].comment,
-                                snapshot.data[index].videoLinks),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        color: Theme.of(context).primaryColorLight,
-                        child: _RunInfo(
-                          snapshot.data[index].game,
-                          snapshot.data[index].category,
-                          snapshot.data[index].level,
-                          snapshot.data[index].player,
-                          snapshot.data[index].date,
-                          snapshot.data[index].realtime,
-                          snapshot.data[index].igt,
-                          snapshot.data[index].leaderboardURL,
+    return FutureBuilder<List<Run>>(
+      future: fetchLatestRuns(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return RefreshIndicator(
+            child: ListView.builder(
+              physics: AlwaysScrollableScrollPhysics(),
+              itemCount: snapshot.data.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                  color: Theme.of(context).primaryColor,
+                  margin: EdgeInsets.fromLTRB(0.0, 2.0, 0.0, 2.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailedRunPage(
+                              snapshot.data[index].game.name,
+                              snapshot.data[index].category.name,
+                              snapshot.data[index].level,
+                              snapshot.data[index].player,
+                              snapshot.data[index].realtime,
+                              snapshot.data[index].igt,
+                              snapshot.data[index].date,
+                              snapshot.data[index].comment,
+                              snapshot.data[index].videoLinks),
                         ),
+                      );
+                    },
+                    child: Container(
+                      color: Theme.of(context).primaryColorLight,
+                      child: _RunInfo(
+                        snapshot.data[index].game,
+                        snapshot.data[index].category,
+                        snapshot.data[index].level,
+                        snapshot.data[index].player,
+                        snapshot.data[index].date,
+                        snapshot.data[index].realtime,
+                        snapshot.data[index].igt,
+                        snapshot.data[index].leaderboardURL,
                       ),
                     ),
-                  );
-                },
-              ),
-              onRefresh: _handleRefresh,
-            );
-          } else if (snapshot.hasError) {
-            return Text('${snapshot.error}');
-          }
+                  ),
+                );
+              },
+            ),
+            onRefresh: _handleRefresh,
+          );
+        } else if (snapshot.hasError) {
+          return Text('${snapshot.error}');
+        }
 
-          return CircularProgressIndicator();
-        },
-      ),
+        return Center(child: CircularProgressIndicator());
+      },
     );
   }
 
@@ -111,7 +109,7 @@ class _RunInfo extends StatelessWidget {
           flex: 2,
           child: GestureDetector(
             child: Container(
-              padding: EdgeInsets.fromLTRB(4.0, 0.0, 4.0, 0.0),
+              padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
               child: SizedBox(
                 height: 100.0,
                 child: AspectRatio(
