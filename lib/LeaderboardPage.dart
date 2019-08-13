@@ -24,9 +24,13 @@ hexToColor(String code) {
 }
 
 class LeaderboardPage extends StatelessWidget {
+  final String gameName;
+  final String categoryName;
+  final Level level;
   final String leaderboardURL;
 
-  LeaderboardPage(this.leaderboardURL);
+  LeaderboardPage(
+      this.gameName, this.categoryName, this.level, this.leaderboardURL);
 
   @override
   Widget build(BuildContext context) {
@@ -40,12 +44,27 @@ class LeaderboardPage extends StatelessWidget {
             Navigator.pop(context);
           },
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.favorite_border),
-            onPressed: () {},
-          )
-        ],
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(padding: EdgeInsets.all(4.0)),
+            Text(
+              gameName,
+              style: TextStyle(
+                fontSize: 18.0,
+              ),
+            ),
+            Text(
+              level != null
+                  ? categoryName + ' (' + level.name + ')'
+                  : categoryName,
+              style: TextStyle(
+                fontSize: 13.0,
+                fontWeight: FontWeight.w300,
+              ),
+            ),
+          ],
+        ),
       ),
       body: FutureBuilder<Leaderboard>(
         future: fetchLeaderboard(leaderboardURL),
@@ -151,7 +170,7 @@ class _GameInfo extends StatelessWidget {
                   ),
                 ),
                 child: SizedBox(
-                  height: 100.0,
+                  height: 75.0,
                   child: CachedNetworkImage(
                     imageUrl: game.assets.coverURL,
                     errorWidget: (context, url, error) => Icon(Icons.error),
@@ -160,25 +179,39 @@ class _GameInfo extends StatelessWidget {
               ),
               Expanded(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      game.name,
+                      'Released: ' + game.releaseDate,
                       style: TextStyle(
-                        fontSize: 16.0,
+                        fontSize: 13.0,
                       ),
-                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Padding(padding: EdgeInsets.all(4.0)),
+                    Text(
+                      'Regions: ' +
+                          ('$regions' != '[]'
+                              ? '$regions'.substring(1, '$regions'.length - 1)
+                              : 'N/A'),
+                      style: TextStyle(
+                        fontSize: 13.0,
+                      ),
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                     ),
                     Padding(padding: EdgeInsets.all(4.0)),
                     Text(
-                      game.releaseDate,
+                      'Platforms: ' +
+                          ('$platforms' != '[]'
+                              ? '$platforms'
+                                  .substring(1, '$platforms'.length - 1)
+                              : 'N/A'),
                       style: TextStyle(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w300,
+                        fontSize: 13.0,
                       ),
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
+                      maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
@@ -188,55 +221,25 @@ class _GameInfo extends StatelessWidget {
           ),
         ),
         Container(
-          margin: EdgeInsets.fromLTRB(8.0, 16.0, 0.0, 0.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Regions: ' +
-                    ('$regions' != '[]'
-                        ? '$regions'.substring(1, '$regions'.length - 1)
-                        : 'N/A'),
-                style: TextStyle(
-                  fontSize: 13.0,
-                  fontWeight: FontWeight.w400,
-                ),
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-              ),
-              Padding(padding: EdgeInsets.all(4.0)),
-              Text(
-                'Platforms: ' +
-                    ('$platforms' != '[]'
-                        ? '$platforms'.substring(1, '$platforms'.length - 1)
-                        : 'N/A'),
-                style: TextStyle(
-                  fontSize: 13.0,
-                  fontWeight: FontWeight.w400,
-                ),
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-              ),
-              MaterialButton(
-                child: Text('View rules'),
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (_) => SimpleDialog(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      children: [
-                        Container(
-                          child: Text(category.rules),
-                          color: Theme.of(context).primaryColor,
-                          padding: EdgeInsets.all(8.0),
-                        ),
-                      ],
+          margin: EdgeInsets.fromLTRB(8.0, 0.0, 0.0, 6.0),
+          child: MaterialButton(
+            child: Text('View rules'),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (_) => SimpleDialog(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  children: [
+                    Container(
+                      child: Text(category.rules),
+                      color: Theme.of(context).primaryColor,
+                      padding: EdgeInsets.all(8.0),
                     ),
-                  );
-                },
-                color: Theme.of(context).primaryColorLight,
-              ),
-            ],
+                  ],
+                ),
+              );
+            },
+            color: Theme.of(context).primaryColorLight,
           ),
         ),
       ],
