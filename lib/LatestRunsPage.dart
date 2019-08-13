@@ -41,6 +41,7 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
                               snapshot.data[index].id,
                               snapshot.data[index].game.name,
                               snapshot.data[index].category.name,
+                              snapshot.data[index].level,
                               snapshot.data[index].leaderboardURL,
                             ),
                           ),
@@ -51,6 +52,7 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
                         child: _RunInfo(
                           snapshot.data[index].game,
                           snapshot.data[index].category,
+                          snapshot.data[index].level,
                           snapshot.data[index].player,
                           snapshot.data[index].date,
                           snapshot.data[index].realtime,
@@ -88,14 +90,15 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
 class _RunInfo extends StatelessWidget {
   final Game game;
   final Category category;
+  final Level level;
   final Player player;
   final String date;
   final String rta;
   final String igt;
   final String leaderboardURL;
 
-  _RunInfo(this.game, this.category, this.player, this.date, this.rta, this.igt,
-      this.leaderboardURL);
+  _RunInfo(this.game, this.category, this.level, this.player, this.date,
+      this.rta, this.igt, this.leaderboardURL);
 
   @override
   Widget build(BuildContext context) {
@@ -143,6 +146,12 @@ class _RunInfo extends StatelessWidget {
                 Padding(padding: EdgeInsets.all(4.0)),
                 Text(
                   category.name,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Padding(padding: EdgeInsets.all(4.0)),
+                Text(
+                  level != null ? level.name : '',
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),

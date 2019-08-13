@@ -31,10 +31,11 @@ class DetailedRunPage extends StatelessWidget {
   final String runID;
   final String gameName;
   final String categoryName;
+  final Level level;
   final String leaderboardURL;
 
-  DetailedRunPage(
-      this.runID, this.gameName, this.categoryName, this.leaderboardURL);
+  DetailedRunPage(this.runID, this.gameName, this.categoryName, this.level,
+      this.leaderboardURL);
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +68,15 @@ class DetailedRunPage extends StatelessWidget {
                 fontWeight: FontWeight.w300,
               ),
             ),
+            /*
+            Text(
+              level != null ? level.name : '',
+              style: TextStyle(
+                fontSize: 13.0,
+                fontWeight: FontWeight.w300,
+              ),
+            ),
+            */
           ],
         ),
       ),
@@ -81,6 +91,8 @@ class DetailedRunPage extends StatelessWidget {
                 break;
               }
             }
+
+            print(snapshot.data.runs[0].comment);
 
             return Column(
               children: [
@@ -106,7 +118,9 @@ class DetailedRunPage extends StatelessWidget {
                             ),
                           ),
                           Padding(padding: EdgeInsets.all(2.0)),
-                          Text('(' + ordinal(snapshot.data.runs[runIndex].place) + ')'),
+                          Text('(' +
+                              ordinal(snapshot.data.runs[runIndex].place) +
+                              ')'),
                         ],
                       ),
                       Padding(padding: EdgeInsets.all(4.0)),
@@ -115,7 +129,8 @@ class DetailedRunPage extends StatelessWidget {
                         children: [
                           Text(
                             snapshot.data.runs[runIndex].realtime != '0s'
-                                ? 'RTA — ' + snapshot.data.runs[runIndex].realtime
+                                ? 'RTA — ' +
+                                    snapshot.data.runs[runIndex].realtime
                                 : 'No RTA',
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
@@ -152,7 +167,7 @@ class DetailedRunPage extends StatelessWidget {
                       ),
                       Padding(padding: EdgeInsets.all(4.0)),
                       Text(
-                        snapshot.data.runs[runIndex].comment != ''
+                        snapshot.data.runs[runIndex].comment != null
                             ? 'Comment: ' + snapshot.data.runs[runIndex].comment
                             : 'No comment',
                         textAlign: TextAlign.left,
