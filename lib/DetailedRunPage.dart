@@ -62,21 +62,12 @@ class DetailedRunPage extends StatelessWidget {
               ),
             ),
             Text(
-              categoryName,
+              level != null ? categoryName + ' (' + level.name + ')' : categoryName,
               style: TextStyle(
                 fontSize: 13.0,
                 fontWeight: FontWeight.w300,
               ),
             ),
-            /*
-            Text(
-              level != null ? level.name : '',
-              style: TextStyle(
-                fontSize: 13.0,
-                fontWeight: FontWeight.w300,
-              ),
-            ),
-            */
           ],
         ),
       ),
@@ -84,15 +75,15 @@ class DetailedRunPage extends StatelessWidget {
         future: fetchLeaderboard(leaderboardURL),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            int runIndex = 0;
+            print(leaderboardURL);
+
+            int runIndex;
             for (int i = 0; i < snapshot.data.runs.length; ++i) {
               if (snapshot.data.runs[i].id == runID) {
                 runIndex = i;
                 break;
               }
             }
-
-            print(snapshot.data.runs[0].comment);
 
             return Column(
               children: [

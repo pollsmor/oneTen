@@ -30,8 +30,6 @@ class LeaderboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(leaderboardURL);
-
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
@@ -219,11 +217,8 @@ class _GameInfo extends StatelessWidget {
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
               ),
-              Padding(padding: EdgeInsets.all(4.0)),
-              Divider(height: 4.0),
-              Padding(padding: EdgeInsets.all(4.0)),
               MaterialButton(
-                child: Text('Rules'),
+                child: Text('View rules'),
                 onPressed: () {
                   showDialog(
                     context: context,
@@ -239,6 +234,7 @@ class _GameInfo extends StatelessWidget {
                     ),
                   );
                 },
+                color: Theme.of(context).primaryColorLight,
               ),
             ],
           ),

@@ -54,8 +54,8 @@ List<Run> parseLatestRuns(String responseBody) {
 
 //Does not work with levelled games
 Future<Leaderboard> fetchLeaderboard(String leaderboardURL) async {
-  final response = await http
-      .get('$leaderboardURL?embed=game,category,level,players,regions,platforms');
+  final response = await http.get(
+      '$leaderboardURL?embed=game,category,level,players,regions,platforms');
 
   if (response.statusCode == 200) {
     return compute(parseLeaderboard, response.body);
@@ -217,14 +217,16 @@ class Game {
 }
 
 class Category {
+  final String id;
   final String name;
   final String rules;
   final String leaderboardURL;
 
-  Category({this.name, this.rules, this.leaderboardURL});
+  Category({this.id, this.name, this.rules, this.leaderboardURL});
 
   factory Category.fromJson(Map<String, dynamic> json) {
     return Category(
+      id: json['id'],
       name: json['name'],
       rules: json['rules'],
       leaderboardURL: json['links'][json['links'].length - 1]['uri'],
@@ -233,14 +235,16 @@ class Category {
 }
 
 class Level {
+  final String id;
   final String name;
   final String rules;
   final String leaderboardURL;
 
-  Level({this.name, this.rules, this.leaderboardURL});
+  Level({this.id, this.name, this.rules, this.leaderboardURL});
 
   factory Level.fromJson(Map<String, dynamic> json) {
     return Level(
+      id: json['id'],
       name: json['name'],
       rules: json['rules'],
       leaderboardURL: json['links'][json['links'].length - 1]['uri'],
@@ -331,7 +335,7 @@ class Run {
   Run(
       {this.id,
       this.game,
-        this.level,
+      this.level,
       this.category,
       this.videoLinks,
       this.comment,
@@ -362,15 +366,25 @@ class Run {
     }
 
     String leaderboardURL = '';
-    if (json['level']['data'] is Map<String, dynamic>) {
-      leaderboardURL = json['level']['data']['links'][json['level']['data']['links'].length - 1]['uri'];
+    String gameID = json['game']['data']['id'];
+    String categoryID = json['category']['data']['id'];
+    String levelID = json['level']['data'] is Map<String, dynamic>
+        ? json['level']['data']['id']
+        : "";
+    if (levelID != '') {
+      leaderboardURL =
+          'https://speedrun.com/api/v1/leaderboards/$gameID/level/$levelID/$categoryID';
     } else {
-      leaderboardURL = json['category']['data']['links'][json['category']['data']['links'].length - 1]['uri'];
+      leaderboardURL =
+          'https://speedrun.com/api/v1/leaderboards/$gameID/category/$categoryID';
     }
 
     return Run(
+      id: json['id'],
       game: Game.fromJson(json['game']['data']),
-      level: json['level']['data'] is Map<String, dynamic> ? Level.fromJson(json['level']['data']) : null,
+      level: json['level']['data'] is Map<String, dynamic>
+          ? Level.fromJson(json['level']['data'])
+          : null,
       category: Category.fromJson(json['category']['data']),
       videoLinks: videoLinksList,
       comment: json['comment'] != null ? json['comment'] : '',
@@ -481,7 +495,9 @@ class Leaderboard {
       players: playersList,
       game: Game.fromJson(json['game']['data']),
       category: Category.fromJson(json['category']['data']),
-      level: json['level']['data'] is Map<String, dynamic> ? Level.fromJson(json['level']['data']) : null,
+      level: json['level']['data'] is Map<String, dynamic>
+          ? Level.fromJson(json['level']['data'])
+          : null,
       regions: regionsList,
       platforms: platformsList,
     );
