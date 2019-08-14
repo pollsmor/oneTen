@@ -328,6 +328,7 @@ class Run {
   final String verifyDate;
   final Player player; //eventually add support for co-op runs
   final String date;
+  final DateTime submitted;
   final String realtime;
   final String igt;
   final bool emulated;
@@ -346,9 +347,10 @@ class Run {
       this.verifyDate,
       this.player,
       this.date,
+      this.submitted,
       this.realtime,
       this.igt,
-        this.emulated,
+      this.emulated,
       this.region,
       this.platform,
       this.yearPlatform,
@@ -398,6 +400,7 @@ class Run {
           ? Player.fromJson(json['players']['data'][0])
           : null,
       date: json['date'],
+      submitted: DateTime.parse(json['submitted']),
       realtime: calcTime(json['times']['realtime_t'].toDouble()),
       igt: calcTime(json['times']['ingame_t'].toDouble()),
       emulated: json['system']['emulated'],
@@ -422,11 +425,7 @@ class LeaderboardRun {
   final String realtime;
   final String igt;
 
-  LeaderboardRun(
-      {this.place,
-      this.id,
-      this.realtime,
-      this.igt});
+  LeaderboardRun({this.place, this.id, this.realtime, this.igt});
 
   factory LeaderboardRun.fromJson(Map<String, dynamic> json) {
     return LeaderboardRun(

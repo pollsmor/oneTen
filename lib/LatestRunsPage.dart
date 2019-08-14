@@ -50,12 +50,12 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
                               snapshot.data[index].verifyDate,
                               snapshot.data[index].player,
                               snapshot.data[index].date,
+                              snapshot.data[index].submitted,
                               snapshot.data[index].realtime,
                               snapshot.data[index].igt,
                               snapshot.data[index].emulated,
                               snapshot.data[index].region,
                               snapshot.data[index].platform,
-                              snapshot.data[index].yearPlatform,
                             ),
                           ),
                         );

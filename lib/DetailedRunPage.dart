@@ -13,28 +13,29 @@ class DetailedRunPage extends StatelessWidget {
   final String verifyDate;
   final Player player;
   final String date;
+  final DateTime submitted;
   final String realtime;
   final String igt;
   final bool emulated;
   final String region;
   final String platform;
-  final String yearPlatform;
 
   DetailedRunPage(
-      this.gameName,
-      this.categoryName,
-      this.level,
-      this.videoLinks,
-      this.comment,
-      this.verifyDate,
-      this.player,
-      this.date,
-      this.realtime,
-      this.igt,
-      this.emulated,
-      this.region,
-      this.platform,
-      this.yearPlatform);
+    this.gameName,
+    this.categoryName,
+    this.level,
+    this.videoLinks,
+    this.comment,
+    this.verifyDate,
+    this.player,
+    this.date,
+    this.submitted,
+    this.realtime,
+    this.igt,
+    this.emulated,
+    this.region,
+    this.platform,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -119,38 +120,32 @@ class DetailedRunPage extends StatelessWidget {
                       realtime != '0s' ? 'RTA — $realtime' : 'No RTA',
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w300,
-                      ),
+                      style: TextStyle(),
                     ),
                     Padding(
                         child: Text(
                           '/',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w300,
-                          ),
+                          style: TextStyle(),
                         ),
                         padding: EdgeInsets.all(4.0)),
                     Text(
                       igt != '0s' ? 'IGT — $igt' : 'No IGT',
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w300,
-                      ),
+                      style: TextStyle(),
                     ),
                   ],
                 ),
                 Padding(padding: EdgeInsets.all(4.0)),
                 Text(
-                  'Played on $date',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w300,
-                  ),
+                  'Platform: ' +
+                      (platform != '' ? platform : 'N/A') +
+                      (emulated ? '(emulated)' : ''),
+                  textAlign: TextAlign.left,
                 ),
                 Padding(padding: EdgeInsets.all(4.0)),
                 Text(
-                  comment != '' ? 'Comment: $comment' : 'No comment',
+                  'Region: ' + (region != '' ? region : 'N/A'),
                   textAlign: TextAlign.left,
                 ),
               ],
@@ -166,7 +161,7 @@ class DetailedRunPage extends StatelessWidget {
                 fontSize: 18.0,
               ),
             ),
-            padding: EdgeInsets.only(top: 4.0),
+            padding: EdgeInsets.only(top: 8.0),
           ),
           videoLinks != null
               ? Column(
@@ -223,7 +218,39 @@ class DetailedRunPage extends StatelessWidget {
           Divider(
             height: 4.0,
           ),
-          Text('lmao'),
+          Padding(padding: EdgeInsets.all(4.0)),
+          Container(
+            child: Text(
+              comment != '' ? '$comment' : 'No comment',
+              textAlign: TextAlign.left,
+            ),
+            padding: EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColorLight,
+              borderRadius: BorderRadius.all(Radius.circular(16.0)),
+            ),
+          ),
+          Padding(padding: EdgeInsets.all(4.0)),
+          Text(
+            'Played on $date',
+            style: TextStyle(
+              fontWeight: FontWeight.w300,
+            ),
+          ),
+          Padding(padding: EdgeInsets.all(4.0)),
+          Text(
+            'Submitted on ' + submitted.toString().substring(0, 10),
+            style: TextStyle(
+              fontWeight: FontWeight.w300,
+            ),
+          ),
+          Padding(padding: EdgeInsets.all(4.0)),
+          Text(
+            'Verified on ' + verifyDate.substring(0, 10),
+            style: TextStyle(
+              fontWeight: FontWeight.w300,
+            ),
+          ),
         ],
       ),
     );
