@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'API.dart';
 
@@ -150,46 +150,7 @@ class DetailedRunPage extends StatelessWidget {
                           child: Text(videoLinks[index]),
                           color: Theme.of(context).primaryColorLight,
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => Scaffold(
-                                  appBar: AppBar(
-                                    elevation: 0.0,
-                                    leading: IconButton(
-                                      icon: Icon(Icons.arrow_back),
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    title: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(padding: EdgeInsets.all(4.0)),
-                                        Text(
-                                          gameName,
-                                          style: TextStyle(
-                                            fontSize: 18.0,
-                                          ),
-                                        ),
-                                        Text(
-                                          categoryName,
-                                          style: TextStyle(
-                                            fontSize: 13.0,
-                                            fontWeight: FontWeight.w300,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  body: WebView(
-                                    initialUrl: videoLinks[index],
-                                    javascriptMode: JavascriptMode.unrestricted,
-                                  ),
-                                ),
-                              ),
-                            );
+                            _launchURL(videoLinks[index]);
                           },
                         ),
                       );
@@ -200,5 +161,13 @@ class DetailedRunPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }
