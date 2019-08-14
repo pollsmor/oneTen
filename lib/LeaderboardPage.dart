@@ -3,26 +3,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import 'API.dart';
 
-String ordinal(int num) {
-  if (num % 100 == 11)
-    return num.toString() + 'th';
-  else if (num % 100 == 12)
-    return num.toString() + 'th';
-  else if (num % 100 == 13)
-    return num.toString() + 'th';
-  else if (num % 10 == 1)
-    return num.toString() + 'st';
-  else if (num % 10 == 2)
-    return num.toString() + 'nd';
-  else if (num % 10 == 3) return num.toString() + 'rd';
-
-  return num.toString() + 'th';
-}
-
-hexToColor(String code) {
-  return int.parse(code.substring(1), radix: 16) + 0xFF000000;
-}
-
 class LeaderboardPage extends StatelessWidget {
   final String gameName;
   final String categoryName;
@@ -34,6 +14,8 @@ class LeaderboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(leaderboardURL);
+
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
@@ -72,8 +54,10 @@ class LeaderboardPage extends StatelessWidget {
           if (snapshot.hasData) {
             return Column(
               children: [
-                _GameInfo(snapshot.data.game, snapshot.data.category,
-                    snapshot.data.regions, snapshot.data.platforms),
+                _GameInfo(
+                  snapshot.data.game,
+                  snapshot.data.category,
+                ),
                 Container(
                   color: Theme.of(context).primaryColorLight,
                   child: Row(
@@ -136,7 +120,10 @@ class LeaderboardPage extends StatelessWidget {
               ],
             );
           } else if (snapshot.hasError) {
-            return Text('${snapshot.error}');
+            return Container(
+              child: Text('${snapshot.error}'),
+              padding: EdgeInsets.all(8.0),
+            );
           }
 
           return Center(child: CircularProgressIndicator());
@@ -149,10 +136,8 @@ class LeaderboardPage extends StatelessWidget {
 class _GameInfo extends StatelessWidget {
   final Game game;
   final Category category;
-  final List<String> regions;
-  final List<String> platforms;
 
-  _GameInfo(this.game, this.category, this.regions, this.platforms);
+  _GameInfo(this.game, this.category);
 
   Widget build(BuildContext context) {
     return Column(
@@ -192,8 +177,9 @@ class _GameInfo extends StatelessWidget {
                     Padding(padding: EdgeInsets.all(4.0)),
                     Text(
                       'Regions: ' +
-                          ('$regions' != '[]'
-                              ? '$regions'.substring(1, '$regions'.length - 1)
+                          (game.regions.toString() != '[]'
+                              ? game.regions.toString().substring(
+                                  1, game.regions.toString().length - 1)
                               : 'N/A'),
                       style: TextStyle(
                         fontSize: 13.0,
@@ -204,9 +190,9 @@ class _GameInfo extends StatelessWidget {
                     Padding(padding: EdgeInsets.all(4.0)),
                     Text(
                       'Platforms: ' +
-                          ('$platforms' != '[]'
-                              ? '$platforms'
-                                  .substring(1, '$platforms'.length - 1)
+                          (game.platforms.toString() != '[]'
+                              ? game.platforms.toString().substring(
+                                  1, game.platforms.toString().length - 1)
                               : 'N/A'),
                       style: TextStyle(
                         fontSize: 13.0,

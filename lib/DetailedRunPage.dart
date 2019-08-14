@@ -3,30 +3,6 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import 'API.dart';
 
-class HexToColor extends Color {
-  static _hexToColor(String code) {
-    return int.parse(code.substring(1), radix: 16) + 0xFF000000;
-  }
-
-  HexToColor(final String code) : super(_hexToColor(code));
-}
-
-String ordinal(int num) {
-  if (num % 100 == 11)
-    return num.toString() + 'th';
-  else if (num % 100 == 12)
-    return num.toString() + 'th';
-  else if (num % 100 == 13)
-    return num.toString() + 'th';
-  else if (num % 10 == 1)
-    return num.toString() + 'st';
-  else if (num % 10 == 2)
-    return num.toString() + 'nd';
-  else if (num % 10 == 3) return num.toString() + 'rd';
-
-  return num.toString() + 'th';
-}
-
 class DetailedRunPage extends StatelessWidget {
   final String gameName;
   final String categoryName;
@@ -96,7 +72,7 @@ class DetailedRunPage extends StatelessWidget {
                     Text(
                       player.name,
                       style: TextStyle(
-                        color: Color(HexToColor._hexToColor(player.color)),
+                        color: Color(hexToColor(player.color)),
                         fontSize: 16.0,
                       ),
                     ),

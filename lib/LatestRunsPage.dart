@@ -5,10 +5,6 @@ import 'API.dart';
 import 'LeaderboardPage.dart';
 import 'DetailedRunPage.dart';
 
-hexToColor(String code) {
-  return int.parse(code.substring(1), radix: 16) + 0xFF000000;
-}
-
 class LatestRunsPage extends StatefulWidget {
   @override
   _LatestRunsPageState createState() => _LatestRunsPageState();
@@ -69,7 +65,10 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
             onRefresh: _handleRefresh,
           );
         } else if (snapshot.hasError) {
-          return Text('${snapshot.error}');
+          return Container(
+            child: Text('${snapshot.error}'),
+            padding: EdgeInsets.all(8.0),
+          );
         }
 
         return Center(child: CircularProgressIndicator());
