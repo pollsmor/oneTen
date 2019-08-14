@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:gradient_text/gradient_text.dart';
 
 import 'API.dart';
 
@@ -69,12 +70,29 @@ class DetailedRunPage extends StatelessWidget {
                           : Text(''),
                     ),
                     Padding(padding: EdgeInsets.all(4.0)),
-                    Text(
+                    !player.isGradient
+                        ? Text(
                       player.name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         color: Color(hexToColor(player.color)),
                         fontSize: 16.0,
                       ),
+                      textAlign: TextAlign.right,
+                    )
+                        : GradientText(
+                      player.name,
+                      gradient: LinearGradient(
+                        colors: [
+                          Color(hexToColor(player.colorFrom)),
+                          Color(hexToColor(player.colorTo)),
+                        ],
+                      ),
+                      style: TextStyle(
+                        fontSize: 16.0,
+                      ),
+                      textAlign: TextAlign.right,
                     ),
                   ],
                 ),

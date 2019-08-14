@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:gradient_text/gradient_text.dart';
 
 import 'API.dart';
 import 'LeaderboardPage.dart';
@@ -34,7 +35,7 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
                 itemBuilder: (BuildContext context, int index) {
                   return Container(
                     color: Theme.of(context).primaryColor,
-                    margin: EdgeInsets.fromLTRB(0.0, 2.0, 0.0, 2.0),
+                    margin: EdgeInsets.fromLTRB(0.0, 1.0, 0.0, 1.0),
                     child: GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -54,6 +55,7 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
                         );
                       },
                       child: Container(
+                        padding: EdgeInsets.fromLTRB(0.0, 4.0, 0.0, 4.0),
                         color: Theme.of(context).primaryColorLight,
                         child: _RunInfo(
                           snapshot.data[index].game,
@@ -111,12 +113,11 @@ class _RunInfo extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          flex: 2,
+          flex: 4,
           child: GestureDetector(
             child: Container(
               padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
-              child: SizedBox(
-                height: 100.0,
+              child: Container(
                 child: AspectRatio(
                   aspectRatio: 1.0,
                   child: CachedNetworkImage(
@@ -124,6 +125,7 @@ class _RunInfo extends StatelessWidget {
                     errorWidget: (context, url, error) => Icon(Icons.error),
                   ),
                 ),
+                padding: EdgeInsets.all(4.0),
               ),
             ),
             onTap: () {
@@ -144,7 +146,7 @@ class _RunInfo extends StatelessWidget {
               children: [
                 Text(
                   game.name,
-                  maxLines: 2,
+                  maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 16.0,
@@ -193,16 +195,30 @@ class _RunInfo extends StatelessWidget {
                   textAlign: TextAlign.right,
                 ),
                 Padding(padding: EdgeInsets.all(4.0)),
-                Text(
-                  player.name,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: Color(hexToColor(player.color)),
-                    fontSize: 16.0,
-                  ),
-                  textAlign: TextAlign.left,
-                ),
+                !player.isGradient
+                    ? Text(
+                        player.name,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: Color(hexToColor(player.color)),
+                          fontSize: 16.0,
+                        ),
+                        textAlign: TextAlign.right,
+                      )
+                    : GradientText(
+                        player.name,
+                        gradient: LinearGradient(
+                          colors: [
+                            Color(hexToColor(player.colorFrom)),
+                            Color(hexToColor(player.colorTo)),
+                          ],
+                        ),
+                        style: TextStyle(
+                          fontSize: 16.0,
+                        ),
+                        textAlign: TextAlign.right,
+                      ),
               ],
             ),
           ),

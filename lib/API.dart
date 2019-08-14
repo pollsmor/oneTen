@@ -236,7 +236,10 @@ class Level {
 
 class Player {
   final String name;
+  final bool isGradient;
   final String color;
+  final String colorFrom;
+  final String colorTo;
   final String countrycode;
   final String twitch;
   final String hitbox;
@@ -247,7 +250,10 @@ class Player {
 
   Player(
       {this.name,
+      this.isGradient,
       this.color,
+      this.colorFrom,
+      this.colorTo,
       this.countrycode,
       this.twitch,
       this.hitbox,
@@ -272,13 +278,23 @@ class Player {
       );
     }
 
-    String color = json['name-style']['style'] == 'gradient'
-        ? json['name-style']['color-from']['light']
-        : json['name-style']['color']['light'];
+    bool isGradient = (json['name-style']['style'] == 'gradient');
+    String color, colorFrom, colorTo;
+    if (isGradient) {
+      colorFrom = json['name-style']['color-from']['light'];
+      colorTo = json['name-style']['color-to']['light'];
+      print(colorFrom);
+      print(colorTo);
+    } else {
+      color = '#000000';
+    }
 
     return Player(
       name: json['names']['international'],
+      isGradient: isGradient,
       color: color,
+      colorFrom: colorFrom,
+      colorTo: colorTo,
       countrycode:
           json['location'] != null ? json['location']['country']['code'] : '',
       twitch: json['twitch'] != null ? json['twitch']['uri'] : '',
