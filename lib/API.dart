@@ -56,7 +56,9 @@ String ordinal(int num) {
 
 Future<List<Run>> fetchLatestRuns() async {
   final response = await http.get(
-      '$baseurl/runs?status=verified&orderby=submitted&direction=desc&embed=game.levels,game.categories,game.moderators,game.platforms,game.regions,category,level,players,region,platform');
+      '$baseurl/runs?status=verified&orderby=submitted&direction=des'
+      'c&embed=game.levels,game.categories,game.moderators,game.platforms,'
+      'game.regions,category.variables,level.variables,players,region,platform');
 
   if (response.statusCode == 200)
     return compute(parseLatestRuns, response.body);
@@ -72,8 +74,9 @@ List<Run> parseLatestRuns(String responseBody) {
 }
 
 Future<Leaderboard> fetchLeaderboard(String leaderboardURL) async {
-  final response = await http.get(
-      '$leaderboardURL?embed=game.levels,game.categories,game.moderators,game.platforms,game.regions,category,level,players');
+  final response = await http
+      .get('$leaderboardURL?embed=game.levels,game.categories,game.moderators,'
+          'game.platforms,game.regions,category,level,variables,players');
 
   if (response.statusCode == 200) {
     return compute(parseLeaderboard, response.body);
@@ -242,6 +245,45 @@ class Level {
       name: json['name'],
       rules: json['rules'] != null ? json['rules'] : '',
       leaderboardURL: json['links'][json['links'].length - 1]['uri'],
+    );
+  }
+}
+
+class Variable {
+  final String id;
+  final String name;
+  final List<Value> values;
+
+  Variable({this.id, this.name, this.values});
+
+  factory Variable.fromJson(Map<String, dynamic> json) {
+    var map = json['values']['values'];
+    List<Value> valuesList = List<Value>();
+    map.forEach((k, v) => valuesList.add(Value.fromJson(k, v)));
+
+    print(valuesList[1].key);
+    print(valuesList[1].label);
+
+    return Variable(
+      id: json['id'],
+      name: json['name'],
+      values: valuesList,
+    );
+  }
+}
+
+class Value {
+  String key;
+  String label;
+  String rules;
+
+  Value({this.key, this.label, this.rules});
+
+  factory Value.fromJson(String key, Map<String, dynamic> json) {
+    return Value(
+      key: key,
+      label: json['label'],
+      rules: json['rules'],
     );
   }
 }
@@ -443,6 +485,7 @@ class Leaderboard {
   final Game game;
   final Category category;
   final Level level;
+  final List<Variable> variables;
 
   Leaderboard({
     this.runs,
@@ -450,6 +493,7 @@ class Leaderboard {
     this.game,
     this.category,
     this.level,
+    this.variables,
   });
 
   factory Leaderboard.fromJson(Map<String, dynamic> json) {
@@ -460,6 +504,10 @@ class Leaderboard {
     var list2 = json['players']['data'] as List;
     List<Player> playersList = list2.map((i) => Player.fromJson(i)).toList();
 
+    var list3 = json['variables']['data'] as List;
+    List<Variable> variablesList =
+        list3.map((i) => Variable.fromJson(i)).toList();
+
     return Leaderboard(
       runs: runsList,
       players: playersList,
@@ -468,6 +516,7 @@ class Leaderboard {
       level: json['level']['data'] is Map<String, dynamic>
           ? Level.fromJson(json['level']['data'])
           : null,
+      variables: variablesList,
     );
   }
 }
