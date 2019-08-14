@@ -15,64 +15,70 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Run>>(
-      future: fetchLatestRuns(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return RefreshIndicator(
-            child: ListView.builder(
-              physics: AlwaysScrollableScrollPhysics(),
-              itemCount: snapshot.data.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  color: Theme.of(context).primaryColor,
-                  margin: EdgeInsets.fromLTRB(0.0, 2.0, 0.0, 2.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DetailedRunPage(
-                              snapshot.data[index].game.name,
-                              snapshot.data[index].category.name,
-                              snapshot.data[index].level,
-                              snapshot.data[index].player,
-                              snapshot.data[index].realtime,
-                              snapshot.data[index].igt,
-                              snapshot.data[index].date,
-                              snapshot.data[index].comment,
-                              snapshot.data[index].videoLinks),
+    return Scaffold(
+      appBar: AppBar(
+        title: IconButton(
+          icon: Icon(Icons.search),
+          onPressed: () {},
+        ),
+        brightness: Brightness.light,
+        elevation: 0.0,
+      ),
+      body: RefreshIndicator(
+        child: FutureBuilder<List<Run>>(
+          future: runs,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return ListView.builder(
+                itemCount: snapshot.data.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                    color: Theme.of(context).primaryColor,
+                    margin: EdgeInsets.fromLTRB(0.0, 2.0, 0.0, 2.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetailedRunPage(
+                                snapshot.data[index].game.name,
+                                snapshot.data[index].category.name,
+                                snapshot.data[index].level,
+                                snapshot.data[index].player,
+                                snapshot.data[index].realtime,
+                                snapshot.data[index].igt,
+                                snapshot.data[index].date,
+                                snapshot.data[index].comment,
+                                snapshot.data[index].videoLinks),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        color: Theme.of(context).primaryColorLight,
+                        child: _RunInfo(
+                          snapshot.data[index].game,
+                          snapshot.data[index].category,
+                          snapshot.data[index].level,
+                          snapshot.data[index].player,
+                          snapshot.data[index].date,
+                          snapshot.data[index].realtime,
+                          snapshot.data[index].igt,
+                          snapshot.data[index].leaderboardURL,
                         ),
-                      );
-                    },
-                    child: Container(
-                      color: Theme.of(context).primaryColorLight,
-                      child: _RunInfo(
-                        snapshot.data[index].game,
-                        snapshot.data[index].category,
-                        snapshot.data[index].level,
-                        snapshot.data[index].player,
-                        snapshot.data[index].date,
-                        snapshot.data[index].realtime,
-                        snapshot.data[index].igt,
-                        snapshot.data[index].leaderboardURL,
                       ),
                     ),
-                  ),
-                );
-              },
-            ),
-            onRefresh: _handleRefresh,
-          );
-        } else if (snapshot.hasError) {
-          return Container(
-            child: Text('${snapshot.error}'),
-            padding: EdgeInsets.all(8.0),
-          );
-        }
+                  );
+                },
+              );
+            } else if (snapshot.hasError) {
+              return Text('${snapshot.error}');
+            }
 
-        return Center(child: CircularProgressIndicator());
-      },
+            return Center(child: CircularProgressIndicator());
+          },
+        ),
+        onRefresh: _handleRefresh,
+      ),
     );
   }
 

@@ -87,23 +87,22 @@ Leaderboard parseLeaderboard(String responseBody) {
 }
 
 class Ruleset {
-  final bool verification;
-  final bool requireVideo;
-  final bool defaultRTA;
+  final bool reqVerification;
+  final bool reqVideo;
+  final String defaultTime;
   final bool emusAllowed;
 
   Ruleset(
-      {this.verification,
-      this.requireVideo,
-      this.defaultRTA,
+      {this.reqVerification,
+      this.reqVideo,
+      this.defaultTime,
       this.emusAllowed});
 
   factory Ruleset.fromJson(Map<String, dynamic> json) {
     return Ruleset(
-      verification: json['require-verification'],
-      requireVideo: json['require-video'],
-      defaultRTA: json['default-time'] == 'realtime' ||
-          json['default-time'] == 'realtime_noloads',
+      reqVerification: json['require-verification'],
+      reqVideo: json['require-video'],
+      defaultTime: json['default-time'],
       emusAllowed: json['emulators-allowed'],
     );
   }
@@ -258,10 +257,10 @@ class Player {
       this.pbs});
 
   factory Player.fromJson(Map<String, dynamic> json) {
-    //For runs without players
+    //For runs with players without a profile on speedrun.com
     if (json['rel'] == 'guest') {
       return Player(
-        name: json['name'] + ' (guest)',
+        name: json['name'] + '*',
         color: '#000000',
         countrycode: '',
         twitch: '',
@@ -273,17 +272,12 @@ class Player {
       );
     }
 
-    String name = '';
-    String color = '';
-    if (json['names'] != null) {
-      name = json['names']['international'];
-      color = json['name-style']['style'] == 'gradient'
-          ? json['name-style']['color-from']['light']
-          : json['name-style']['color']['light'];
-    }
+    String color = json['name-style']['style'] == 'gradient'
+        ? json['name-style']['color-from']['light']
+        : json['name-style']['color']['light'];
 
     return Player(
-      name: name,
+      name: json['names']['international'],
       color: color,
       countrycode:
           json['location'] != null ? json['location']['country']['code'] : '',
@@ -391,6 +385,7 @@ class Run {
   }
 }
 
+//Leaderboard runs are not as detailed as 'normal' runs; limitation of the speedrun.com API
 class LeaderboardRun {
   final int place;
   final String id;
@@ -444,7 +439,7 @@ class LeaderboardRun {
 
 class Leaderboard {
   final List<LeaderboardRun> runs;
-  final List<Player> players; //same index as for runs
+  final List<Player> players; //same index as for runs; limitation of the API
   final Game game;
   final Category category;
   final Level level;
