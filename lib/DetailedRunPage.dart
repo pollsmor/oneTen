@@ -8,15 +8,33 @@ class DetailedRunPage extends StatelessWidget {
   final String gameName;
   final String categoryName;
   final Level level;
+  final List<String> videoLinks;
+  final String comment;
+  final String verifyDate;
   final Player player;
+  final String date;
   final String realtime;
   final String igt;
-  final String date;
-  final String comment;
-  final List<String> videoLinks;
+  final bool emulated;
+  final String region;
+  final String platform;
+  final String yearPlatform;
 
-  DetailedRunPage(this.gameName, this.categoryName, this.level, this.player,
-      this.realtime, this.igt, this.date, this.comment, this.videoLinks);
+  DetailedRunPage(
+      this.gameName,
+      this.categoryName,
+      this.level,
+      this.videoLinks,
+      this.comment,
+      this.verifyDate,
+      this.player,
+      this.date,
+      this.realtime,
+      this.igt,
+      this.emulated,
+      this.region,
+      this.platform,
+      this.yearPlatform);
 
   @override
   Widget build(BuildContext context) {
@@ -72,25 +90,25 @@ class DetailedRunPage extends StatelessWidget {
                     Padding(padding: EdgeInsets.all(4.0)),
                     !player.isGradient
                         ? Text(
-                      player.name,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: Color(hexToColor(player.color)),
-                        fontSize: 16.0,
-                      ),
-                    )
+                            player.name,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: Color(hexToColor(player.color)),
+                              fontSize: 16.0,
+                            ),
+                          )
                         : GradientText(
-                      player.name,
-                      gradient: LinearGradient(
-                        colors: [
-                          Color(hexToColor(player.colorFrom)),
-                          Color(hexToColor(player.colorTo)),
-                        ],
-                      ),
-                      style: TextStyle(
-                        fontSize: 16.0,
-                      ),
-                    ),
+                            player.name,
+                            gradient: LinearGradient(
+                              colors: [
+                                Color(hexToColor(player.colorFrom)),
+                                Color(hexToColor(player.colorTo)),
+                              ],
+                            ),
+                            style: TextStyle(
+                              fontSize: 16.0,
+                            ),
+                          ),
                   ],
                 ),
                 Padding(padding: EdgeInsets.all(4.0)),
@@ -132,7 +150,7 @@ class DetailedRunPage extends StatelessWidget {
                 ),
                 Padding(padding: EdgeInsets.all(4.0)),
                 Text(
-                  comment != null ? 'Comment: $comment' : 'No comment',
+                  comment != '' ? 'Comment: $comment' : 'No comment',
                   textAlign: TextAlign.left,
                 ),
               ],
@@ -151,28 +169,61 @@ class DetailedRunPage extends StatelessWidget {
             padding: EdgeInsets.only(top: 4.0),
           ),
           videoLinks != null
-              ? Expanded(
-                  child: ListView.builder(
-                    itemCount: videoLinks.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Container(
-                        margin: EdgeInsets.all(8.0),
-                        child: MaterialButton(
-                          height: 45.0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16.0),
-                          ),
-                          child: Text(videoLinks[index]),
-                          color: Theme.of(context).primaryColorLight,
-                          onPressed: () {
-                            _launchURL(videoLinks[index]);
-                          },
+              ? Column(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.all(8.0),
+                      child: MaterialButton(
+                        height: 45.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16.0),
                         ),
-                      );
-                    },
-                  ),
+                        child: Text(videoLinks[0]),
+                        color: Theme.of(context).primaryColorLight,
+                        onPressed: () {
+                          _launchURL(videoLinks[0]);
+                        },
+                      ),
+                    ),
+                    1 < videoLinks.length
+                        ? Container(
+                            margin: EdgeInsets.all(8.0),
+                            child: MaterialButton(
+                              height: 45.0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16.0),
+                              ),
+                              child: Text(videoLinks[1]),
+                              color: Theme.of(context).primaryColorLight,
+                              onPressed: () {
+                                _launchURL(videoLinks[1]);
+                              },
+                            ),
+                          )
+                        : Container(),
+                    2 < videoLinks.length
+                        ? Container(
+                            margin: EdgeInsets.all(8.0),
+                            child: MaterialButton(
+                              height: 45.0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16.0),
+                              ),
+                              child: Text(videoLinks[2]),
+                              color: Theme.of(context).primaryColorLight,
+                              onPressed: () {
+                                _launchURL(videoLinks[2]);
+                              },
+                            ),
+                          )
+                        : Container(),
+                  ],
                 )
-              : Text(''),
+              : Container(),
+          Divider(
+            height: 4.0,
+          ),
+          Text('lmao'),
         ],
       ),
     );

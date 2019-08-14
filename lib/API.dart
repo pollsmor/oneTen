@@ -330,6 +330,7 @@ class Run {
   final String date;
   final String realtime;
   final String igt;
+  final bool emulated;
   final String region;
   final String platform;
   final String yearPlatform;
@@ -347,6 +348,7 @@ class Run {
       this.date,
       this.realtime,
       this.igt,
+        this.emulated,
       this.region,
       this.platform,
       this.yearPlatform,
@@ -398,6 +400,7 @@ class Run {
       date: json['date'],
       realtime: calcTime(json['times']['realtime_t'].toDouble()),
       igt: calcTime(json['times']['ingame_t'].toDouble()),
+      emulated: json['system']['emulated'],
       region: json['region']['data'] is Map<String, dynamic>
           ? json['region']['data']['name']
           : "",
@@ -416,48 +419,19 @@ class Run {
 class LeaderboardRun {
   final int place;
   final String id;
-  final List<String> videoLinks;
-  final String comment;
-  final DateTime verifyDate;
-  final String date;
-  final DateTime submitDate;
   final String realtime;
   final String igt;
 
   LeaderboardRun(
       {this.place,
       this.id,
-      this.videoLinks,
-      this.comment,
-      this.verifyDate,
-      this.date,
-      this.submitDate,
       this.realtime,
       this.igt});
 
   factory LeaderboardRun.fromJson(Map<String, dynamic> json) {
-    var videos = json['run']['videos'] != null ? json['run']['videos'] : null;
-    List<String> videoLinksList;
-    if (videos != null) {
-      if (videos['links'] != null) {
-        videoLinksList = List<String>(videos['links'].length);
-        for (int i = 0; i < videos['links'].length; ++i) {
-          videoLinksList[i] = videos['links'][i]['uri'];
-        }
-      } else {
-        videoLinksList = List<String>(1);
-        videoLinksList[0] = videos['text'];
-      }
-    }
-
     return LeaderboardRun(
       place: json['place'],
       id: json['run']['id'],
-      videoLinks: videoLinksList,
-      comment: json['run']['comment'],
-      verifyDate: DateTime.parse(json['run']['status']['verify-date']),
-      date: json['run']['date'],
-      submitDate: DateTime.parse(json['run']['submitted']),
       realtime: calcTime(json['run']['times']['realtime_t'].toDouble()),
       igt: calcTime(json['run']['times']['ingame_t'].toDouble()),
     );
