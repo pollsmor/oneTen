@@ -73,13 +73,11 @@ class DetailedRunPage extends StatelessWidget {
                     !player.isGradient
                         ? Text(
                       player.name,
-                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         color: Color(hexToColor(player.color)),
                         fontSize: 16.0,
                       ),
-                      textAlign: TextAlign.right,
                     )
                         : GradientText(
                       player.name,
@@ -92,7 +90,6 @@ class DetailedRunPage extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 16.0,
                       ),
-                      textAlign: TextAlign.right,
                     ),
                   ],
                 ),

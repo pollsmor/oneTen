@@ -267,6 +267,7 @@ class Player {
     if (json['rel'] == 'guest') {
       return Player(
         name: json['name'] + '*',
+        isGradient: false,
         color: '#000000',
         countrycode: '',
         twitch: '',
@@ -283,8 +284,6 @@ class Player {
     if (isGradient) {
       colorFrom = json['name-style']['color-from']['light'];
       colorTo = json['name-style']['color-to']['light'];
-      print(colorFrom);
-      print(colorTo);
     } else {
       color = '#000000';
     }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:gradient_text/gradient_text.dart';
 
 import 'API.dart';
 
@@ -70,7 +71,7 @@ class LeaderboardPage extends StatelessWidget {
                         ),
                       ),
                       Expanded(
-                        flex: 5,
+                        flex: 4,
                         child: Container(
                           child: Text('Player'),
                           padding: EdgeInsets.all(8.0),
@@ -253,12 +254,27 @@ class _LBRunInfo extends StatelessWidget {
           ),
         ),
         Expanded(
-          flex: 5,
+          flex: 4,
           child: Container(
-            child: Text(
+            child: !player.isGradient
+                ? Text(
               player.name,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 color: Color(hexToColor(player.color)),
+                fontSize: 16.0,
+              ),
+            )
+                : GradientText(
+              player.name,
+              gradient: LinearGradient(
+                colors: [
+                  Color(hexToColor(player.colorFrom)),
+                  Color(hexToColor(player.colorTo)),
+                ],
+              ),
+              style: TextStyle(
+                fontSize: 16.0,
               ),
             ),
             padding: EdgeInsets.all(8.0),
