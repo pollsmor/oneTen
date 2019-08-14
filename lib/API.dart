@@ -99,10 +99,22 @@ class Ruleset {
       this.emusAllowed});
 
   factory Ruleset.fromJson(Map<String, dynamic> json) {
+    String defaultTime = '';
+    switch (json['default-time']) {
+      case 'realtime':
+        defaultTime = 'Real time';
+        break;
+      case 'realtime_noloads':
+        defaultTime = 'Real time (no load screens)';
+        break;
+      default:
+        defaultTime = 'In-game time';
+    }
+
     return Ruleset(
       reqVerification: json['require-verification'],
       reqVideo: json['require-video'],
-      defaultTime: json['default-time'],
+      defaultTime: defaultTime,
       emusAllowed: json['emulators-allowed'],
     );
   }

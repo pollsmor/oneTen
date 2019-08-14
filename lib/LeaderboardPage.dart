@@ -58,6 +58,7 @@ class LeaderboardPage extends StatelessWidget {
                 _GameInfo(
                   snapshot.data.game,
                   snapshot.data.category,
+                  snapshot.data.level,
                 ),
                 Container(
                   color: Theme.of(context).primaryColorLight,
@@ -137,8 +138,9 @@ class LeaderboardPage extends StatelessWidget {
 class _GameInfo extends StatelessWidget {
   final Game game;
   final Category category;
+  final Level level;
 
-  _GameInfo(this.game, this.category);
+  _GameInfo(this.game, this.category, this.level);
 
   Widget build(BuildContext context) {
     return Column(
@@ -207,27 +209,61 @@ class _GameInfo extends StatelessWidget {
             ],
           ),
         ),
-        Container(
-          margin: EdgeInsets.fromLTRB(8.0, 0.0, 0.0, 6.0),
-          child: MaterialButton(
-            child: Text('View rules'),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (_) => SimpleDialog(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  children: [
-                    Container(
-                      child: Text(category.rules),
-                      color: Theme.of(context).primaryColor,
-                      padding: EdgeInsets.all(8.0),
+        Row(
+          children: [
+            Container(
+              margin: EdgeInsets.fromLTRB(8.0, 0.0, 0.0, 6.0),
+              child: MaterialButton(
+                child: Text('View rules'),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (_) => SimpleDialog(
+                      backgroundColor: Theme.of(context).primaryColor,
+                      children: [
+                        Container(
+                          child: Text(category.rules),
+                          color: Theme.of(context).primaryColor,
+                          padding: EdgeInsets.all(8.0),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              );
-            },
-            color: Theme.of(context).primaryColorLight,
-          ),
+                  );
+                },
+                color: Theme.of(context).primaryColorLight,
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.fromLTRB(8.0, 0.0, 0.0, 6.0),
+              child: MaterialButton(
+                child: Text('View ruleset'),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (_) => SimpleDialog(
+                      backgroundColor: Theme.of(context).primaryColor,
+                      children: [
+                        Text('  Verification required: ' +
+                            (game.ruleset.reqVerification == false
+                                ? 'Yes'
+                                : 'No')),
+                        Text('  Video required: ' +
+                            (game.ruleset.reqVideo == false
+                                ? 'Yes'
+                                : 'No')),
+                        Text('  Default timing method: ' + game.ruleset.defaultTime),
+                        Text('  Emulators allowed: ' +
+                            (game.ruleset.emusAllowed == false
+                                ? 'Yes'
+                                : 'No')),
+                      ],
+                    ),
+                  );
+                },
+                color: Theme.of(context).primaryColorLight,
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -258,25 +294,25 @@ class _LBRunInfo extends StatelessWidget {
           child: Container(
             child: !player.isGradient
                 ? Text(
-              player.name,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: Color(hexToColor(player.color)),
-                fontSize: 16.0,
-              ),
-            )
+                    player.name,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: Color(hexToColor(player.color)),
+                      fontSize: 16.0,
+                    ),
+                  )
                 : GradientText(
-              player.name,
-              gradient: LinearGradient(
-                colors: [
-                  Color(hexToColor(player.colorFrom)),
-                  Color(hexToColor(player.colorTo)),
-                ],
-              ),
-              style: TextStyle(
-                fontSize: 16.0,
-              ),
-            ),
+                    player.name,
+                    gradient: LinearGradient(
+                      colors: [
+                        Color(hexToColor(player.colorFrom)),
+                        Color(hexToColor(player.colorTo)),
+                      ],
+                    ),
+                    style: TextStyle(
+                      fontSize: 16.0,
+                    ),
+                  ),
             padding: EdgeInsets.all(8.0),
           ),
         ),
