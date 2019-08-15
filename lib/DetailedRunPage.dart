@@ -55,9 +55,7 @@ class DetailedRunPage extends StatelessWidget {
             Padding(padding: EdgeInsets.all(4.0)),
             Text(
               gameName,
-              style: TextStyle(
-                fontSize: 18.0,
-              ),
+              style: TextStyle(fontSize: 18.0),
             ),
             Text(
               level != null
@@ -71,187 +69,172 @@ class DetailedRunPage extends StatelessWidget {
           ],
         ),
       ),
-      body: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: 15.0,
-                      child: player.countrycode != ''
-                          ? Image.asset(
-                              'icons/flags/png/' + player.countrycode + '.png',
-                              package: 'country_icons')
-                          : Text(''),
-                    ),
-                    Padding(padding: EdgeInsets.all(4.0)),
-                    !player.isGradient
-                        ? Text(
-                            player.name,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: Color(hexToColor(player.color)),
-                              fontSize: 16.0,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 15.0,
+                        child: player.countrycode != ''
+                            ? Image.asset(
+                                'icons/flags/png/' +
+                                    player.countrycode +
+                                    '.png',
+                                package: 'country_icons')
+                            : Text(''),
+                      ),
+                      Padding(padding: EdgeInsets.all(4.0)),
+                      !player.isGradient
+                          ? Text(
+                              player.name,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: Color(hexToColor(player.color)),
+                                fontSize: 16.0,
+                              ),
+                            )
+                          : GradientText(
+                              player.name,
+                              gradient: LinearGradient(
+                                colors: [
+                                  Color(hexToColor(player.colorFrom)),
+                                  Color(hexToColor(player.colorTo)),
+                                ],
+                              ),
+                              style: TextStyle(fontSize: 16.0),
                             ),
-                          )
-                        : GradientText(
-                            player.name,
-                            gradient: LinearGradient(
-                              colors: [
-                                Color(hexToColor(player.colorFrom)),
-                                Color(hexToColor(player.colorTo)),
-                              ],
-                            ),
-                            style: TextStyle(
-                              fontSize: 16.0,
-                            ),
+                    ],
+                  ),
+                  Padding(padding: EdgeInsets.all(4.0)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        realtime != '0s' ? 'RTA — $realtime' : 'No RTA',
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Padding(
+                          child: Text(
+                            '/',
+                            style: TextStyle(),
                           ),
-                  ],
-                ),
-                Padding(padding: EdgeInsets.all(4.0)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      realtime != '0s' ? 'RTA — $realtime' : 'No RTA',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(),
-                    ),
-                    Padding(
-                        child: Text(
-                          '/',
-                          style: TextStyle(),
-                        ),
-                        padding: EdgeInsets.all(4.0)),
-                    Text(
-                      igt != '0s' ? 'IGT — $igt' : 'No IGT',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(),
-                    ),
-                  ],
-                ),
-                Padding(padding: EdgeInsets.all(4.0)),
-                Text(
-                  'Platform: ' +
-                      (platform != '' ? platform : 'N/A') +
-                      (emulated ? '(emulated)' : ''),
-                  textAlign: TextAlign.left,
-                ),
-                Padding(padding: EdgeInsets.all(4.0)),
-                Text(
-                  'Region: ' + (region != '' ? region : 'N/A'),
-                  textAlign: TextAlign.left,
-                ),
-              ],
-            ),
-          ),
-          Divider(
-            height: 4.0,
-          ),
-          Padding(
-            child: Text(
-              'Evidence',
-              style: TextStyle(
-                fontSize: 18.0,
+                          padding: EdgeInsets.all(4.0)),
+                      Text(
+                        igt != '0s' ? 'IGT — $igt' : 'No IGT',
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                  Padding(padding: EdgeInsets.all(4.0)),
+                  Text(
+                    'Platform: ' +
+                        (platform != '' ? platform : 'N/A') +
+                        (emulated ? ' (emulated)' : ''),
+                  ),
+                  Padding(padding: EdgeInsets.all(4.0)),
+                  Text(
+                    'Region: ' + (region != '' ? region : 'N/A'),
+                  ),
+                ],
               ),
             ),
-            padding: EdgeInsets.only(top: 8.0),
-          ),
-          videoLinks != null
-              ? Column(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.all(8.0),
-                      child: MaterialButton(
-                        height: 45.0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16.0),
+            Divider(height: 4.0),
+            Padding(
+              child: Text(
+                'Evidence',
+                style: TextStyle(fontSize: 18.0),
+              ),
+              padding: EdgeInsets.only(top: 8.0),
+            ),
+            videoLinks != null
+                ? Column(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.all(8.0),
+                        child: MaterialButton(
+                          height: 45.0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16.0),
+                          ),
+                          child: Text(videoLinks[0]),
+                          color: Theme.of(context).primaryColorLight,
+                          onPressed: () {
+                            _launchURL(videoLinks[0]);
+                          },
                         ),
-                        child: Text(videoLinks[0]),
-                        color: Theme.of(context).primaryColorLight,
-                        onPressed: () {
-                          _launchURL(videoLinks[0]);
-                        },
                       ),
-                    ),
-                    1 < videoLinks.length
-                        ? Container(
-                            margin: EdgeInsets.all(8.0),
-                            child: MaterialButton(
-                              height: 45.0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16.0),
+                      1 < videoLinks.length
+                          ? Container(
+                              margin: EdgeInsets.all(8.0),
+                              child: MaterialButton(
+                                height: 45.0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16.0),
+                                ),
+                                child: Text(videoLinks[1]),
+                                color: Theme.of(context).primaryColorLight,
+                                onPressed: () {
+                                  _launchURL(videoLinks[1]);
+                                },
                               ),
-                              child: Text(videoLinks[1]),
-                              color: Theme.of(context).primaryColorLight,
-                              onPressed: () {
-                                _launchURL(videoLinks[1]);
-                              },
-                            ),
-                          )
-                        : Container(),
-                    2 < videoLinks.length
-                        ? Container(
-                            margin: EdgeInsets.all(8.0),
-                            child: MaterialButton(
-                              height: 45.0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16.0),
+                            )
+                          : Container(),
+                      2 < videoLinks.length
+                          ? Container(
+                              margin: EdgeInsets.all(8.0),
+                              child: MaterialButton(
+                                height: 45.0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16.0),
+                                ),
+                                child: Text(videoLinks[2]),
+                                color: Theme.of(context).primaryColorLight,
+                                onPressed: () {
+                                  _launchURL(videoLinks[2]);
+                                },
                               ),
-                              child: Text(videoLinks[2]),
-                              color: Theme.of(context).primaryColorLight,
-                              onPressed: () {
-                                _launchURL(videoLinks[2]);
-                              },
-                            ),
-                          )
-                        : Container(),
-                  ],
-                )
-              : Container(),
-          Divider(
-            height: 4.0,
-          ),
-          Padding(padding: EdgeInsets.all(4.0)),
-          Container(
-            child: Text(
-              comment != '' ? '$comment' : 'No comment',
-              textAlign: TextAlign.left,
+                            )
+                          : Container(),
+                    ],
+                  )
+                : Container(),
+            Divider(height: 4.0),
+            Padding(padding: EdgeInsets.all(4.0)),
+            Container(
+              child: Text(
+                comment != '' ? '$comment' : 'No comment',
+                textAlign: TextAlign.left,
+              ),
+              margin: EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColorLight,
+                borderRadius: BorderRadius.all(Radius.circular(16.0)),
+              ),
             ),
-            padding: EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColorLight,
-              borderRadius: BorderRadius.all(Radius.circular(16.0)),
+            Padding(padding: EdgeInsets.all(4.0)),
+            Text(
+              'Played on $date',
+              style: TextStyle(fontWeight: FontWeight.w300),
             ),
-          ),
-          Padding(padding: EdgeInsets.all(4.0)),
-          Text(
-            'Played on $date',
-            style: TextStyle(
-              fontWeight: FontWeight.w300,
+            Padding(padding: EdgeInsets.all(4.0)),
+            Text(
+              'Submitted on ' + submitted.toString().substring(0, 10),
+              style: TextStyle(fontWeight: FontWeight.w300),
             ),
-          ),
-          Padding(padding: EdgeInsets.all(4.0)),
-          Text(
-            'Submitted on ' + submitted.toString().substring(0, 10),
-            style: TextStyle(
-              fontWeight: FontWeight.w300,
+            Padding(padding: EdgeInsets.all(4.0)),
+            Text(
+              'Verified on ' + verifyDate.substring(0, 10),
+              style: TextStyle(fontWeight: FontWeight.w300),
             ),
-          ),
-          Padding(padding: EdgeInsets.all(4.0)),
-          Text(
-            'Verified on ' + verifyDate.substring(0, 10),
-            style: TextStyle(
-              fontWeight: FontWeight.w300,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
