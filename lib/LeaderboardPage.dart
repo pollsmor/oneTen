@@ -3,15 +3,18 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:gradient_text/gradient_text.dart';
 
 import 'API.dart';
+import 'DetailedRunPage.dart';
 
 class LeaderboardPage extends StatelessWidget {
   final String gameName;
   final String categoryName;
   final Level level;
   final String leaderboardURL;
+  final Future<Leaderboard> leaderboard;
 
   LeaderboardPage(
-      this.gameName, this.categoryName, this.level, this.leaderboardURL);
+      this.gameName, this.categoryName, this.level, this.leaderboardURL)
+      : leaderboard = fetchLeaderboard(leaderboardURL);
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +53,7 @@ class LeaderboardPage extends StatelessWidget {
         ),
       ),
       body: FutureBuilder<Leaderboard>(
-        future: fetchLeaderboard(leaderboardURL),
+        future: leaderboard,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return Column(
@@ -108,13 +111,31 @@ class LeaderboardPage extends StatelessWidget {
                     },
                     itemBuilder: (BuildContext context, int index) {
                       return Container(
-                        color: Theme.of(context).primaryColorLight,
-                        child: _LBRunInfo(
-                          ordinal(snapshot.data.runs[index].place),
-                          snapshot.data.players[index],
-                          snapshot.data.runs[index].realtime,
-                          snapshot.data.runs[index].igt,
+                        child: Material(
+                          child: InkWell(
+                            child: _LBRunInfo(
+                              ordinal(snapshot.data.runs[index].place),
+                              snapshot.data.players[index],
+                              snapshot.data.runs[index].realtime,
+                              snapshot.data.runs[index].igt,
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DetailedRunPage(
+                                    snapshot.data.game.name,
+                                    snapshot.data.category.name,
+                                    snapshot.data.level,
+                                    snapshot.data.runs[index].id,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          color: Colors.transparent,
                         ),
+                        color: Theme.of(context).primaryColorLight,
                       );
                     },
                   ),
@@ -248,14 +269,11 @@ class _GameInfo extends StatelessWidget {
                                 ? 'Yes'
                                 : 'No')),
                         Text('  Video required: ' +
-                            (game.ruleset.reqVideo == false
-                                ? 'Yes'
-                                : 'No')),
-                        Text('  Default timing method: ' + game.ruleset.defaultTime),
+                            (game.ruleset.reqVideo == false ? 'Yes' : 'No')),
+                        Text('  Default timing method: ' +
+                            game.ruleset.defaultTime),
                         Text('  Emulators allowed: ' +
-                            (game.ruleset.emusAllowed == false
-                                ? 'Yes'
-                                : 'No')),
+                            (game.ruleset.emusAllowed == false ? 'Yes' : 'No')),
                       ],
                     ),
                   );

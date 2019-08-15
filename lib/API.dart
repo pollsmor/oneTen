@@ -89,6 +89,22 @@ Leaderboard parseLeaderboard(String responseBody) {
   return Leaderboard.fromJson(json.decode(responseBody)['data']);
 }
 
+Future<Run> fetchRun(String runID) async {
+  final response = await http.get(
+      '$baseurl/runs/$runID?embed=game.levels,game.categories,game.moderators,game.platforms,'
+      'game.regions,category.variables,level.variables,players,region,platform');
+
+  if (response.statusCode == 200) {
+    return compute(parseRun, response.body);
+  }
+
+  throw Exception('Failed to load run.');
+}
+
+Run parseRun(String responseBody) {
+  return Run.fromJson(json.decode(responseBody)['data']);
+}
+
 class Ruleset {
   final bool reqVerification;
   final bool reqVideo;
@@ -260,9 +276,6 @@ class Variable {
     var map = json['values']['values'];
     List<Value> valuesList = List<Value>();
     map.forEach((k, v) => valuesList.add(Value.fromJson(k, v)));
-
-    print(valuesList[1].key);
-    print(valuesList[1].label);
 
     return Variable(
       id: json['id'],
