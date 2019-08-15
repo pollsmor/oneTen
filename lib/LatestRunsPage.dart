@@ -12,7 +12,7 @@ class LatestRunsPage extends StatefulWidget {
 }
 
 class _LatestRunsPageState extends State<LatestRunsPage> {
-  Future<List<Run>> runs = fetchLatestRuns();
+  Future<LatestRuns> runs = fetchLatestRuns();
 
   @override
   Widget build(BuildContext context) {
@@ -27,26 +27,26 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
         elevation: 0.0,
       ),
       body: RefreshIndicator(
-        child: FutureBuilder<List<Run>>(
+        child: FutureBuilder<LatestRuns>(
           future: runs,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return ListView.builder(
-                itemCount: snapshot.data.length,
+                itemCount: snapshot.data.runs.length,
                 itemBuilder: (BuildContext context, int index) {
                   return InkWell(
                     child: Container(
                       margin: EdgeInsets.fromLTRB(0.0, 1.0, 0.0, 1.0),
                       padding: EdgeInsets.fromLTRB(0.0, 4.0, 0.0, 4.0),
                       child: _RunInfo(
-                        snapshot.data[index].game,
-                        snapshot.data[index].category,
-                        snapshot.data[index].level,
-                        snapshot.data[index].player,
-                        snapshot.data[index].date,
-                        snapshot.data[index].realtime,
-                        snapshot.data[index].igt,
-                        snapshot.data[index].leaderboardURL,
+                        snapshot.data.runs[index].game,
+                        snapshot.data.runs[index].category,
+                        snapshot.data.runs[index].level,
+                        snapshot.data.runs[index].player,
+                        snapshot.data.runs[index].date,
+                        snapshot.data.runs[index].realtime,
+                        snapshot.data.runs[index].igt,
+                        snapshot.data.runs[index].leaderboardURL,
                       ),
                     ),
                     onTap: () {
@@ -54,10 +54,10 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => DetailedRunPage(
-                            snapshot.data[index].game.name,
-                            snapshot.data[index].category.name,
-                            snapshot.data[index].level,
-                            snapshot.data[index].id,
+                            snapshot.data.runs[index].game.name,
+                            snapshot.data.runs[index].category.name,
+                            snapshot.data.runs[index].level,
+                            snapshot.data.runs[index].id,
                           ),
                         ),
                       );

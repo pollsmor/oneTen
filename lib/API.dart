@@ -54,23 +54,21 @@ String ordinal(int num) {
   return num.toString() + 'th';
 }
 
-Future<List<Run>> fetchLatestRuns() async {
+Future<LatestRuns> fetchLatestRuns() async {
   final response = await http.get(
       '$baseurl/runs?status=verified&orderby=submitted&direction=des'
       'c&embed=game.levels,game.categories,game.moderators,game.platforms,'
       'game.regions,category.variables,level.variables,players,region,platform');
 
-  if (response.statusCode == 200)
+  if (response.statusCode == 200) {
     return compute(parseLatestRuns, response.body);
+  }
 
   throw Exception('Failed to load the latest runs.');
 }
 
-List<Run> parseLatestRuns(String responseBody) {
-  var list = json.decode(responseBody)['data'];
-  List<Run> runs = List<Run>.from(list.map((i) => Run.fromJson(i)));
-
-  return runs;
+LatestRuns parseLatestRuns(String responseBody) {
+  return LatestRuns.fromJson(json.decode(responseBody));
 }
 
 Future<Leaderboard> fetchLeaderboard(String leaderboardURL) async {
@@ -530,6 +528,48 @@ class Leaderboard {
           ? Level.fromJson(json['level']['data'])
           : null,
       variables: variablesList,
+    );
+  }
+}
+
+class Pagination {
+  final int offset;
+  final int max;
+  final int size;
+  final String next;
+
+  Pagination({this.offset, this.max, this.size, this.next});
+
+  factory Pagination.fromJson(Map<String, dynamic> json) {
+    String next;
+    for (int i = 0; i < json['links'].length; ++i) {
+      if (json['links'][i]['rel'] == 'next') {
+        next = json['links'][i]['uri'];
+      }
+    }
+
+    return Pagination(
+      offset: json['offset'],
+      max: json['max'],
+      size: json['size'],
+      next: next,
+    );
+  }
+}
+
+class LatestRuns {
+  List<Run> runs;
+  Pagination pagination;
+
+  LatestRuns({this.runs, this.pagination});
+
+  factory LatestRuns.fromJson(Map<String, dynamic> json) {
+    var list = json['data'];
+    List<Run> runs = List<Run>.from(list.map((i) => Run.fromJson(i)));
+
+    return LatestRuns(
+      runs: runs,
+      pagination: Pagination.fromJson(json['pagination']),
     );
   }
 }
