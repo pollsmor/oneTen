@@ -81,18 +81,14 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
 
       final response = await http.get(nextPage);
 
-      if (response.statusCode == 200) {
-        LatestRuns latestRuns = LatestRuns.fromJson(json.decode(response.body));
-        List<Run> runsList = latestRuns.runs;
-        nextPage = latestRuns.pagination.next;
+      LatestRuns latestRuns = LatestRuns.fromJson(json.decode(response.body));
+      List<Run> runsList = latestRuns.runs;
+      nextPage = latestRuns.pagination.next;
 
-        setState(() {
-          isLoading = false;
-          runs.addAll(runsList);
-        });
-      }
-
-      throw Exception('Failed to load the latest runs.');
+      setState(() {
+        isLoading = false;
+        runs.addAll(runsList);
+      });
     }
   }
 
@@ -117,7 +113,7 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
 
   Widget _buildProgressIndicator() {
     return Padding(
-      padding: EdgeInsets.all(8.0),
+      padding: EdgeInsets.all(16.0),
       child: Center(
         child: Opacity(
           opacity: isLoading ? 1.0 : 00,
@@ -126,18 +122,6 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
       ),
     );
   }
-
-  /*
-  Future<Null> _handleRefresh() async {
-    await Future.delayed(new Duration(seconds: 2));
-
-    setState(() {
-      runs = fetchLatestRuns(latestRunsUrl);
-    });
-
-    return null;
-  }
-  */
 }
 
 class _RunInfo extends StatelessWidget {
