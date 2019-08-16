@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart'; //for compute() function
 final String baseurl = 'https://www.speedrun.com/api/v1';
 final String latestRunsUrl = '$baseurl/runs?status=verified&orderby=submitted&direction=des'
     'c&embed=game.levels,game.categories,game.moderators,game.platforms,'
-    'game.regions,category.variables,level.variables,players,region,platform';
+    'game.regions,category.variables,level.variables,players,region,platform&max=50';
 
 //Dart does not include an ISO 8601 duration parser afaik.
 String calcTime(double seconds) {
