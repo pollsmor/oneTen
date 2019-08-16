@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:gradient_text/gradient_text.dart';
 
@@ -12,7 +14,10 @@ class LatestRunsPage extends StatefulWidget {
 }
 
 class _LatestRunsPageState extends State<LatestRunsPage> {
-  Future<LatestRuns> runs = fetchLatestRuns();
+  String nextPage;
+  ScrollController _scrollController = ScrollController();
+  bool isLoading = false;
+  List<Run> runs = List<Run>();
 
   @override
   Widget build(BuildContext context) {
@@ -26,66 +31,113 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
         brightness: Brightness.light,
         elevation: 0.0,
       ),
-      body: RefreshIndicator(
-        child: FutureBuilder<LatestRuns>(
-          future: runs,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return ListView.builder(
-                itemCount: snapshot.data.runs.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return InkWell(
-                    child: Container(
-                      margin: EdgeInsets.fromLTRB(0.0, 1.0, 0.0, 1.0),
-                      padding: EdgeInsets.fromLTRB(0.0, 4.0, 0.0, 4.0),
-                      child: _RunInfo(
-                        snapshot.data.runs[index].game,
-                        snapshot.data.runs[index].category,
-                        snapshot.data.runs[index].level,
-                        snapshot.data.runs[index].player,
-                        snapshot.data.runs[index].date,
-                        snapshot.data.runs[index].realtime,
-                        snapshot.data.runs[index].igt,
-                        snapshot.data.runs[index].leaderboardURL,
-                      ),
+      body: ListView.builder(
+        itemCount: runs.length + 1,
+        itemBuilder: (BuildContext context, int index) {
+          if (index == runs.length) {
+            return _buildProgressIndicator();
+          } else {
+            return InkWell(
+              child: Container(
+                margin: EdgeInsets.fromLTRB(0.0, 1.0, 0.0, 1.0),
+                padding: EdgeInsets.fromLTRB(0.0, 4.0, 0.0, 4.0),
+                child: _RunInfo(
+                  runs[index].game,
+                  runs[index].category,
+                  runs[index].level,
+                  runs[index].player,
+                  runs[index].date,
+                  runs[index].realtime,
+                  runs[index].igt,
+                  runs[index].leaderboardURL,
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DetailedRunPage(
+                      runs[index].game.name,
+                      runs[index].category.name,
+                      runs[index].level,
+                      runs[index].id,
                     ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DetailedRunPage(
-                            snapshot.data.runs[index].game.name,
-                            snapshot.data.runs[index].category.name,
-                            snapshot.data.runs[index].level,
-                            snapshot.data.runs[index].id,
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                },
-              );
-            } else if (snapshot.hasError) {
-              return Text('${snapshot.error}');
-            }
-
-            return Center(child: CircularProgressIndicator());
-          },
-        ),
-        onRefresh: _handleRefresh,
+                  ),
+                );
+              },
+            );
+          }
+        },
+        controller: _scrollController,
       ),
     );
   }
 
+  void _getMoreData() async {
+    if (!isLoading) {
+      setState(() {
+        isLoading = true;
+      });
+
+      final response = await http.get(nextPage);
+
+      if (response.statusCode == 200) {
+        LatestRuns latestRuns = LatestRuns.fromJson(json.decode(response.body));
+        List<Run> runsList = latestRuns.runs;
+        nextPage = latestRuns.pagination.next;
+
+        setState(() {
+          isLoading = false;
+          runs.addAll(runsList);
+        });
+      }
+
+      throw Exception('Failed to load the latest runs.');
+    }
+  }
+
+  @override
+  void initState() {
+    nextPage = latestRunsUrl;
+    this._getMoreData();
+    super.initState();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        _getMoreData();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  Widget _buildProgressIndicator() {
+    return Padding(
+      padding: EdgeInsets.all(8.0),
+      child: Center(
+        child: Opacity(
+          opacity: isLoading ? 1.0 : 00,
+          child: CircularProgressIndicator(),
+        ),
+      ),
+    );
+  }
+
+  /*
   Future<Null> _handleRefresh() async {
     await Future.delayed(new Duration(seconds: 2));
 
     setState(() {
-      runs = fetchLatestRuns();
+      runs = fetchLatestRuns(latestRunsUrl);
     });
 
     return null;
   }
+  */
 }
 
 class _RunInfo extends StatelessWidget {

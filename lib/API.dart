@@ -3,6 +3,9 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart'; //for compute() function
 
 final String baseurl = 'https://www.speedrun.com/api/v1';
+final String latestRunsUrl = '$baseurl/runs?status=verified&orderby=submitted&direction=des'
+    'c&embed=game.levels,game.categories,game.moderators,game.platforms,'
+    'game.regions,category.variables,level.variables,players,region,platform';
 
 //Dart does not include an ISO 8601 duration parser afaik.
 String calcTime(double seconds) {
@@ -54,11 +57,8 @@ String ordinal(int num) {
   return num.toString() + 'th';
 }
 
-Future<LatestRuns> fetchLatestRuns() async {
-  final response = await http.get(
-      '$baseurl/runs?status=verified&orderby=submitted&direction=des'
-      'c&embed=game.levels,game.categories,game.moderators,game.platforms,'
-      'game.regions,category.variables,level.variables,players,region,platform');
+Future<LatestRuns> fetchLatestRuns(String latestRunsUrl) async {
+  final response = await http.get(latestRunsUrl);
 
   if (response.statusCode == 200) {
     return compute(parseLatestRuns, response.body);
