@@ -71,7 +71,7 @@ class DetailedRunPage extends StatelessWidget {
                                           snapshot.data.player.countrycode +
                                           '.png',
                                       package: 'country_icons')
-                                  : Text(''),
+                                  : Container(),
                             ),
                             Padding(padding: EdgeInsets.all(4.0)),
                             !snapshot.data.player.isGradient
@@ -203,7 +203,9 @@ class DetailedRunPage extends StatelessWidget {
                                 : Container(),
                           ],
                         )
-                      : Container(),
+                      : Padding(
+                          child: Text('This run has no video evidence.'),
+                          padding: EdgeInsets.all(8.0)),
                   Divider(height: 4.0),
                   Padding(padding: EdgeInsets.all(4.0)),
                   Container(
@@ -236,6 +238,7 @@ class DetailedRunPage extends StatelessWidget {
                     'Verified on ' + snapshot.data.verifyDate.substring(0, 10),
                     style: TextStyle(fontWeight: FontWeight.w300),
                   ),
+                  Padding(padding: EdgeInsets.all(4.0)),
                 ],
               ),
             );
