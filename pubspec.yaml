@@ -30,8 +30,6 @@ dependencies:
 
   gradient_text: ^1.0.2
 
-  paging: ^0.1.0
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -64,7 +64,7 @@ Future<LatestRuns> fetchLatestRuns(String latestRunsUrl) async {
     return compute(parseLatestRuns, response.body);
   }
 
-  throw Exception('Failed to load the latest runs.');
+  throw Exception('Failed fto load the latest runs.');
 }
 
 LatestRuns parseLatestRuns(String responseBody) {

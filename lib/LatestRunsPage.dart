@@ -24,10 +24,13 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
-        title: IconButton(
-          icon: Icon(Icons.search),
-          onPressed: () {},
-        ),
+        title: Text('oneTen'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {},
+          ),
+        ],
         brightness: Brightness.light,
         elevation: 0.0,
       ),
