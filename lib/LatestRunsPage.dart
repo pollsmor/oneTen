@@ -17,7 +17,7 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
   String nextPage;
   ScrollController _scrollController = ScrollController();
   bool isLoading = false;
-  List<Run> runs = List<Run>();
+  List<LatestRun> runs = List<LatestRun>();
 
   @override
   Widget build(BuildContext context) {
@@ -33,25 +33,20 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
             child: Material(
               child: InkWell(
                 child: _RunInfo(
-                  runs[index].game,
-                  runs[index].category,
-                  runs[index].level,
+                  runs[index].gameName,
+                  runs[index].categoryName,
+                  runs[index].levelName,
                   runs[index].player,
-                  runs[index].date,
                   runs[index].realtime,
                   runs[index].igt,
                   runs[index].leaderboardURL,
+                  runs[index].coverURL,
                 ),
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => DetailedRunPage(
-                        runs[index].game.name,
-                        runs[index].category.name,
-                        runs[index].level,
-                        runs[index].id,
-                      ),
+                      builder: (context) => DetailedRunPage(runs[index].runID),
                     ),
                   );
                 },
@@ -75,7 +70,7 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
       final response = await http.get(nextPage);
 
       LatestRuns latestRuns = LatestRuns.fromJson(json.decode(response.body));
-      List<Run> runsList = latestRuns.runs;
+      List<LatestRun> runsList = latestRuns.runs;
       nextPage = latestRuns.pagination.next;
 
       setState(() {
@@ -118,17 +113,17 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
 }
 
 class _RunInfo extends StatelessWidget {
-  final Game game;
-  final Category category;
-  final Level level;
+  final String gameName;
+  final String categoryName;
+  final String levelName;
   final Player player;
-  final String date;
   final String rta;
   final String igt;
   final String leaderboardURL;
+  final String coverURL;
 
-  _RunInfo(this.game, this.category, this.level, this.player, this.date,
-      this.rta, this.igt, this.leaderboardURL);
+  _RunInfo(this.gameName, this.categoryName, this.levelName, this.player,
+      this.rta, this.igt, this.leaderboardURL, this.coverURL);
 
   @override
   Widget build(BuildContext context) {
@@ -143,7 +138,7 @@ class _RunInfo extends StatelessWidget {
                 child: AspectRatio(
                   aspectRatio: 1.0,
                   child: CachedNetworkImage(
-                    imageUrl: game.assets.coverURL,
+                    imageUrl: coverURL,
                     errorWidget: (context, url, error) => Icon(Icons.error),
                   ),
                 ),
@@ -166,7 +161,7 @@ class _RunInfo extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  game.name,
+                  gameName,
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -175,13 +170,13 @@ class _RunInfo extends StatelessWidget {
                 ),
                 Padding(padding: EdgeInsets.all(4.0)),
                 Text(
-                  category.name,
+                  categoryName,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
                 Padding(padding: EdgeInsets.all(4.0)),
                 Text(
-                  level != null ? level.name : '',
+                  levelName,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),

@@ -16,7 +16,6 @@ class MyApp extends StatelessWidget {
         primaryColorLight: Colors.white,
         scaffoldBackgroundColor: Color(0xfff2f2f2),
         dialogBackgroundColor: Color(0xfff2f2f2),
-        dividerColor: Color(0xfff2f2f2),
         buttonTheme: ButtonThemeData(
           height: 40.0,
           minWidth: 30.0,

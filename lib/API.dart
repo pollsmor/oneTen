@@ -5,8 +5,7 @@ import 'package:flutter/foundation.dart'; //for compute() function
 final String baseurl = 'https://www.speedrun.com/api/v1';
 final String latestRunsUrl =
     '$baseurl/runs?status=verified&orderby=submitted&direction=des'
-    'c&embed=game.levels,game.categories,game.moderators,game.platforms,'
-    'game.regions,category.variables,level.variables,players,region,platform&max=50';
+    'c&embed=game,category,level,players&max=50';
 
 //Dart does not include an ISO 8601 duration parser afaik.
 String calcTime(double seconds) {
@@ -357,32 +356,32 @@ class Player {
         srl: '',
         pbs: '',
       );
-    }
-
-    bool isGradient = (json['name-style']['style'] == 'gradient');
-    String color, colorFrom, colorTo;
-    if (isGradient) {
-      colorFrom = json['name-style']['color-from']['light'];
-      colorTo = json['name-style']['color-to']['light'];
     } else {
-      color = '#000000';
-    }
+      bool isGradient = (json['name-style']['style'] == 'gradient');
+      String color, colorFrom, colorTo;
+      if (isGradient) {
+        colorFrom = json['name-style']['color-from']['light'];
+        colorTo = json['name-style']['color-to']['light'];
+      } else {
+        color = '#000000';
+      }
 
-    return Player(
-      name: json['names']['international'],
-      isGradient: isGradient,
-      color: color,
-      colorFrom: colorFrom,
-      colorTo: colorTo,
-      countrycode:
-          json['location'] != null ? json['location']['country']['code'] : '',
-      twitch: json['twitch'] != null ? json['twitch']['uri'] : '',
-      hitbox: json['hitbox'] != null ? json['hitbox']['uri'] : '',
-      youtube: json['youtube'] != null ? json['youtube']['uri'] : '',
-      twitter: json['twitter'] != null ? json['twitter']['uri'] : '',
-      srl: json['speedrunslive'] != null ? json['speedrunslive']['uri'] : '',
-      pbs: json['links'][json['links'].length - 1]['uri'],
-    );
+      return Player(
+        name: json['names']['international'],
+        isGradient: isGradient,
+        color: color,
+        colorFrom: colorFrom,
+        colorTo: colorTo,
+        countrycode:
+            json['location'] != null ? json['location']['country']['code'] : '',
+        twitch: json['twitch'] != null ? json['twitch']['uri'] : '',
+        hitbox: json['hitbox'] != null ? json['hitbox']['uri'] : '',
+        youtube: json['youtube'] != null ? json['youtube']['uri'] : '',
+        twitter: json['twitter'] != null ? json['twitter']['uri'] : '',
+        srl: json['speedrunslive'] != null ? json['speedrunslive']['uri'] : '',
+        pbs: json['links'][json['links'].length - 1]['uri'],
+      );
+    }
   }
 }
 
@@ -524,8 +523,12 @@ class Leaderboard {
 
   factory Leaderboard.fromJson(Map<String, dynamic> json) {
     var list = json['runs'] as List;
-    List<LeaderboardRun> runsList =
-        list.map((i) => LeaderboardRun.fromJson(i)).toList();
+    List<LeaderboardRun> runsList = List<LeaderboardRun>();
+    for (int i = 0; i < list.length; ++i) {
+      if (list[i]['place'] != 0) {
+        runsList.add(LeaderboardRun.fromJson(list[i]));
+      }
+    }
 
     var list2 = json['players']['data'] as List;
     List<Player> playersList = list2.map((i) => Player.fromJson(i)).toList();
@@ -543,6 +546,59 @@ class Leaderboard {
           ? Level.fromJson(json['level']['data'])
           : null,
       variables: variablesList,
+    );
+  }
+}
+
+class LatestRun {
+  final String runID;
+  final String gameName;
+  final String categoryName;
+  final String levelName;
+  final Player player;
+  final String realtime;
+  final String igt;
+  final String leaderboardURL;
+  final String coverURL;
+
+  LatestRun(
+      {this.runID,
+      this.gameName,
+      this.categoryName,
+      this.levelName,
+      this.player,
+      this.realtime,
+      this.igt,
+      this.leaderboardURL,
+      this.coverURL});
+
+  factory LatestRun.fromJson(Map<String, dynamic> json) {
+    String leaderboardURL = '';
+    String gameID = json['game']['data']['id'];
+    String categoryID = json['category']['data']['id'];
+    String levelID = json['level']['data'] is Map<String, dynamic>
+        ? json['level']['data']['id']
+        : "";
+    if (levelID != '') {
+      leaderboardURL =
+          'https://speedrun.com/api/v1/leaderboards/$gameID/level/$levelID/$categoryID';
+    } else {
+      leaderboardURL =
+          'https://speedrun.com/api/v1/leaderboards/$gameID/category/$categoryID';
+    }
+
+    return LatestRun(
+      runID: json['id'],
+      gameName: json['game']['data']['names']['international'],
+      categoryName: json['category']['data']['name'],
+      levelName: json['level']['data'] is Map<String, dynamic>
+          ? json['level']['data']['name']
+          : '',
+      player: Player.fromJson(json['players']['data'][0]),
+      realtime: calcTime(json['times']['realtime_t'].toDouble()),
+      igt: calcTime(json['times']['ingame_t'].toDouble()),
+      leaderboardURL: leaderboardURL,
+      coverURL: json['game']['data']['assets']['cover-large']['uri'],
     );
   }
 }
@@ -573,14 +629,15 @@ class Pagination {
 }
 
 class LatestRuns {
-  List<Run> runs;
+  List<LatestRun> runs;
   Pagination pagination;
 
   LatestRuns({this.runs, this.pagination});
 
   factory LatestRuns.fromJson(Map<String, dynamic> json) {
     var list = json['data'];
-    List<Run> runs = List<Run>.from(list.map((i) => Run.fromJson(i)));
+    List<LatestRun> runs =
+        List<LatestRun>.from(list.map((i) => LatestRun.fromJson(i)));
 
     return LatestRuns(
       runs: runs,

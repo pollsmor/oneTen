@@ -5,54 +5,50 @@ import 'package:gradient_text/gradient_text.dart';
 import 'API.dart';
 
 class DetailedRunPage extends StatelessWidget {
-  final String gameName;
-  final String categoryName;
-  final Level level;
   final String runID;
+  final Future<Run> run;
 
-  DetailedRunPage(
-    this.gameName,
-    this.categoryName,
-    this.level,
-    this.runID,
-  );
+  DetailedRunPage(this.runID) : run = fetchRun(runID);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0.0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(padding: EdgeInsets.all(4.0)),
-            Text(
-              gameName,
-              style: TextStyle(fontSize: 18.0),
-            ),
-            Text(
-              level != null
-                  ? categoryName + ' (' + level.name + ')'
-                  : categoryName,
-              style: TextStyle(
-                fontSize: 13.0,
-                fontWeight: FontWeight.w300,
+    return FutureBuilder<Run>(
+      future: run,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Scaffold(
+            appBar: AppBar(
+              elevation: 0.0,
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(padding: EdgeInsets.all(4.0)),
+                  Text(
+                    snapshot.data.game.name,
+                    style: TextStyle(fontSize: 18.0),
+                  ),
+                  Text(
+                    snapshot.data.level != null
+                        ? snapshot.data.category.name +
+                            ' (' +
+                            snapshot.data.level.name +
+                            ')'
+                        : snapshot.data.category.name,
+                    style: TextStyle(
+                      fontSize: 13.0,
+                      fontWeight: FontWeight.w300,
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
-      body: FutureBuilder<Run>(
-        future: fetchRun(runID),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return SingleChildScrollView(
+            body: SingleChildScrollView(
               child: Column(
                 children: [
                   Container(
@@ -221,14 +217,29 @@ class DetailedRunPage extends StatelessWidget {
                   Padding(padding: EdgeInsets.all(4.0)),
                 ],
               ),
-            );
-          } else if (snapshot.hasError) {
-            return Text('${snapshot.error}');
-          }
-
-          return Center(child: CircularProgressIndicator());
-        },
-      ),
+            ),
+          );
+        } else {
+          return Scaffold(
+            appBar: AppBar(
+              elevation: 0.0,
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+            body: Center(
+                child: !(snapshot.hasError)
+                    ? CircularProgressIndicator()
+                    : Container(
+                        child: Text('${snapshot.error}'),
+                        padding: EdgeInsets.all(8.0),
+                      )),
+          );
+        }
+      },
     );
   }
 

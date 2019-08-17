@@ -117,11 +117,7 @@ class LeaderboardPage extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => DetailedRunPage(
-                                    snapshot.data.game.name,
-                                    snapshot.data.category.name,
-                                    snapshot.data.level,
-                                    snapshot.data.runs[index].id,
-                                  ),
+                                      snapshot.data.runs[index].id),
                                 ),
                               );
                             },
