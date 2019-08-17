@@ -17,6 +17,11 @@ class MyApp extends StatelessWidget {
         primaryColorDark: Colors.black,
         accentColor: Colors.blue,
       ),
+      darkTheme: ThemeData(
+        primaryColor: Color(0xff252525),
+        primaryColorLight: Colors.white,
+        primaryColorDark: Colors.black,
+      ),
       debugShowCheckedModeBanner: false,
     );
   }
