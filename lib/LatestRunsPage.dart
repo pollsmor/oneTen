@@ -27,34 +27,38 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
         if (index == runs.length) {
           return _buildProgressIndicator();
         } else {
-          return InkWell(
-            child: Container(
-              margin: EdgeInsets.fromLTRB(0.0, 1.0, 0.0, 1.0),
-              padding: EdgeInsets.fromLTRB(0.0, 4.0, 0.0, 4.0),
-              child: _RunInfo(
-                runs[index].game,
-                runs[index].category,
-                runs[index].level,
-                runs[index].player,
-                runs[index].date,
-                runs[index].realtime,
-                runs[index].igt,
-                runs[index].leaderboardURL,
-              ),
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => DetailedRunPage(
-                    runs[index].game.name,
-                    runs[index].category.name,
-                    runs[index].level,
-                    runs[index].id,
-                  ),
+          return Container(
+            margin: EdgeInsets.fromLTRB(0.0, 1.0, 0.0, 1.0),
+            padding: EdgeInsets.fromLTRB(0.0, 4.0, 0.0, 4.0),
+            child: Material(
+              child: InkWell(
+                child: _RunInfo(
+                  runs[index].game,
+                  runs[index].category,
+                  runs[index].level,
+                  runs[index].player,
+                  runs[index].date,
+                  runs[index].realtime,
+                  runs[index].igt,
+                  runs[index].leaderboardURL,
                 ),
-              );
-            },
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DetailedRunPage(
+                        runs[index].game.name,
+                        runs[index].category.name,
+                        runs[index].level,
+                        runs[index].id,
+                      ),
+                    ),
+                  );
+                },
+              ),
+              color: Colors.transparent,
+            ),
+            color: Theme.of(context).primaryColor,
           );
         }
       },
@@ -150,8 +154,7 @@ class _RunInfo extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => LeaderboardPage(
-                        game.name, category.name, level, leaderboardURL)),
+                    builder: (context) => LeaderboardPage(leaderboardURL)),
               );
             },
           ),

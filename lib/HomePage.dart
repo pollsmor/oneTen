@@ -19,7 +19,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         title: Text('oneTen'),
         actions: [
@@ -51,8 +50,7 @@ class _HomePageState extends State<HomePage> {
         onTap: _onItemTapped,
         currentIndex: _selectedIndex,
         backgroundColor: Theme.of(context).primaryColor,
-        unselectedItemColor: Theme.of(context).primaryColorDark,
-        selectedItemColor: Theme.of(context).accentColor,
+        selectedItemColor: Color(0xff098bdd),
       ),
     );
   }

@@ -20,7 +20,6 @@ class DetailedRunPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         elevation: 0.0,
         leading: IconButton(
@@ -153,13 +152,8 @@ class DetailedRunPage extends StatelessWidget {
                           children: [
                             Container(
                               margin: EdgeInsets.all(8.0),
-                              child: MaterialButton(
-                                height: 45.0,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16.0),
-                                ),
+                              child: RaisedButton(
                                 child: Text(snapshot.data.videoLinks[0]),
-                                color: Theme.of(context).primaryColorLight,
                                 onPressed: () {
                                   _launchURL(snapshot.data.videoLinks[0]);
                                 },
@@ -168,15 +162,8 @@ class DetailedRunPage extends StatelessWidget {
                             1 < snapshot.data.videoLinks.length
                                 ? Container(
                                     margin: EdgeInsets.all(8.0),
-                                    child: MaterialButton(
-                                      height: 45.0,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(16.0),
-                                      ),
+                                    child: RaisedButton(
                                       child: Text(snapshot.data.videoLinks[1]),
-                                      color:
-                                          Theme.of(context).primaryColorLight,
                                       onPressed: () {
                                         _launchURL(snapshot.data.videoLinks[1]);
                                       },
@@ -186,15 +173,8 @@ class DetailedRunPage extends StatelessWidget {
                             2 < snapshot.data.videoLinks.length
                                 ? Container(
                                     margin: EdgeInsets.all(8.0),
-                                    child: MaterialButton(
-                                      height: 45.0,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(16.0),
-                                      ),
+                                    child: RaisedButton(
                                       child: Text(snapshot.data.videoLinks[2]),
-                                      color:
-                                          Theme.of(context).primaryColorLight,
                                       onPressed: () {
                                         _launchURL(snapshot.data.videoLinks[2]);
                                       },

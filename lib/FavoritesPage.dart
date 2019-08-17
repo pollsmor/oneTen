@@ -30,12 +30,9 @@ class _FavoritesPageState extends State<FavoritesPage> {
               context,
               MaterialPageRoute(
                 builder: (context) => LeaderboardPage(
-                  'Metroid: Zero Mission',
-                  '100% Normal',
-                  null,
                   'https://www.speedrun.com/api/v1/leaderboards/m1zjpm60/category/7kjp9xk3?embed='
-                      'game.levels,game.categories,game.moderators,'
-                      'game.platforms,game.regions,category,level,variables,players',
+                  'game.levels,game.categories,game.moderators,'
+                  'game.platforms,game.regions,category,level,variables,players',
                 ),
               ),
             );

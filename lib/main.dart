@@ -14,13 +14,17 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Rubik',
         primaryColor: Color(0xfff2f2f2),
         primaryColorLight: Colors.white,
-        primaryColorDark: Colors.black,
-        accentColor: Colors.blue,
-      ),
-      darkTheme: ThemeData(
-        primaryColor: Color(0xff252525),
-        primaryColorLight: Colors.white,
-        primaryColorDark: Colors.black,
+        scaffoldBackgroundColor: Color(0xfff2f2f2),
+        dialogBackgroundColor: Color(0xfff2f2f2),
+        dividerColor: Color(0xfff2f2f2),
+        buttonTheme: ButtonThemeData(
+          height: 40.0,
+          minWidth: 30.0,
+          buttonColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+        ),
       ),
       debugShowCheckedModeBanner: false,
     );

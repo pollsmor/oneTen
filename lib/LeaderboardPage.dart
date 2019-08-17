@@ -6,57 +6,53 @@ import 'API.dart';
 import 'DetailedRunPage.dart';
 
 class LeaderboardPage extends StatelessWidget {
-  final String gameName;
-  final String categoryName;
-  final Level level;
   final String leaderboardURL;
   final Future<Leaderboard> leaderboard;
 
-  LeaderboardPage(
-      this.gameName, this.categoryName, this.level, this.leaderboardURL)
+  LeaderboardPage(this.leaderboardURL)
       : leaderboard = fetchLeaderboard(leaderboardURL);
 
   @override
   Widget build(BuildContext context) {
-    print(leaderboardURL);
-
-    return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
-      appBar: AppBar(
-        elevation: 0.0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(padding: EdgeInsets.all(4.0)),
-            Text(
-              gameName,
-              style: TextStyle(
-                fontSize: 18.0,
+    return FutureBuilder<Leaderboard>(
+      future: leaderboard,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Scaffold(
+            appBar: AppBar(
+              elevation: 0.0,
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(padding: EdgeInsets.all(4.0)),
+                  Text(
+                    snapshot.data.game.name,
+                    style: TextStyle(
+                      fontSize: 18.0,
+                    ),
+                  ),
+                  Text(
+                    snapshot.data.level != null
+                        ? snapshot.data.game.name +
+                            ' (' +
+                            snapshot.data.level.name +
+                            ')'
+                        : snapshot.data.game.name,
+                    style: TextStyle(
+                      fontSize: 13.0,
+                      fontWeight: FontWeight.w300,
+                    ),
+                  ),
+                ],
               ),
             ),
-            Text(
-              level != null
-                  ? categoryName + ' (' + level.name + ')'
-                  : categoryName,
-              style: TextStyle(
-                fontSize: 13.0,
-                fontWeight: FontWeight.w300,
-              ),
-            ),
-          ],
-        ),
-      ),
-      body: FutureBuilder<Leaderboard>(
-        future: leaderboard,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Column(
+            body: Column(
               children: [
                 _GameInfo(
                   snapshot.data.game,
@@ -104,10 +100,7 @@ class LeaderboardPage extends StatelessWidget {
                     shrinkWrap: true,
                     itemCount: snapshot.data.runs.length,
                     separatorBuilder: (context, index) {
-                      return Divider(
-                        height: 0.0,
-                        color: Colors.white,
-                      );
+                      return Divider(height: 0.0);
                     },
                     itemBuilder: (BuildContext context, int index) {
                       return Container(
@@ -141,17 +134,29 @@ class LeaderboardPage extends StatelessWidget {
                   ),
                 ),
               ],
-            );
-          } else if (snapshot.hasError) {
-            return Container(
-              child: Text('${snapshot.error}'),
-              padding: EdgeInsets.all(8.0),
-            );
-          }
-
-          return Center(child: CircularProgressIndicator());
-        },
-      ),
+            ),
+          );
+        } else {
+          return Scaffold(
+            appBar: AppBar(
+              elevation: 0.0,
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+            body: Center(
+                child: !(snapshot.hasError)
+                    ? CircularProgressIndicator()
+                    : Container(
+                        child: Text('${snapshot.error}'),
+                        padding: EdgeInsets.all(8.0),
+                      )),
+          );
+        }
+      },
     );
   }
 }
@@ -234,29 +239,26 @@ class _GameInfo extends StatelessWidget {
           children: [
             Container(
               margin: EdgeInsets.fromLTRB(8.0, 0.0, 0.0, 6.0),
-              child: MaterialButton(
+              child: RaisedButton(
                 child: Text('View rules'),
                 onPressed: () {
                   showDialog(
                     context: context,
                     builder: (_) => SimpleDialog(
-                      backgroundColor: Theme.of(context).primaryColor,
                       children: [
                         Container(
                           child: Text(category.rules),
-                          color: Theme.of(context).primaryColor,
                           padding: EdgeInsets.all(8.0),
                         ),
                       ],
                     ),
                   );
                 },
-                color: Theme.of(context).primaryColorLight,
               ),
             ),
             Container(
               margin: EdgeInsets.fromLTRB(8.0, 0.0, 0.0, 6.0),
-              child: MaterialButton(
+              child: RaisedButton(
                 child: Text('View ruleset'),
                 onPressed: () {
                   showDialog(
@@ -278,7 +280,6 @@ class _GameInfo extends StatelessWidget {
                     ),
                   );
                 },
-                color: Theme.of(context).primaryColorLight,
               ),
             ),
           ],
