@@ -21,58 +21,44 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
-      appBar: AppBar(
-        title: Text('oneTen'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {},
-          ),
-        ],
-        brightness: Brightness.light,
-        elevation: 0.0,
-      ),
-      body: ListView.builder(
-        itemCount: runs.length + 1,
-        itemBuilder: (BuildContext context, int index) {
-          if (index == runs.length) {
-            return _buildProgressIndicator();
-          } else {
-            return InkWell(
-              child: Container(
-                margin: EdgeInsets.fromLTRB(0.0, 1.0, 0.0, 1.0),
-                padding: EdgeInsets.fromLTRB(0.0, 4.0, 0.0, 4.0),
-                child: _RunInfo(
-                  runs[index].game,
-                  runs[index].category,
-                  runs[index].level,
-                  runs[index].player,
-                  runs[index].date,
-                  runs[index].realtime,
-                  runs[index].igt,
-                  runs[index].leaderboardURL,
-                ),
+    return ListView.builder(
+      itemCount: runs.length + 1,
+      itemBuilder: (BuildContext context, int index) {
+        if (index == runs.length) {
+          return _buildProgressIndicator();
+        } else {
+          return InkWell(
+            child: Container(
+              margin: EdgeInsets.fromLTRB(0.0, 1.0, 0.0, 1.0),
+              padding: EdgeInsets.fromLTRB(0.0, 4.0, 0.0, 4.0),
+              child: _RunInfo(
+                runs[index].game,
+                runs[index].category,
+                runs[index].level,
+                runs[index].player,
+                runs[index].date,
+                runs[index].realtime,
+                runs[index].igt,
+                runs[index].leaderboardURL,
               ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DetailedRunPage(
-                      runs[index].game.name,
-                      runs[index].category.name,
-                      runs[index].level,
-                      runs[index].id,
-                    ),
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DetailedRunPage(
+                    runs[index].game.name,
+                    runs[index].category.name,
+                    runs[index].level,
+                    runs[index].id,
                   ),
-                );
-              },
-            );
-          }
-        },
-        controller: _scrollController,
-      ),
+                ),
+              );
+            },
+          );
+        }
+      },
+      controller: _scrollController,
     );
   }
 

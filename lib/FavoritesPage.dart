@@ -4,53 +4,48 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'API.dart';
 import 'LeaderboardPage.dart';
 
-class FavoritesPage extends StatelessWidget {
+class FavoritesPage extends StatefulWidget {
+  @override
+  _FavoritesPageState createState() => _FavoritesPageState();
+}
+
+class _FavoritesPageState extends State<FavoritesPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
-      appBar: AppBar(
-        title: Text('oneTen'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {},
-          ),
-        ],
-        brightness: Brightness.light,
-        elevation: 0.0,
-      ),
-      body: GridView.count(
-        crossAxisCount: 2,
-        padding: EdgeInsets.all(8.0),
-        children: List.generate(100, (index) {
-          return GestureDetector(
-            child: Container(
-              child: CachedNetworkImage(
-                imageUrl:
-                    'https://www.speedrun.com/themes/mzm/cover-256.png?version=',
-              ),
-              margin: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0),
-              color: Colors.blueAccent,
+    return GridView.count(
+      crossAxisCount: 2,
+      padding: EdgeInsets.all(8.0),
+      children: List.generate(100, (index) {
+        return GestureDetector(
+          child: Container(
+            child: CachedNetworkImage(
+              imageUrl:
+                  'https://www.speedrun.com/themes/mzm/cover-256.png?version=',
             ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => LeaderboardPage(
-                    'Metroid: Zero Mission',
-                    '100% Normal',
-                    null,
-                    'https://www.speedrun.com/api/v1/leaderboards/m1zjpm60/category/7kjp9xk3?embed='
-                        'game.levels,game.categories,game.moderators,'
-                        'game.platforms,game.regions,category,level,variables,players',
-                  ),
+            margin: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0),
+            color: Colors.blueAccent,
+          ),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => LeaderboardPage(
+                  'Metroid: Zero Mission',
+                  '100% Normal',
+                  null,
+                  'https://www.speedrun.com/api/v1/leaderboards/m1zjpm60/category/7kjp9xk3?embed='
+                      'game.levels,game.categories,game.moderators,'
+                      'game.platforms,game.regions,category,level,variables,players',
                 ),
-              );
-            },
-          );
-        }),
-      ),
+              ),
+            );
+          },
+        );
+      }),
     );
+  }
+
+  void _getGames(String query) async {
+    List<Game> games = await searchGames(query);
   }
 }

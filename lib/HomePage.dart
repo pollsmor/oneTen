@@ -19,6 +19,18 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
+      appBar: AppBar(
+        title: Text('oneTen'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {},
+          ),
+        ],
+        brightness: Brightness.light,
+        elevation: 0.0,
+      ),
       body: IndexedStack(
         index: _selectedIndex,
         children: _pages,
