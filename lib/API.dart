@@ -3,7 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart'; //for compute() function
 
 final String baseurl = 'https://www.speedrun.com/api/v1';
-final String latestRunsUrl = '$baseurl/runs?status=verified&orderby=submitted&direction=des'
+final String latestRunsUrl =
+    '$baseurl/runs?status=verified&orderby=submitted&direction=des'
     'c&embed=game.levels,game.categories,game.moderators,game.platforms,'
     'game.regions,category.variables,level.variables,players,region,platform&max=50';
 
@@ -55,6 +56,20 @@ String ordinal(int num) {
   else if (num % 10 == 3) return num.toString() + 'rd';
 
   return num.toString() + 'th';
+}
+
+Future<List<Game>> searchGames(String query) async {
+  final response = await http.get(
+      'https://www.speedrun.com/api/v1/games?name=$query&embed=levels,categories,moderators,platforms,regions');
+
+  return compute(parseGames, response.body);
+}
+
+List<Game> parseGames(String responseBody) {
+  var list = json.decode(responseBody)['data'];
+  List<Game> games = List<Game>.from(list.map((i) => Game.fromJson(i)));
+
+  return games;
 }
 
 Future<LatestRuns> fetchLatestRuns(String latestRunsUrl) async {
