@@ -5,7 +5,7 @@ import 'package:gradient_text/gradient_text.dart';
 import 'API.dart';
 import 'DetailedRunPage.dart';
 
-class LeaderboardPage extends StatelessWidget {
+class LeaderboardPage extends StatefulWidget {
   final String leaderboardURL;
   final Future<Leaderboard> leaderboard;
 
@@ -13,9 +13,16 @@ class LeaderboardPage extends StatelessWidget {
       : leaderboard = fetchLeaderboard(leaderboardURL);
 
   @override
+  _LeaderboardPageState createState() => _LeaderboardPageState();
+}
+
+class _LeaderboardPageState extends State<LeaderboardPage> {
+  bool alreadySaved = false;
+
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder<Leaderboard>(
-      future: leaderboard,
+      future: widget.leaderboard,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return Scaffold(
@@ -51,6 +58,19 @@ class LeaderboardPage extends StatelessWidget {
                   ),
                 ],
               ),
+              actions: [
+                IconButton(
+                  icon: Icon(
+                    alreadySaved ? Icons.favorite : Icons.favorite_border,
+                    color: alreadySaved ? Colors.red : null,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      alreadySaved = !alreadySaved;
+                    });
+                  },
+                ),
+              ],
             ),
             body: Column(
               children: [
@@ -100,7 +120,10 @@ class LeaderboardPage extends StatelessWidget {
                     shrinkWrap: true,
                     itemCount: snapshot.data.runs.length,
                     separatorBuilder: (context, index) {
-                      return Divider(height: 0.0);
+                      return Divider(
+                        height: 0.0,
+                        color: Theme.of(context).primaryColorLight,
+                      );
                     },
                     itemBuilder: (BuildContext context, int index) {
                       return Container(
