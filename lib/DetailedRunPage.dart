@@ -13,7 +13,7 @@ class DetailedRunPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Run>(
-      future: run,
+      future: fetchRun(runID),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return Scaffold(
@@ -199,21 +199,21 @@ class DetailedRunPage extends StatelessWidget {
                     ),
                   ),
                   Padding(padding: EdgeInsets.all(4.0)),
-                  Text(
+                  snapshot.data.date != '' ? Text(
                     'Played on ' + snapshot.data.date,
                     style: TextStyle(fontWeight: FontWeight.w300),
-                  ),
+                  ) : Container(),
                   Padding(padding: EdgeInsets.all(4.0)),
-                  Text(
+                  snapshot.data.submitted != null ? Text(
                     'Submitted on ' +
                         snapshot.data.submitted.toString().substring(0, 10),
                     style: TextStyle(fontWeight: FontWeight.w300),
-                  ),
+                  ) : Container(),
                   Padding(padding: EdgeInsets.all(4.0)),
-                  Text(
+                  snapshot.data.verifyDate != '' ? Text(
                     'Verified on ' + snapshot.data.verifyDate.substring(0, 10),
                     style: TextStyle(fontWeight: FontWeight.w300),
-                  ),
+                  ) : Container(),
                   Padding(padding: EdgeInsets.all(4.0)),
                 ],
               ),

@@ -462,12 +462,12 @@ class Run {
           : null,
       videoLinks: videoLinksList,
       comment: json['comment'] != null ? json['comment'] : '',
-      verifyDate: json['status']['verify-date'],
+      verifyDate: json['status']['verify-date'] != null ? json['status']['verify-date'] : '',
       player: json['players'] is Map<String, dynamic>
           ? Player.fromJson(json['players']['data'][0])
           : null,
-      date: json['date'],
-      submitted: DateTime.parse(json['submitted']),
+      date: json['date'] != null ? json['date'] : '',
+      submitted: json['submitted'] != null ? DateTime.parse(json['submitted']) : null,
       realtime: calcTime(json['times']['realtime_t'].toDouble()),
       igt: calcTime(json['times']['ingame_t'].toDouble()),
       emulated: json['system']['emulated'],

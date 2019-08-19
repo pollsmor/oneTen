@@ -21,6 +21,8 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.leaderboardURL);
+
     return FutureBuilder<Leaderboard>(
       future: widget.leaderboard,
       builder: (context, snapshot) {
