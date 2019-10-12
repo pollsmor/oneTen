@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-import 'API.dart';
 import 'LeaderboardPage.dart';
 
 class FavoritesPage extends StatefulWidget {
@@ -40,9 +39,5 @@ class _FavoritesPageState extends State<FavoritesPage> {
         );
       }),
     );
-  }
-
-  void _getGames(String query) async {
-    List<Game> games = await searchGames(query);
   }
 }
