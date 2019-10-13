@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 import 'FavoritesPage.dart';
 import 'LatestRunsPage.dart';
@@ -16,7 +17,7 @@ class _HomePageState extends State<HomePage> {
   Widget _appBarTitle = Text('oneTen');
   List<LiteGame> filteredGames = List<LiteGame>();
   String _searchText = '';
-  Stopwatch stopwatch = Stopwatch();
+  Timer debounceTimer;
 
   int _selectedIndex = 0;
   bool searching = false;
@@ -31,17 +32,19 @@ class _HomePageState extends State<HomePage> {
       if (_filter.text.isEmpty) {
         setState(() {
           _searchText = '';
+          filteredGames.clear();
         });
       } else {
         setState(() {
-          searching = true;
-          stopwatch.start();
           _searchText = _filter.text;
-          if (_searchText.length >= 3 &&
-              stopwatch.elapsedMilliseconds >= 1000) {
-            stopwatch.reset();
-            _search();
+
+          if (debounceTimer != null) {
+            debounceTimer.cancel();
           }
+
+          debounceTimer = Timer(Duration(milliseconds: 500), () {
+            if (_searchText.length >= 3) _search();
+          });
         });
       }
     });
@@ -58,6 +61,7 @@ class _HomePageState extends State<HomePage> {
             setState(
               () {
                 if (this._searchIcon.icon == Icons.search) {
+                  searching = true;
                   this._searchIcon = Icon(Icons.close);
                   this._appBarTitle = TextField(
                     controller: _filter,
@@ -68,12 +72,10 @@ class _HomePageState extends State<HomePage> {
                     ),
                   );
                 } else {
-                  stopwatch.stop();
                   searching = false;
-                  filteredGames.clear();
+                  _filter.clear();
                   this._searchIcon = Icon(Icons.search);
                   this._appBarTitle = Text('oneTen');
-                  _filter.clear();
                 }
               },
             );
@@ -123,6 +125,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _search() async {
+    print(_searchText);
     List<LiteGame> tempList = List<LiteGame>();
 
     List<LiteGame> gamesList = await searchGames(_searchText);

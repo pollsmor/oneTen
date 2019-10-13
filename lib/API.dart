@@ -59,7 +59,7 @@ String ordinal(int num) {
 
 Future<List<LiteGame>> searchGames(String query) async {
   final response = await http.get(
-      'https://www.speedrun.com/api/v1/games?name=$query&orderby=name.int&direction=asc');
+      'https://www.speedrun.com/api/v1/games?name=$query');
 
   return compute(parseGames, response.body);
 }
