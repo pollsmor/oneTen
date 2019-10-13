@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'dart:async';
 
 import 'FavoritesPage.dart';
 import 'LatestRunsPage.dart';
+import 'LeaderboardPage.dart';
 import 'API.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,7 +17,7 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController _filter = TextEditingController();
   Icon _searchIcon = Icon(Icons.search);
   Widget _appBarTitle = Text('oneTen');
-  List<LiteGame> filteredGames = List<LiteGame>();
+  List filteredStuff = List();
   String _searchText = '';
   Timer debounceTimer;
 
@@ -29,10 +31,12 @@ class _HomePageState extends State<HomePage> {
 
   _HomePageState() {
     _filter.addListener(() {
+      searching = true;
       if (_filter.text.isEmpty) {
         setState(() {
+          searching = false;
           _searchText = '';
-          filteredGames.clear();
+          filteredStuff.clear();
         });
       } else {
         setState(() {
@@ -60,10 +64,9 @@ class _HomePageState extends State<HomePage> {
           onPressed: () {
             setState(
               () {
-                if (this._searchIcon.icon == Icons.search) {
-                  searching = true;
-                  this._searchIcon = Icon(Icons.close);
-                  this._appBarTitle = TextField(
+                if (_searchIcon.icon == Icons.search) {
+                  _searchIcon = Icon(Icons.close);
+                  _appBarTitle = TextField(
                     controller: _filter,
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.search),
@@ -74,8 +77,8 @@ class _HomePageState extends State<HomePage> {
                 } else {
                   searching = false;
                   _filter.clear();
-                  this._searchIcon = Icon(Icons.search);
-                  this._appBarTitle = Text('oneTen');
+                  _searchIcon = Icon(Icons.search);
+                  _appBarTitle = Text('oneTen');
                 }
               },
             );
@@ -86,10 +89,36 @@ class _HomePageState extends State<HomePage> {
       ),
       body: searching
           ? ListView.builder(
-              itemCount: filteredGames.length,
+              itemCount: filteredStuff.length,
               itemBuilder: (BuildContext context, int index) {
-                return ListTile(
-                  title: Text(filteredGames[index].name),
+                return Container(
+                  margin: EdgeInsets.fromLTRB(0.0, 1.0, 0.0, 1.0),
+                  padding: EdgeInsets.fromLTRB(0.0, 4.0, 0.0, 4.0),
+                  child: ListTile(
+                    leading: AspectRatio(
+                      aspectRatio: 1.0,
+                      child: CachedNetworkImage(
+                        imageUrl: filteredStuff[index].coverURL,
+                      ),
+                    ),
+                    title: Text(filteredStuff[index].name),
+                    subtitle: Text(
+                      'Game',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w100,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LeaderboardPage(
+                            filteredStuff[index].leaderboardURL,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 );
               },
             )
@@ -126,15 +155,15 @@ class _HomePageState extends State<HomePage> {
 
   void _search() async {
     print(_searchText);
-    List<LiteGame> tempList = List<LiteGame>();
+    List tempList = List();
 
-    List<LiteGame> gamesList = await searchGames(_searchText);
+    List gamesList = await searchGames(_searchText);
     for (LiteGame game in gamesList) {
       tempList.add(game);
     }
 
     setState(() {
-      filteredGames = tempList;
+      filteredStuff = tempList;
     });
   }
 }

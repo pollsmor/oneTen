@@ -48,11 +48,11 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                   ),
                   Text(
                     snapshot.data.level != null
-                        ? snapshot.data.game.name +
+                        ? snapshot.data.category.name +
                             ' (' +
                             snapshot.data.level.name +
                             ')'
-                        : snapshot.data.game.name,
+                        : snapshot.data.category.name,
                     style: TextStyle(
                       fontSize: 13.0,
                       fontWeight: FontWeight.w300,

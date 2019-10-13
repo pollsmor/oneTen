@@ -105,7 +105,7 @@ class DetailedRunPage extends StatelessWidget {
                             ),
                             Padding(
                                 child: Text(
-                                  '/',
+                                  '|',
                                   style: TextStyle(),
                                 ),
                                 padding: EdgeInsets.all(4.0)),
