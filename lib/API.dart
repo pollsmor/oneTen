@@ -57,16 +57,16 @@ String ordinal(int num) {
   return num.toString() + 'th';
 }
 
-Future<List<Game>> searchGames(String query) async {
+Future<List<LiteGame>> searchGames(String query) async {
   final response = await http.get(
-      'https://www.speedrun.com/api/v1/games?name=$query&embed=levels,categories,moderators,platforms,regions');
+      'https://www.speedrun.com/api/v1/games?name=$query&orderby=name.int&direction=asc');
 
   return compute(parseGames, response.body);
 }
 
-List<Game> parseGames(String responseBody) {
+List<LiteGame> parseGames(String responseBody) {
   var list = json.decode(responseBody)['data'];
-  List<Game> games = List<Game>.from(list.map((i) => Game.fromJson(i)));
+  List<LiteGame> games = List<LiteGame>.from(list.map((i) => LiteGame.fromJson(i)));
 
   return games;
 }
@@ -78,7 +78,7 @@ Future<LatestRuns> fetchLatestRuns(String latestRunsUrl) async {
     return compute(parseLatestRuns, response.body);
   }
 
-  throw Exception('Failed fto load the latest runs.');
+  throw Exception('Failed to load the latest runs.');
 }
 
 LatestRuns parseLatestRuns(String responseBody) {
@@ -165,6 +165,29 @@ class Assets {
       trophy1st: json['trophy-1st']['uri'],
       trophy2nd: json['trophy-2nd']['uri'],
       trophy3rd: json['trophy-3rd']['uri'],
+    );
+  }
+}
+
+class LiteGame {
+  final String name;
+  final String coverURL;
+  final String leaderboardURL;
+
+  LiteGame({this.name, this.coverURL, this.leaderboardURL});
+
+  factory LiteGame.fromJson(Map<String, dynamic> json) {
+    String leaderboardURL;
+
+    if (json['links'][json['links'].length - 1]['rel'] == 'leaderboard')
+      leaderboardURL = json['links'][json['links'].length - 1]['uri'];
+    else
+      leaderboardURL = json['links'][2]['uri'];
+
+    return LiteGame(
+      name: json['names']['international'],
+      coverURL: json['assets']['cover-medium']['uri'],
+      leaderboardURL: leaderboardURL,
     );
   }
 }

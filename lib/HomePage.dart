@@ -14,8 +14,9 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController _filter = TextEditingController();
   Icon _searchIcon = Icon(Icons.search);
   Widget _appBarTitle = Text('oneTen');
-  List<Game> filteredGames = List<Game>();
+  List<LiteGame> filteredGames = List<LiteGame>();
   String _searchText = '';
+  Stopwatch stopwatch = Stopwatch();
 
   int _selectedIndex = 0;
   bool searching = false;
@@ -34,10 +35,13 @@ class _HomePageState extends State<HomePage> {
       } else {
         setState(() {
           searching = true;
-          if (_searchText.length >= 3) {
+          stopwatch.start();
+          _searchText = _filter.text;
+          if (_searchText.length >= 3 &&
+              stopwatch.elapsedMilliseconds >= 1000) {
+            stopwatch.reset();
             _search();
           }
-          _searchText = _filter.text;
         });
       }
     });
@@ -64,7 +68,9 @@ class _HomePageState extends State<HomePage> {
                     ),
                   );
                 } else {
+                  stopwatch.stop();
                   searching = false;
+                  filteredGames.clear();
                   this._searchIcon = Icon(Icons.search);
                   this._appBarTitle = Text('oneTen');
                   _filter.clear();
@@ -117,11 +123,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _search() async {
-    List<Game> tempList = List<Game>();
+    List<LiteGame> tempList = List<LiteGame>();
 
-    List<Game> gamesList = await searchGames(_searchText);
-    for (Game game in gamesList) {
-      print(game.name);
+    List<LiteGame> gamesList = await searchGames(_searchText);
+    for (LiteGame game in gamesList) {
       tempList.add(game);
     }
 
