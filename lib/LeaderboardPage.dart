@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:gradient_text/gradient_text.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 
 import 'API.dart';
 import 'DetailedRunPage.dart';
@@ -69,6 +71,8 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                   onPressed: () {
                     setState(() {
                       alreadySaved = !alreadySaved;
+                      _writeFavorite(widget.leaderboardURL,
+                          snapshot.data.game.assets.coverURL);
                     });
                   },
                 ),
@@ -179,6 +183,15 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
         }
       },
     );
+  }
+
+  void _writeFavorite(String leaderboardURL, String coverURL) async {
+    final directory = await getApplicationDocumentsDirectory();
+    File file = File('${directory.path}/favorites.txt');
+    var sink = file.openWrite(mode: FileMode.append);
+    sink.write('$leaderboardURL, $coverURL\n');
+
+    sink.close();
   }
 }
 

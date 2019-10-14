@@ -29,7 +29,8 @@ class _HomePageState extends State<HomePage> {
     LatestRunsPage(),
   ];
 
-  _HomePageState() {
+  @override
+  void initState() {
     _filter.addListener(() {
       searching = true;
       if (_filter.text.isEmpty) {
@@ -52,6 +53,8 @@ class _HomePageState extends State<HomePage> {
         });
       }
     });
+
+    super.initState();
   }
 
   @override
