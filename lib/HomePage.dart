@@ -13,41 +13,49 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  //Search stuff
-  final TextEditingController _filter = TextEditingController();
-  Icon _searchIcon = Icon(Icons.search);
-  Widget _appBarTitle = Text('oneTen');
-  List filteredStuff = List();
-  String _searchText = '';
-  Timer debounceTimer;
-
   int _selectedIndex = 0;
-  bool searching = false;
 
   final List<Widget> _pages = [
     FavoritesPage(),
     LatestRunsPage(),
   ];
 
+  //Search stuff
+  final TextEditingController _filter = TextEditingController();
+  Icon _searchIcon;
+  Widget _appBarTitle;
+  List _filteredStuff;
+  String _searchText;
+  Timer _debounceTimer;
+  bool searching;
+
   @override
   void initState() {
+    _selectedIndex = 0;
+
+    _searchIcon = Icon(Icons.search);
+    _appBarTitle = Text('oneTen');
+    _filteredStuff = List();
+    _searchText = '';
+    searching = false;
+
     _filter.addListener(() {
       searching = true;
       if (_filter.text.isEmpty) {
         setState(() {
           searching = false;
           _searchText = '';
-          filteredStuff.clear();
+          _filteredStuff.clear();
         });
       } else {
         setState(() {
           _searchText = _filter.text;
 
-          if (debounceTimer != null) {
-            debounceTimer.cancel();
+          if (_debounceTimer != null) {
+            _debounceTimer.cancel();
           }
 
-          debounceTimer = Timer(Duration(milliseconds: 500), () {
+          _debounceTimer = Timer(Duration(milliseconds: 500), () {
             if (_searchText.length >= 3) _search();
           });
         });
@@ -92,7 +100,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: searching
           ? ListView.builder(
-              itemCount: filteredStuff.length,
+              itemCount: _filteredStuff.length,
               itemBuilder: (BuildContext context, int index) {
                 return Container(
                   margin: EdgeInsets.fromLTRB(0.0, 1.0, 0.0, 1.0),
@@ -101,10 +109,10 @@ class _HomePageState extends State<HomePage> {
                     leading: AspectRatio(
                       aspectRatio: 1.0,
                       child: CachedNetworkImage(
-                        imageUrl: filteredStuff[index].coverURL,
+                        imageUrl: '${_filteredStuff[index].coverURL}',
                       ),
                     ),
-                    title: Text(filteredStuff[index].name),
+                    title: Text('${_filteredStuff[index].name}'),
                     subtitle: Text(
                       'Game',
                       style: TextStyle(
@@ -116,7 +124,7 @@ class _HomePageState extends State<HomePage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => LeaderboardPage(
-                            filteredStuff[index].leaderboardURL,
+                            '${_filteredStuff[index].leaderboardURL}',
                           ),
                         ),
                       );
@@ -153,11 +161,16 @@ class _HomePageState extends State<HomePage> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+
+      //Get out of search if in it
+      searching = false;
+      _filter.clear();
+      _searchIcon = Icon(Icons.search);
+      _appBarTitle = Text('oneTen');
     });
   }
 
   void _search() async {
-    print(_searchText);
     List tempList = List();
 
     List gamesList = await searchGames(_searchText);
@@ -166,7 +179,7 @@ class _HomePageState extends State<HomePage> {
     }
 
     setState(() {
-      filteredStuff = tempList;
+      _filteredStuff = tempList;
     });
   }
 }

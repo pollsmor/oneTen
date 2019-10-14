@@ -13,7 +13,7 @@ class DetailedRunPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Run>(
-      future: fetchRun(runID),
+      future: run,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return Scaffold(
@@ -30,16 +30,15 @@ class DetailedRunPage extends StatelessWidget {
                 children: [
                   Padding(padding: EdgeInsets.all(4.0)),
                   Text(
-                    snapshot.data.game.name,
-                    style: TextStyle(fontSize: 18.0),
+                    '${snapshot.data.game.name}',
+                    style: TextStyle(
+                      fontSize: 18.0,
+                    ),
                   ),
                   Text(
                     snapshot.data.level != null
-                        ? snapshot.data.category.name +
-                            ' (' +
-                            snapshot.data.level.name +
-                            ')'
-                        : snapshot.data.category.name,
+                        ? '${snapshot.data.category.name} (${snapshot.data.level.name})'
+                        : '${snapshot.data.category.name}',
                     style: TextStyle(
                       fontSize: 13.0,
                       fontWeight: FontWeight.w300,
@@ -60,33 +59,31 @@ class DetailedRunPage extends StatelessWidget {
                           children: [
                             SizedBox(
                               height: 15.0,
-                              child: snapshot.data.player.countrycode != ''
+                              child: '${snapshot.data.player.countrycode}' != ''
                                   ? Image.asset(
-                                      'icons/flags/png/' +
-                                          snapshot.data.player.countrycode +
-                                          '.png',
+                                      'icons/flags/png/${snapshot.data.player.countrycode}.png',
                                       package: 'country_icons')
                                   : Container(),
                             ),
                             Padding(padding: EdgeInsets.all(4.0)),
                             !snapshot.data.player.isGradient
                                 ? Text(
-                                    snapshot.data.player.name,
+                                    '${snapshot.data.player.name}',
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                       color: Color(hexToColor(
-                                          snapshot.data.player.color)),
+                                          '${snapshot.data.player.color}')),
                                       fontSize: 16.0,
                                     ),
                                   )
                                 : GradientText(
-                                    snapshot.data.player.name,
+                                    '${snapshot.data.player.name}',
                                     gradient: LinearGradient(
                                       colors: [
                                         Color(hexToColor(
-                                            snapshot.data.player.colorFrom)),
+                                            '${snapshot.data.player.colorFrom}')),
                                         Color(hexToColor(
-                                            snapshot.data.player.colorTo)),
+                                            '${snapshot.data.player.colorTo}')),
                                       ],
                                     ),
                                     style: TextStyle(fontSize: 16.0),
@@ -98,20 +95,20 @@ class DetailedRunPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              snapshot.data.realtime != '0s'
-                                  ? 'RTA — ' + snapshot.data.realtime
+                              '${snapshot.data.realtime}' != '0s'
+                                  ? 'RTA — ${snapshot.data.realtime}'
                                   : 'No RTA',
                               overflow: TextOverflow.ellipsis,
                             ),
                             Padding(
                                 child: Text(
-                                  '|',
+                                  '/',
                                   style: TextStyle(),
                                 ),
                                 padding: EdgeInsets.all(4.0)),
                             Text(
-                              snapshot.data.igt != '0s'
-                                  ? 'IGT — ' + snapshot.data.igt
+                              '${snapshot.data.igt}' != '0s'
+                                  ? 'IGT — ${snapshot.data.igt}'
                                   : 'No IGT',
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -120,16 +117,16 @@ class DetailedRunPage extends StatelessWidget {
                         Padding(padding: EdgeInsets.all(4.0)),
                         Text(
                           'Platform: ' +
-                              (snapshot.data.platform != ''
-                                  ? snapshot.data.platform
+                              ('${snapshot.data.platform}' != ''
+                                  ? '${snapshot.data.platform}'
                                   : 'N/A') +
                               (snapshot.data.emulated ? ' (emulated)' : ''),
                         ),
                         Padding(padding: EdgeInsets.all(4.0)),
                         Text(
                           'Region: ' +
-                              (snapshot.data.region != ''
-                                  ? snapshot.data.region
+                              ('${snapshot.data.region}' != ''
+                                  ? '${snapshot.data.region}'
                                   : 'N/A'),
                         ),
                       ],
@@ -149,9 +146,9 @@ class DetailedRunPage extends StatelessWidget {
                             Container(
                               margin: EdgeInsets.all(8.0),
                               child: RaisedButton(
-                                child: Text(snapshot.data.videoLinks[0]),
+                                child: Text('${snapshot.data.videoLinks[0]}'),
                                 onPressed: () {
-                                  _launchURL(snapshot.data.videoLinks[0]);
+                                  _launchURL('${snapshot.data.videoLinks[0]}');
                                 },
                               ),
                             ),
@@ -159,20 +156,24 @@ class DetailedRunPage extends StatelessWidget {
                                 ? Container(
                                     margin: EdgeInsets.all(8.0),
                                     child: RaisedButton(
-                                      child: Text(snapshot.data.videoLinks[1]),
+                                      child: Text(
+                                          '${snapshot.data.videoLinks[1]}'),
                                       onPressed: () {
-                                        _launchURL(snapshot.data.videoLinks[1]);
+                                        _launchURL(
+                                            '${snapshot.data.videoLinks[1]}');
                                       },
                                     ),
                                   )
-                                : Container(),
+                                : Container(), //empty space since no evidence
                             2 < snapshot.data.videoLinks.length
                                 ? Container(
                                     margin: EdgeInsets.all(8.0),
                                     child: RaisedButton(
-                                      child: Text(snapshot.data.videoLinks[2]),
+                                      child: Text(
+                                          '${snapshot.data.videoLinks[2]}'),
                                       onPressed: () {
-                                        _launchURL(snapshot.data.videoLinks[2]);
+                                        _launchURL(
+                                            '${snapshot.data.videoLinks[2]}');
                                       },
                                     ),
                                   )
@@ -186,8 +187,8 @@ class DetailedRunPage extends StatelessWidget {
                   Padding(padding: EdgeInsets.all(4.0)),
                   Container(
                     child: Text(
-                      snapshot.data.comment != ''
-                          ? snapshot.data.comment
+                      '${snapshot.data.comment}' != ''
+                          ? '${snapshot.data.comment}'
                           : 'No comment',
                       textAlign: TextAlign.left,
                     ),
@@ -199,21 +200,28 @@ class DetailedRunPage extends StatelessWidget {
                     ),
                   ),
                   Padding(padding: EdgeInsets.all(4.0)),
-                  snapshot.data.date != '' ? Text(
-                    'Played on ' + snapshot.data.date,
-                    style: TextStyle(fontWeight: FontWeight.w300),
-                  ) : Container(),
+                  '${snapshot.data.date}' != ''
+                      ? Text(
+                          'Played on ${snapshot.data.date}',
+                          style: TextStyle(fontWeight: FontWeight.w300),
+                        )
+                      : Container(),
                   Padding(padding: EdgeInsets.all(4.0)),
-                  snapshot.data.submitted != null ? Text(
-                    'Submitted on ' +
-                        snapshot.data.submitted.toString().substring(0, 10),
-                    style: TextStyle(fontWeight: FontWeight.w300),
-                  ) : Container(),
+                  '${snapshot.data.submitted}' != null
+                      ? Text(
+                          'Submitted on' +
+                              '${snapshot.data.submitted}'.substring(0, 10),
+                          style: TextStyle(fontWeight: FontWeight.w300),
+                        )
+                      : Container(),
                   Padding(padding: EdgeInsets.all(4.0)),
-                  snapshot.data.verifyDate != '' ? Text(
-                    'Verified on ' + snapshot.data.verifyDate.substring(0, 10),
-                    style: TextStyle(fontWeight: FontWeight.w300),
-                  ) : Container(),
+                  snapshot.data.verifyDate != ''
+                      ? Text(
+                          'Verified on ' +
+                              '${snapshot.data.verifyDate}'.substring(0, 10),
+                          style: TextStyle(fontWeight: FontWeight.w300),
+                        )
+                      : Container(),
                   Padding(padding: EdgeInsets.all(4.0)),
                 ],
               ),

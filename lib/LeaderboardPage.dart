@@ -9,24 +9,31 @@ import 'DetailedRunPage.dart';
 
 class LeaderboardPage extends StatefulWidget {
   final String leaderboardURL;
-  final Future<Leaderboard> leaderboard;
 
-  LeaderboardPage(this.leaderboardURL)
-      : leaderboard = fetchLeaderboard(leaderboardURL);
+  LeaderboardPage(this.leaderboardURL);
 
   @override
   _LeaderboardPageState createState() => _LeaderboardPageState();
 }
 
 class _LeaderboardPageState extends State<LeaderboardPage> {
-  bool alreadySaved = false;
+  Future<Leaderboard> leaderboard;
+  bool alreadySaved;
+
+  @override
+  void initState() {
+    alreadySaved = false;
+    leaderboard = fetchLeaderboard(widget.leaderboardURL);
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    print(widget.leaderboardURL);
+    print('${widget.leaderboardURL}');
 
     return FutureBuilder<Leaderboard>(
-      future: widget.leaderboard,
+      future: leaderboard,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return Scaffold(
@@ -43,18 +50,15 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                 children: [
                   Padding(padding: EdgeInsets.all(4.0)),
                   Text(
-                    snapshot.data.game.name,
+                    '${snapshot.data.game.name}',
                     style: TextStyle(
                       fontSize: 18.0,
                     ),
                   ),
                   Text(
                     snapshot.data.level != null
-                        ? snapshot.data.category.name +
-                            ' (' +
-                            snapshot.data.level.name +
-                            ')'
-                        : snapshot.data.category.name,
+                        ? '${snapshot.data.category.name} (${snapshot.data.level.name})'
+                        : '${snapshot.data.category.name}',
                     style: TextStyle(
                       fontSize: 13.0,
                       fontWeight: FontWeight.w300,
@@ -71,8 +75,8 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                   onPressed: () {
                     setState(() {
                       alreadySaved = !alreadySaved;
-                      _writeFavorite(widget.leaderboardURL,
-                          snapshot.data.game.assets.coverURL);
+                      _writeFavorite('${widget.leaderboardURL}',
+                          '${snapshot.data.game.assets.coverURL}');
                     });
                   },
                 ),
@@ -138,15 +142,15 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                             child: _LBRunInfo(
                               ordinal(snapshot.data.runs[index].place),
                               snapshot.data.players[index],
-                              snapshot.data.runs[index].realtime,
-                              snapshot.data.runs[index].igt,
+                              '${snapshot.data.runs[index].realtime}',
+                              '${snapshot.data.runs[index].igt}',
                             ),
                             onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => DetailedRunPage(
-                                      snapshot.data.runs[index].id),
+                                      '${snapshot.data.runs[index].id}'),
                                 ),
                               );
                             },
@@ -189,7 +193,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
     final directory = await getApplicationDocumentsDirectory();
     File file = File('${directory.path}/favorites.txt');
     var sink = file.openWrite(mode: FileMode.append);
-    sink.write('$leaderboardURL, $coverURL\n');
+    sink.write('$leaderboardURL,$coverURL\n');
 
     sink.close();
   }
@@ -220,7 +224,7 @@ class _GameInfo extends StatelessWidget {
                 child: SizedBox(
                   height: 75.0,
                   child: CachedNetworkImage(
-                    imageUrl: game.assets.coverURL,
+                    imageUrl: '${game.assets.coverURL}',
                     errorWidget: (context, url, error) => Icon(Icons.error),
                   ),
                 ),
@@ -230,7 +234,7 @@ class _GameInfo extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Released: ' + game.releaseDate,
+                      'Released: ${game.releaseDate}',
                       style: TextStyle(
                         fontSize: 13.0,
                       ),
@@ -240,9 +244,9 @@ class _GameInfo extends StatelessWidget {
                     Padding(padding: EdgeInsets.all(4.0)),
                     Text(
                       'Regions: ' +
-                          (game.regions.toString() != '[]'
-                              ? game.regions.toString().substring(
-                                  1, game.regions.toString().length - 1)
+                          ('${game.regions}' != '[]'
+                              ? '${game.regions}'
+                                  .substring(1, '${game.regions}'.length - 1)
                               : 'N/A'),
                       style: TextStyle(
                         fontSize: 13.0,
@@ -253,9 +257,9 @@ class _GameInfo extends StatelessWidget {
                     Padding(padding: EdgeInsets.all(4.0)),
                     Text(
                       'Platforms: ' +
-                          (game.platforms.toString() != '[]'
-                              ? game.platforms.toString().substring(
-                                  1, game.platforms.toString().length - 1)
+                          ('${game.platforms}' != '[]'
+                              ? '${game.platforms}'
+                                  .substring(1, '${game.platforms}'.length - 1)
                               : 'N/A'),
                       style: TextStyle(
                         fontSize: 13.0,

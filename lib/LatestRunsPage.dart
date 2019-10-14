@@ -14,10 +14,28 @@ class LatestRunsPage extends StatefulWidget {
 }
 
 class _LatestRunsPageState extends State<LatestRunsPage> {
+  final ScrollController _scrollController = ScrollController();
   String nextPage;
-  ScrollController _scrollController = ScrollController();
-  bool isLoading = false;
-  List<LatestRun> runs = List<LatestRun>();
+  bool isLoading;
+  List<LatestRun> runs;
+
+  @override
+  void initState() {
+    nextPage = latestRunsUrl;
+    isLoading = false;
+    runs = List<LatestRun>();
+
+    _getMoreData();
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        _getMoreData();
+      }
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +64,7 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => DetailedRunPage(runs[index].runID),
+                      builder: (context) => DetailedRunPage('${runs[index].runID}'),
                     ),
                   );
                 },
@@ -67,7 +85,7 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
         isLoading = true;
       });
 
-      final response = await http.get(nextPage);
+      final response = await http.get('$nextPage');
 
       LatestRuns latestRuns = LatestRuns.fromJson(json.decode(response.body));
       List<LatestRun> runsList = latestRuns.runs;
@@ -78,25 +96,6 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
         runs.addAll(runsList);
       });
     }
-  }
-
-  @override
-  void initState() {
-    nextPage = latestRunsUrl;
-    this._getMoreData();
-    super.initState();
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-        _getMoreData();
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
   }
 
   Widget _buildProgressIndicator() {
@@ -138,7 +137,7 @@ class _RunInfo extends StatelessWidget {
                 child: AspectRatio(
                   aspectRatio: 1.0,
                   child: CachedNetworkImage(
-                    imageUrl: coverURL,
+                    imageUrl: '$coverURL',
                     errorWidget: (context, url, error) => Icon(Icons.error),
                   ),
                 ),
@@ -149,7 +148,7 @@ class _RunInfo extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => LeaderboardPage(leaderboardURL)),
+                    builder: (context) => LeaderboardPage('$leaderboardURL')),
               );
             },
           ),
@@ -161,7 +160,7 @@ class _RunInfo extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  gameName,
+                  '$gameName',
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -170,13 +169,13 @@ class _RunInfo extends StatelessWidget {
                 ),
                 Padding(padding: EdgeInsets.all(4.0)),
                 Text(
-                  categoryName,
+                  '$categoryName',
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
                 Padding(padding: EdgeInsets.all(4.0)),
                 Text(
-                  levelName,
+                  '$levelName',
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -213,7 +212,7 @@ class _RunInfo extends StatelessWidget {
                 Padding(padding: EdgeInsets.all(4.0)),
                 !player.isGradient
                     ? Text(
-                        player.name,
+                        '${player.name}',
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -223,7 +222,7 @@ class _RunInfo extends StatelessWidget {
                         textAlign: TextAlign.right,
                       )
                     : GradientText(
-                        player.name,
+                        '${player.name}',
                         gradient: LinearGradient(
                           colors: [
                             Color(hexToColor(player.colorFrom)),

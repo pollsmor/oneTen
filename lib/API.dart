@@ -58,27 +58,23 @@ String ordinal(int num) {
 }
 
 Future<List<LiteGame>> searchGames(String query) async {
-  final response = await http.get(
-      'https://www.speedrun.com/api/v1/games?name=$query');
+  final response = await http.get('$baseurl/games?name=$query');
 
-  return compute(parseGames, response.body);
+  return compute(parseLiteGames, response.body);
 }
 
-List<LiteGame> parseGames(String responseBody) {
+List<LiteGame> parseLiteGames(String responseBody) {
   var list = json.decode(responseBody)['data'];
-  List<LiteGame> games = List<LiteGame>.from(list.map((i) => LiteGame.fromJson(i)));
+  List<LiteGame> games =
+      List<LiteGame>.from(list.map((i) => LiteGame.fromJson(i)));
 
   return games;
 }
 
-Future<LatestRuns> fetchLatestRuns(String latestRunsUrl) async {
+Future<LatestRuns> fetchLatestRuns() async {
   final response = await http.get(latestRunsUrl);
 
-  if (response.statusCode == 200) {
-    return compute(parseLatestRuns, response.body);
-  }
-
-  throw Exception('Failed to load the latest runs.');
+  return compute(parseLatestRuns, response.body);
 }
 
 LatestRuns parseLatestRuns(String responseBody) {
@@ -90,11 +86,7 @@ Future<Leaderboard> fetchLeaderboard(String leaderboardURL) async {
       .get('$leaderboardURL?embed=game.levels,game.categories,game.moderators,'
           'game.platforms,game.regions,category,level,variables,players');
 
-  if (response.statusCode == 200) {
-    return compute(parseLeaderboard, response.body);
-  }
-
-  throw Exception('Failed to load leaderboard.');
+  return compute(parseLeaderboard, response.body);
 }
 
 Leaderboard parseLeaderboard(String responseBody) {
@@ -106,11 +98,7 @@ Future<Run> fetchRun(String runID) async {
       '$baseurl/runs/$runID?embed=game.levels,game.categories,game.moderators,game.platforms,'
       'game.regions,category.variables,level.variables,players,region,platform');
 
-  if (response.statusCode == 200) {
-    return compute(parseRun, response.body);
-  }
-
-  throw Exception('Failed to load run.');
+  return compute(parseRun, response.body);
 }
 
 Run parseRun(String responseBody) {
@@ -169,6 +157,7 @@ class Assets {
   }
 }
 
+//Don't need all of the data of a full Game object when just searching
 class LiteGame {
   final String name;
   final String coverURL;
@@ -453,7 +442,7 @@ class Run {
     if (videos != null) {
       if (videos['links'] != null) {
         videoLinksList = List<String>(videos['links'].length);
-        for (int i = 0; i < videos['links'].length; ++i) {
+        for (int i = 0; i < videos['links'].length; i++) {
           videoLinksList[i] = videos['links'][i]['uri'];
         }
       } else {
@@ -485,12 +474,15 @@ class Run {
           : null,
       videoLinks: videoLinksList,
       comment: json['comment'] != null ? json['comment'] : '',
-      verifyDate: json['status']['verify-date'] != null ? json['status']['verify-date'] : '',
+      verifyDate: json['status']['verify-date'] != null
+          ? json['status']['verify-date']
+          : '',
       player: json['players'] is Map<String, dynamic>
           ? Player.fromJson(json['players']['data'][0])
           : null,
       date: json['date'] != null ? json['date'] : '',
-      submitted: json['submitted'] != null ? DateTime.parse(json['submitted']) : null,
+      submitted:
+          json['submitted'] != null ? DateTime.parse(json['submitted']) : null,
       realtime: calcTime(json['times']['realtime_t'].toDouble()),
       igt: calcTime(json['times']['ingame_t'].toDouble()),
       emulated: json['system']['emulated'],
@@ -547,7 +539,7 @@ class Leaderboard {
   factory Leaderboard.fromJson(Map<String, dynamic> json) {
     var list = json['runs'] as List;
     List<LeaderboardRun> runsList = List<LeaderboardRun>();
-    for (int i = 0; i < list.length; ++i) {
+    for (int i = 0; i < list.length; i++) {
       if (list[i]['place'] != 0) {
         runsList.add(LeaderboardRun.fromJson(list[i]));
       }
@@ -573,6 +565,7 @@ class Leaderboard {
   }
 }
 
+//Also don't need as much data for showing the latest runs
 class LatestRun {
   final String runID;
   final String gameName;
@@ -626,31 +619,6 @@ class LatestRun {
   }
 }
 
-class Pagination {
-  final int offset;
-  final int max;
-  final int size;
-  final String next;
-
-  Pagination({this.offset, this.max, this.size, this.next});
-
-  factory Pagination.fromJson(Map<String, dynamic> json) {
-    String next;
-    for (int i = 0; i < json['links'].length; ++i) {
-      if (json['links'][i]['rel'] == 'next') {
-        next = json['links'][i]['uri'];
-      }
-    }
-
-    return Pagination(
-      offset: json['offset'],
-      max: json['max'],
-      size: json['size'],
-      next: next,
-    );
-  }
-}
-
 class LatestRuns {
   List<LatestRun> runs;
   Pagination pagination;
@@ -665,6 +633,31 @@ class LatestRuns {
     return LatestRuns(
       runs: runs,
       pagination: Pagination.fromJson(json['pagination']),
+    );
+  }
+}
+
+class Pagination {
+  final int offset;
+  final int max;
+  final int size;
+  final String next;
+
+  Pagination({this.offset, this.max, this.size, this.next});
+
+  factory Pagination.fromJson(Map<String, dynamic> json) {
+    String next;
+    for (int i = 0; i < json['links'].length; i++) {
+      if (json['links'][i]['rel'] == 'next') {
+        next = json['links'][i]['uri'];
+      }
+    }
+
+    return Pagination(
+      offset: json['offset'],
+      max: json['max'],
+      size: json['size'],
+      next: next,
     );
   }
 }

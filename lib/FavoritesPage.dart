@@ -23,18 +23,16 @@ class _FavoritesPageState extends State<FavoritesPage> {
   @override
   Widget build(BuildContext context) {
     return GridView.count(
-      crossAxisCount: 2,
+      crossAxisCount: 3,
       padding: EdgeInsets.all(8.0),
       children: List.generate(favorites.length, (index) {
-        print(favorites[index].split(',')[1]);
-
         return GestureDetector(
           child: Container(
             child: CachedNetworkImage(
               imageUrl: favorites[index].split(',')[1],
+              errorWidget: (context, url, error) => Icon(Icons.error),
             ),
-            margin: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0),
-            color: Colors.blueAccent,
+            margin: EdgeInsets.fromLTRB(4.0, 0.0, 4.0, 16.0),
           ),
           onTap: () {
             Navigator.push(
@@ -64,7 +62,6 @@ class _FavoritesPageState extends State<FavoritesPage> {
         .transform(LineSplitter()) // Convert stream to individual lines.
         .listen(
       (String line) {
-        print(line);
         tempList.add(line);
       },
     );
