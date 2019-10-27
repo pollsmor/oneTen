@@ -64,7 +64,8 @@ class _LatestRunsPageState extends State<LatestRunsPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => DetailedRunPage('${runs[index].runID}'),
+                      builder: (context) =>
+                          DetailedRunPage('${runs[index].runID}'),
                     ),
                   );
                 },
@@ -148,7 +149,7 @@ class _RunInfo extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => LeaderboardPage('$leaderboardURL')),
+                    builder: (context) => LeaderboardPage(leaderboardURL)),
               );
             },
           ),

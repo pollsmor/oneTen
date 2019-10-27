@@ -209,7 +209,7 @@ class DetailedRunPage extends StatelessWidget {
                   Padding(padding: EdgeInsets.all(4.0)),
                   '${snapshot.data.submitted}' != null
                       ? Text(
-                          'Submitted on' +
+                          'Submitted on ' +
                               '${snapshot.data.submitted}'.substring(0, 10),
                           style: TextStyle(fontWeight: FontWeight.w300),
                         )

@@ -6,17 +6,44 @@ import 'dart:convert';
 
 import 'LeaderboardPage.dart';
 
+List<String> favorites = List<String>();
+
+void readFavorites() async {
+  final directory = await getApplicationDocumentsDirectory();
+  File file = File('${directory.path}/favorites.txt');
+  Stream<List> stream = file.openRead();
+  List<String> tempList = List();
+
+  stream
+      .transform(utf8.decoder) // Decode bytes to UTF-8.
+      .transform(LineSplitter()) // Convert stream to individual lines.
+      .listen(
+    (String line) {
+      tempList.add(line);
+    },
+  );
+
+  favorites = tempList;
+}
+
+void addFavorite(String leaderboardURL, String coverURL) async {
+  final directory = await getApplicationDocumentsDirectory();
+  File file = File('${directory.path}/favorites.txt');
+  var sink = file.openWrite(mode: FileMode.append);
+  sink.write('$leaderboardURL,$coverURL\n');
+
+  sink.close();
+}
+
 class FavoritesPage extends StatefulWidget {
   @override
   _FavoritesPageState createState() => _FavoritesPageState();
 }
 
 class _FavoritesPageState extends State<FavoritesPage> {
-  List<String> favorites = List<String>();
-
   @override
   void initState() {
-    _readFavorites();
+    readFavorites();
     super.initState();
   }
 
@@ -25,49 +52,29 @@ class _FavoritesPageState extends State<FavoritesPage> {
     return GridView.count(
       crossAxisCount: 3,
       padding: EdgeInsets.all(8.0),
-      children: List.generate(favorites.length, (index) {
-        return GestureDetector(
-          child: Container(
-            child: CachedNetworkImage(
-              imageUrl: favorites[index].split(',')[1],
-              errorWidget: (context, url, error) => Icon(Icons.error),
-            ),
-            margin: EdgeInsets.fromLTRB(4.0, 0.0, 4.0, 16.0),
-          ),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => LeaderboardPage(
-                  '${favorites[index].split(',')[0]}?embed='
-                  'game.levels,game.categories,game.moderators,'
-                  'game.platforms,game.regions,category,level,variables,players',
-                ),
+      children: List.generate(
+        favorites.length,
+        (index) {
+          return GestureDetector(
+            child: Container(
+              child: CachedNetworkImage(
+                imageUrl: favorites[index].split(',')[1],
+                errorWidget: (context, url, error) => Icon(Icons.error),
               ),
-            );
-          },
-        );
-      }),
+              margin: EdgeInsets.fromLTRB(4.0, 0.0, 4.0, 16.0),
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      LeaderboardPage('${favorites[index].split(',')[0]}'),
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
-  }
-
-  void _readFavorites() async {
-    final directory = await getApplicationDocumentsDirectory();
-    File file = File('${directory.path}/favorites.txt');
-    Stream<List> stream = file.openRead();
-    List<String> tempList = List();
-
-    stream
-        .transform(utf8.decoder) // Decode bytes to UTF-8.
-        .transform(LineSplitter()) // Convert stream to individual lines.
-        .listen(
-      (String line) {
-        tempList.add(line);
-      },
-    );
-
-    setState(() {
-      favorites = tempList;
-    });
   }
 }

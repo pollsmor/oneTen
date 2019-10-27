@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:gradient_text/gradient_text.dart';
-import 'package:path_provider/path_provider.dart';
-import 'dart:io';
 
 import 'API.dart';
 import 'DetailedRunPage.dart';
+import 'FavoritesPage.dart';
 
 class LeaderboardPage extends StatefulWidget {
   final String leaderboardURL;
@@ -17,21 +16,31 @@ class LeaderboardPage extends StatefulWidget {
 }
 
 class _LeaderboardPageState extends State<LeaderboardPage> {
+  String leaderboardURL;
   Future<Leaderboard> leaderboard;
   bool alreadySaved;
 
   @override
   void initState() {
-    alreadySaved = false;
-    leaderboard = fetchLeaderboard(widget.leaderboardURL);
+    leaderboardURL = widget.leaderboardURL;
+    leaderboard = fetchLeaderboard(leaderboardURL);
+    String gameID = leaderboardURL.substring(
+        leaderboardURL.indexOf('leaderboards') + 13,
+        leaderboardURL.indexOf('leaderboard') + 21);
+
+    List<String> favGames = List<String>();
+    for (String url in favorites) {
+      favGames.add(url.substring(
+          url.indexOf('leaderboards') + 13, url.indexOf('leaderboard') + 21));
+    }
+
+    alreadySaved = favGames.contains(gameID);
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    print('${widget.leaderboardURL}');
-
     return FutureBuilder<Leaderboard>(
       future: leaderboard,
       builder: (context, snapshot) {
@@ -74,9 +83,14 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                   ),
                   onPressed: () {
                     setState(() {
-                      alreadySaved = !alreadySaved;
-                      _writeFavorite('${widget.leaderboardURL}',
-                          '${snapshot.data.game.assets.coverURL}');
+                      if (alreadySaved == false) {
+                        alreadySaved = true;
+                        addFavorite('${widget.leaderboardURL}',
+                            '${snapshot.data.game.assets.coverURL}');
+                        readFavorites();
+                      } else {
+                        alreadySaved = false;
+                      }
                     });
                   },
                 ),
@@ -187,15 +201,6 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
         }
       },
     );
-  }
-
-  void _writeFavorite(String leaderboardURL, String coverURL) async {
-    final directory = await getApplicationDocumentsDirectory();
-    File file = File('${directory.path}/favorites.txt');
-    var sink = file.openWrite(mode: FileMode.append);
-    sink.write('$leaderboardURL,$coverURL\n');
-
-    sink.close();
   }
 }
 
