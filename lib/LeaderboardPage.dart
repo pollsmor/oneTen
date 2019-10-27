@@ -19,19 +19,20 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
   String leaderboardURL;
   Future<Leaderboard> leaderboard;
   bool alreadySaved;
+  String gameID;
 
   @override
   void initState() {
     leaderboardURL = widget.leaderboardURL;
     leaderboard = fetchLeaderboard(leaderboardURL);
-    String gameID = leaderboardURL.substring(
+    gameID = leaderboardURL.substring(
         leaderboardURL.indexOf('leaderboards') + 13,
-        leaderboardURL.indexOf('leaderboard') + 21);
+        leaderboardURL.indexOf('leaderboards') + 21);
 
     List<String> favGames = List<String>();
     for (String url in favorites) {
       favGames.add(url.substring(
-          url.indexOf('leaderboards') + 13, url.indexOf('leaderboard') + 21));
+          url.indexOf('leaderboards') + 13, url.indexOf('leaderboards') + 21));
     }
 
     alreadySaved = favGames.contains(gameID);
@@ -90,6 +91,8 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                         readFavorites();
                       } else {
                         alreadySaved = false;
+                        removeFavorite(gameID);
+                        readFavorites();
                       }
                     });
                   },

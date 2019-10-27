@@ -35,6 +35,25 @@ void addFavorite(String leaderboardURL, String coverURL) async {
   sink.close();
 }
 
+void removeFavorite(String gameID) async {
+  final directory = await getApplicationDocumentsDirectory();
+  File file = File('${directory.path}/favorites.txt');
+  favorites.removeWhere((item) =>
+      item.substring(item.indexOf('leaderboards') + 13,
+          item.indexOf('leaderboards') + 21) ==
+      gameID);
+  print(favorites);
+
+  var sink = file.openWrite();
+  sink.write('');
+  sink = file.openWrite(mode: FileMode.append);
+  for (String favorite in favorites) {
+    sink.write('$favorite');
+  }
+
+  sink.close();
+}
+
 class FavoritesPage extends StatefulWidget {
   @override
   _FavoritesPageState createState() => _FavoritesPageState();
