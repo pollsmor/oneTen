@@ -33,25 +33,25 @@ void addFavorite(String leaderboardURL, String coverURL) async {
   sink.write('$leaderboardURL,$coverURL\n');
 
   sink.close();
+
+  readFavorites();
 }
 
 void removeFavorite(String gameID) async {
   final directory = await getApplicationDocumentsDirectory();
   File file = File('${directory.path}/favorites.txt');
+
   favorites.removeWhere((item) =>
       item.substring(item.indexOf('leaderboards') + 13,
           item.indexOf('leaderboards') + 21) ==
       gameID);
-  print(favorites);
 
-  var sink = file.openWrite();
-  sink.write('');
-  sink = file.openWrite(mode: FileMode.append);
+  file.writeAsStringSync('');
   for (String favorite in favorites) {
-    sink.write('$favorite');
+    file.writeAsStringSync('$favorite\n', mode: FileMode.append);
   }
 
-  sink.close();
+  readFavorites();
 }
 
 class FavoritesPage extends StatefulWidget {
@@ -61,38 +61,42 @@ class FavoritesPage extends StatefulWidget {
 
 class _FavoritesPageState extends State<FavoritesPage> {
   @override
-  void initState() {
+  void initState()  {
     readFavorites();
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      crossAxisCount: 3,
-      padding: EdgeInsets.all(8.0),
-      children: List.generate(
-        favorites.length,
-        (index) {
-          return GestureDetector(
-            child: Container(
-              child: CachedNetworkImage(
-                imageUrl: favorites[index].split(',')[1],
-                errorWidget: (context, url, error) => Icon(Icons.error),
-              ),
-              margin: EdgeInsets.fromLTRB(4.0, 0.0, 4.0, 16.0),
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      LeaderboardPage('${favorites[index].split(',')[0]}'),
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: GridView.count(
+        crossAxisCount: 3,
+        padding: EdgeInsets.all(8.0),
+        children: List.generate(
+          favorites.length,
+          (index) {
+            return GestureDetector(
+              child: Container(
+                child: CachedNetworkImage(
+                  imageUrl: favorites[index].split(',')[1],
+                  errorWidget: (context, url, error) => Icon(Icons.error),
                 ),
-              );
-            },
-          );
-        },
+                margin: EdgeInsets.fromLTRB(4.0, 0.0, 4.0, 16.0),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        LeaderboardPage('${favorites[index].split(',')[0]}'),
+                  ),
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }

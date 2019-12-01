@@ -88,11 +88,9 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                         alreadySaved = true;
                         addFavorite('${widget.leaderboardURL}',
                             '${snapshot.data.game.assets.coverURL}');
-                        readFavorites();
                       } else {
                         alreadySaved = false;
                         removeFavorite(gameID);
-                        readFavorites();
                       }
                     });
                   },

@@ -16,8 +16,8 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = [
-    FavoritesPage(),
     LatestRunsPage(),
+    FavoritesPage(),
   ];
 
   //Search stuff
@@ -140,14 +140,14 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(
+            title: Text('Latest Runs'),
+            icon: Icon(Icons.videogame_asset),
+          ),
+          BottomNavigationBarItem(
             title: Text(
               'Favorites',
             ),
             icon: Icon(Icons.favorite_border),
-          ),
-          BottomNavigationBarItem(
-            title: Text('Latest Runs'),
-            icon: Icon(Icons.videogame_asset),
           ),
         ],
         onTap: _onItemTapped,
