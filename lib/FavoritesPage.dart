@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
-import 'dart:convert';
 
 import 'LeaderboardPage.dart';
 
@@ -11,19 +10,7 @@ List<String> favorites = List<String>();
 void readFavorites() async {
   final directory = await getApplicationDocumentsDirectory();
   File file = File('${directory.path}/favorites.txt');
-  Stream<List> stream = file.openRead();
-  List<String> tempList = List();
-
-  stream
-      .transform(utf8.decoder) // Decode bytes to UTF-8.
-      .transform(LineSplitter()) // Convert stream to individual lines.
-      .listen(
-    (String line) {
-      tempList.add(line);
-    },
-  );
-
-  favorites = tempList;
+  favorites = file.readAsLinesSync();
 }
 
 void addFavorite(String leaderboardURL, String coverURL) async {
@@ -61,7 +48,7 @@ class FavoritesPage extends StatefulWidget {
 
 class _FavoritesPageState extends State<FavoritesPage> {
   @override
-  void initState()  {
+  void initState() {
     readFavorites();
 
     super.initState();

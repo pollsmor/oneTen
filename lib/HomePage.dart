@@ -31,6 +31,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    readFavorites();
     _selectedIndex = 0;
 
     _searchIcon = Icon(Icons.search);
@@ -133,10 +134,7 @@ class _HomePageState extends State<HomePage> {
                 );
               },
             )
-          : IndexedStack(
-              index: _selectedIndex,
-              children: _pages,
-            ),
+          : _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(
