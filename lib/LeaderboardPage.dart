@@ -44,6 +44,18 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
 
     alreadySaved = favGames.contains(gameID);
 
+    fetchLeaderboard(leaderboardURL).then((data) {
+      setState(() {
+        categories = data.game.categories;
+        for (int i = 0; i < categories.length; i++) {
+          categoryNames.add(categories[i].name);
+          if (categories[i].id == currCategoryID) {
+            currCategory = categories[i].name;
+          }
+        }
+      });
+    });
+
     super.initState();
   }
 
@@ -53,14 +65,6 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
       future: leaderboard,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          categories = snapshot.data.game.categories;
-          for (int i = 0; i < categories.length; i++) {
-            categoryNames.add(categories[i].name);
-            if (categories[i].id == currCategoryID) {
-              currCategory = categories[i].name;
-            }
-          }
-
           return Scaffold(
             appBar: AppBar(
               elevation: 0.0,
@@ -123,7 +127,8 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                     child: DropdownButton<String>(
                         value: currCategory,
                         elevation: 16,
-                        items: categoryNames.map<DropdownMenuItem<String>>((String value) {
+                        items: categoryNames
+                            .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
                             child: Text(value),
@@ -141,7 +146,6 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                             String newLeaderboardURL = "$baseurl/leaderboards/";
                             newLeaderboardURL += (snapshot.data.game.id + "/");
                             newLeaderboardURL += ("category/" + currCategoryID);
-                            print(newLeaderboardURL);
                             Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
