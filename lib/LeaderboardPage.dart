@@ -28,13 +28,14 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
   @override
   void initState() {
     leaderboardURL = widget.leaderboardURL;
+    print(leaderboardURL);
     leaderboard = fetchLeaderboard(leaderboardURL);
     gameID = leaderboardURL.substring(
         leaderboardURL.indexOf('leaderboards') + 13,
         leaderboardURL.indexOf('leaderboards') + 21);
     currCategoryID = leaderboardURL.substring(
         leaderboardURL.indexOf('leaderboards') + 31,
-        leaderboardURL.indexOf('leaderboards') + 38);
+        leaderboardURL.indexOf('leaderboards') + 39);
 
     List<String> favGames = List<String>();
     for (String url in favorites) {
@@ -124,35 +125,52 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                   snapshot.data.level,
                 ),
                 Container(
-                    child: DropdownButton<String>(
-                        value: currCategory,
-                        elevation: 16,
-                        items: categoryNames
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        onChanged: (String newCategory) {
-                          setState(() {
-                            currCategory = newCategory;
-                            for (int i = 0; i < categories.length; i++) {
-                              if (categories[i].name == currCategory) {
-                                currCategoryID = categories[i].id;
+                  child: Row(
+                    children: [
+                      Padding(padding: EdgeInsets.all(4.0)),
+                      Text('Category'),
+                      Padding(padding: EdgeInsets.all(4.0)),
+                      DropdownButton<String>(
+                          value: currCategory,
+                          elevation: 16,
+                          iconSize: 32,
+                          style: TextStyle(color: Colors.deepPurple),
+                          underline: Container(
+                            height: 2,
+                            color: Colors.deepPurpleAccent,
+                          ),
+                          items: categoryNames
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (String newCategory) {
+                            setState(() {
+                              currCategory = newCategory;
+                              for (int i = 0; i < categories.length; i++) {
+                                if (categories[i].name == currCategory) {
+                                  currCategoryID = categories[i].id;
+                                }
                               }
-                            }
 
-                            String newLeaderboardURL = "$baseurl/leaderboards/";
-                            newLeaderboardURL += (snapshot.data.game.id + "/");
-                            newLeaderboardURL += ("category/" + currCategoryID);
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        LeaderboardPage(newLeaderboardURL)));
-                          });
-                        })),
+                              String newLeaderboardURL =
+                                  "$baseurl/leaderboards/";
+                              newLeaderboardURL +=
+                                  (snapshot.data.game.id + "/");
+                              newLeaderboardURL +=
+                                  ("category/" + currCategoryID);
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          LeaderboardPage(newLeaderboardURL)));
+                            });
+                          })
+                    ],
+                  ),
+                ),
                 Container(
                   color: Theme.of(context).primaryColorLight,
                   child: Row(
