@@ -20,6 +20,10 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
   Future<Leaderboard> leaderboard;
   bool alreadySaved;
   String gameID;
+  String currCategoryID;
+  String currCategory;
+  List<Category> categories;
+  List<String> categoryNames = List<String>();
 
   @override
   void initState() {
@@ -28,6 +32,9 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
     gameID = leaderboardURL.substring(
         leaderboardURL.indexOf('leaderboards') + 13,
         leaderboardURL.indexOf('leaderboards') + 21);
+    currCategoryID = leaderboardURL.substring(
+        leaderboardURL.indexOf('leaderboards') + 31,
+        leaderboardURL.indexOf('leaderboards') + 38);
 
     List<String> favGames = List<String>();
     for (String url in favorites) {
@@ -46,6 +53,14 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
       future: leaderboard,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
+          categories = snapshot.data.game.categories;
+          for (int i = 0; i < categories.length; i++) {
+            categoryNames.add(categories[i].name);
+            if (categories[i].id == currCategoryID) {
+              currCategory = categories[i].name;
+            }
+          }
+
           return Scaffold(
             appBar: AppBar(
               elevation: 0.0,
@@ -104,6 +119,36 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                   snapshot.data.category,
                   snapshot.data.level,
                 ),
+                Container(
+                    child: DropdownButton<String>(
+                        value: currCategory,
+                        elevation: 16,
+                        items: categoryNames.map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (String newCategory) {
+                          setState(() {
+                            currCategory = newCategory;
+                            for (int i = 0; i < categories.length; i++) {
+                              if (categories[i].name == currCategory) {
+                                currCategoryID = categories[i].id;
+                              }
+                            }
+
+                            String newLeaderboardURL = "$baseurl/leaderboards/";
+                            newLeaderboardURL += (snapshot.data.game.id + "/");
+                            newLeaderboardURL += ("category/" + currCategoryID);
+                            print(newLeaderboardURL);
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        LeaderboardPage(newLeaderboardURL)));
+                          });
+                        })),
                 Container(
                   color: Theme.of(context).primaryColorLight,
                   child: Row(
