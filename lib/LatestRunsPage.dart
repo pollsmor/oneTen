@@ -7,6 +7,7 @@ import 'package:gradient_text/gradient_text.dart';
 import 'API.dart';
 import 'LeaderboardPage.dart';
 import 'DetailedRunPage.dart';
+import 'PlayerInfoPage.dart';
 
 class LatestRunsPage extends StatefulWidget {
   @override
@@ -222,18 +223,28 @@ class _RunInfo extends StatelessWidget {
                         ),
                         textAlign: TextAlign.right,
                       )
-                    : GradientText(
-                        '${player.name}',
-                        gradient: LinearGradient(
-                          colors: [
-                            Color(hexToColor(player.colorFrom)),
-                            Color(hexToColor(player.colorTo)),
-                          ],
+                    : GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PlayerInfoPage(player),
+                            ),
+                          );
+                        },
+                        child: GradientText(
+                          '${player.name}',
+                          gradient: LinearGradient(
+                            colors: [
+                              Color(hexToColor(player.colorFrom)),
+                              Color(hexToColor(player.colorTo)),
+                            ],
+                          ),
+                          style: TextStyle(
+                            fontSize: 16.0,
+                          ),
+                          textAlign: TextAlign.right,
                         ),
-                        style: TextStyle(
-                          fontSize: 16.0,
-                        ),
-                        textAlign: TextAlign.right,
                       ),
               ],
             ),

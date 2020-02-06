@@ -25,10 +25,10 @@ String calcTime(double seconds) {
       if (ms == 0)
         output = '$secs' + 's';
       else
-        output = '$secs' + 's' + '$ms' + 'ms';
+        output = '$secs' + 's ' + '$ms' + 'ms';
     } else {
       if (ms == 0)
-        output = '$mins' + 'm' + '$secs' + 's';
+        output = '$mins' + 'm ' + '$secs' + 's';
       else
         output = '$mins' + 'm ' + '$secs' + 's ' + '$ms' + 'ms';
     }
@@ -326,6 +326,7 @@ class Value {
 }
 
 class Player {
+  final String id;
   final String name;
   final bool isGradient;
   final String color;
@@ -340,7 +341,8 @@ class Player {
   final String pbs;
 
   Player(
-      {this.name,
+      {this.id,
+      this.name,
       this.isGradient,
       this.color,
       this.colorFrom,
@@ -357,6 +359,7 @@ class Player {
     //For runs with players without a profile on speedrun.com
     if (json['rel'] == 'guest') {
       return Player(
+        id: '',
         name: json['name'] + '*',
         isGradient: false,
         color: '#000000',
@@ -379,6 +382,7 @@ class Player {
       }
 
       return Player(
+        id: json['id'],
         name: json['names']['international'],
         isGradient: isGradient,
         color: color,

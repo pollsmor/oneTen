@@ -134,7 +134,10 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                           value: currCategory,
                           elevation: 16,
                           iconSize: 32,
-                          style: TextStyle(color: Colors.deepPurple),
+                          style: TextStyle(
+                            color: Colors.deepPurple,
+                            fontSize: 16.0,
+                          ),
                           underline: Container(
                             height: 2,
                             color: Colors.deepPurpleAccent,
