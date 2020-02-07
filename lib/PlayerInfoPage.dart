@@ -6,8 +6,9 @@ import 'API.dart';
 
 class PlayerInfoPage extends StatelessWidget {
   final Player player;
+  final Future<List<ProfileRun>> pbs;
 
-  PlayerInfoPage(this.player);
+  PlayerInfoPage(this.player): pbs = fetchPbs(player.pbs);
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,8 +21,46 @@ class PlayerInfoPage extends StatelessWidget {
           },
         ),
       ),
-      body: Center(
-        child: Text(player.name),
+      body: Column(
+        children: [
+          Container(
+            child: Row(
+              children: [
+                Padding(padding: EdgeInsets.all(4.0)),
+                SizedBox(
+                  height: 15.0,
+                  child: '${player.countrycode}' != ''
+                      ? Image.asset(
+                      'icons/flags/png/${player.countrycode}.png',
+                      package: 'country_icons')
+                      : Container(),
+                ),
+                Padding(padding: EdgeInsets.all(4.0)),
+                !player.isGradient
+                    ? Text(
+                        player.name,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: Color(hexToColor(player.color)),
+                          fontSize: 16.0,
+                        ),
+                      )
+                    : GradientText(
+                        player.name,
+                        gradient: LinearGradient(
+                          colors: [
+                            Color(hexToColor(player.colorFrom)),
+                            Color(hexToColor(player.colorTo)),
+                          ],
+                        ),
+                        style: TextStyle(
+                          fontSize: 16.0,
+                        ),
+                      ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

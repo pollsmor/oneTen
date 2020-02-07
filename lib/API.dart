@@ -105,6 +105,20 @@ Run parseRun(String responseBody) {
   return Run.fromJson(json.decode(responseBody)['data']);
 }
 
+Future<List<ProfileRun>> fetchPbs(String url) async {
+  final response =
+      await http.get('$url?embed=game,category,level,region,platform');
+
+  return compute(parsePbs, response.body);
+}
+
+List<ProfileRun> parsePbs(String responseBody) {
+  var list = json.decode(responseBody)['data'];
+  List<ProfileRun> pbs = List<ProfileRun>.from(list.map((i) => ProfileRun.fromJson(i)));
+
+  return pbs;
+}
+
 class Ruleset {
   final bool reqVerification;
   final bool reqVideo;
@@ -619,6 +633,65 @@ class LatestRun {
       igt: calcTime(json['times']['ingame_t'].toDouble()),
       leaderboardURL: leaderboardURL,
       coverURL: json['game']['data']['assets']['cover-large']['uri'],
+    );
+  }
+}
+
+class ProfileRun {
+  final String runID;
+  final int place;
+  final String gameName;
+  final String categoryName;
+  final String levelName;
+  final String time;
+  final String date;
+  final String region;
+  final String platform;
+  final String leaderboardURL;
+  final String coverURL;
+
+  ProfileRun(
+      {this.runID,
+      this.place,
+      this.gameName,
+      this.categoryName,
+      this.levelName,
+      this.time,
+      this.date,
+      this.region,
+      this.platform,
+      this.leaderboardURL,
+      this.coverURL});
+
+  factory ProfileRun.fromJson(Map<String, dynamic> json) {
+    String leaderboardURL = '';
+    String gameID = json['game']['data']['id'];
+    String categoryID = json['category']['data']['id'];
+    String levelID = json['level']['data'] is Map<String, dynamic>
+        ? json['level']['data']['id']
+        : "";
+    if (levelID != '') {
+      leaderboardURL =
+          'https://speedrun.com/api/v1/leaderboards/$gameID/level/$levelID/$categoryID';
+    } else {
+      leaderboardURL =
+          'https://speedrun.com/api/v1/leaderboards/$gameID/category/$categoryID';
+    }
+
+    return ProfileRun(
+      runID: json['run']['place'],
+      place: json['place'],
+      gameName: json['game']['data']['names']['international'],
+      categoryName: json['category']['data']['name'],
+      levelName: json['level']['data'] is Map<String, dynamic>
+          ? json['level']['data']['name']
+          : '',
+      time: calcTime(json['times']['primary_t'].toDouble()),
+      date: json['run']['date'],
+      region: json['region']['data']['name'],
+      platform: json['platform']['data']['name'],
+      leaderboardURL: leaderboardURL,
+      coverURL: json['game']['assets']['cover-large'],
     );
   }
 }
