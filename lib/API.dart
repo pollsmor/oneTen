@@ -686,12 +686,16 @@ class ProfileRun {
       levelName: json['level']['data'] is Map<String, dynamic>
           ? json['level']['data']['name']
           : '',
-      time: calcTime(json['times']['primary_t'].toDouble()),
+      time: calcTime(json['run']['times']['primary_t'].toDouble()),
       date: json['run']['date'],
-      region: json['region']['data']['name'],
-      platform: json['platform']['data']['name'],
+      region: json['region']['data'] is Map<String, dynamic>
+          ? json['region']['data']['name']
+          : "",
+      platform: json['platform']['data'] is Map<String, dynamic>
+          ? json['platform']['data']['name']
+          : '',
       leaderboardURL: leaderboardURL,
-      coverURL: json['game']['assets']['cover-large'],
+      coverURL: json['game']['data']['assets']['cover-large']['uri'],
     );
   }
 }
